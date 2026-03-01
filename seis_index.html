@@ -281,7 +281,7 @@
                 <!-- Mestizo Builder UI -->
                 <div id="mestizo-builder-ui" class="hidden">
                     <div class="limit-info" style="color: var(--gold); background: rgba(201,164,76,0.1); padding: 10px; border-radius: 4px; margin-bottom: 15px;">
-                        <strong>Regla de Construcción:</strong> Selecciona exactamente 4 habilidades respetando los límites de Tier. Al completar la selección, se generará la ficha final del personaje mestizo.
+                        <strong>Regla de Construcción:</strong> Selecciona exactamente 4 habilidades. 1 de TIER 1, 2 de TIER 2, 1 de TIER 1. Al completar la selección, se generará la ficha final del personaje mestizo.
                     </div>
                     <div class="mestizo-grid">
                         <div class="parent-selector">
@@ -321,76 +321,76 @@ const speciesDatabase = [
                 name: "Sangre de Hielo",
                 type: "Humanoide / Dragón",
                 size: "Pequeño o Mediano",
-                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                speed: "30",
                 languages: "Común, Dracónico",
                 physical: "Escamas pálidas o azuladas, a menudo cubiertas por una fina escarcha.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Frío)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel). CD 8 + Prof + Con." },
                     { title: "Flowbound Body", tier: 1, text: "Tienes ventaja en pruebas y tiradas de salvación realizadas para escapar de la condición Agarre." },
                     { title: "Freezing Attack", tier: 2, text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o ataques de Frío, su velocidad se reduce en 10 pies." },
                     { title: "Child of the Sea", tier: 1, text: "Tienes una velocidad de nado de 30 pies y puedes respirar aire y agua." },
-                    { title: "Cold Endurance", tier: 1, text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo." }
+                    { title: "Cold Endurance", tier: 2, text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo." }
                 ]
             },
             {
                 name: "Sangre de Sol",
                 type: "Humanoide / Dragón",
                 size: "Pequeño o Mediano",
-                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                speed: "30",
                 languages: "Común, Dracónico",
                 physical: "Escamas doradas o broncíneas que brillan bajo el sol.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Fuego)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
                     { title: "Boiling Blood", tier: 2, text: "Una vez por turno, cuando impactas o dañas con un conjuro, puedes añadir daño de Fuego igual a Prof. (Usos = Prof)." },
                     { title: "Radiant Pulse", tier: 3, text: "Acción adicional: Emites luz 10ft por 1 min. Aliados elegidos obtienen ventaja en su primera salvación." },
-                    { title: "Radiant Endurance", tier: 1, text: "Resistencia al Fuego. Las altas temperaturas y luz intensa no te imponen penalizadores." }
+                    { title: "Radiant Endurance", tier: 2, text: "Resistencia al Fuego. Las altas temperaturas y luz intensa no te imponen penalizadores." }
                 ]
             },
             {
                 name: "Sangre de Luna",
                 type: "Humanoide / Dragón",
                 size: "Pequeño o Mediano",
-                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                speed: "30",
                 languages: "Común, Dracónico",
                 physical: "Escamas plateadas que reflejan la luz de forma tenue.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Psíquico)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
                     { title: "Reflected Self", tier: 1, text: "Obtienes competencia en Sigilo o Engaño." },
                     { title: "Veil of Phases", tier: 3, text: "Reacción: Cuando eres impactado, puedes imponer desventaja a esa tirada (1/descanso largo)." },
-                    { title: "Veiled Mind", tier: 1, text: "Resistencia al daño Psíquico y ventaja en salvaciones contra ser hechizado o asustado." }
+                    { title: "Veiled Mind", tier: 2, text: "Resistencia al daño Psíquico y ventaja en salvaciones contra ser hechizado o asustado." }
                 ]
             },
             {
                 name: "Sangre de Tormenta",
                 type: "Humanoide / Dragón",
                 size: "Pequeño o Mediano",
-                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                speed: "30",
                 languages: "Común, Dracónico",
                 physical: "Escamas azules o eléctricas con crestas vibrantes.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Rayo)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
                     { title: "Storm Step", tier: 2, text: "Al realizar Dash, los ataques de oportunidad contra ti se realizan con desventaja." },
                     { title: "Crackling Blood", tier: 2, text: "Una vez por turno, al dañar con aliento o ataques eléctricos, tu velocidad aumenta en 5 pies." },
-                    { title: "Storm Endurance", tier: 1, text: "Resistencia al daño Eléctrico. Vientos fuertes y tormentas no son condiciones adversas." }
+                    { title: "Storm Endurance", tier: 2, text: "Resistencia al daño Eléctrico. Vientos fuertes y tormentas no son condiciones adversas." }
                 ]
             },
             {
                 name: "Sangre de Tierra",
                 type: "Humanoide / Dragón",
                 size: "Pequeño o Mediano",
-                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                speed: "30",
                 languages: "Común, Dracónico",
                 physical: "Escamas pétreas, marrones o grisáceas.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Contundente)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
                     { title: "Immovable Frame", tier: 2, text: "Tienes ventaja en tiradas de salvación para evitar ser derribado o movido contra tu voluntad." },
                     { title: "Stonehide", tier: 1, text: "Mientras no lleves armadura, obtienes un bono de +1 a la CA." },
-                    { title: "Stone Endurance", tier: 1, text: "Obtienes resistencia al daño Contundente." },
+                    { title: "Stone Endurance", tier: 2, text: "Obtienes resistencia al daño Contundente." },
                     { title: "Titan’s Bearing", tier: 1, text: "Cuentas como una talla más grande para carga. Puedes usar equipo pesado sin requisitos de Fuerza." }
                 ]
             },
@@ -398,30 +398,30 @@ const speciesDatabase = [
                 name: "Sangre de Vida",
                 type: "Humanoide / Dragón",
                 size: "Pequeño o Mediano",
-                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                speed: "30",
                 languages: "Común, Dracónico",
                 physical: "Escamas verdes con patrones de vegetación.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Veneno/Ácido)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
                     { title: "Creeping Vitality", tier: 2, text: "Cuando recuperas puntos de golpe, sumas tu bonificador de competencia a la curación." },
                     { title: "Adaptive Flesh", tier: 1, text: "Tienes ventaja en salvaciones contra veneno y enfermedad." },
-                    { title: "Verdant Endurance", tier: 1, text: "Resistencia a Veneno y Ácido. Los entornos tóxicos o densos no son extremos para ti." }
+                    { title: "Verdant Endurance", tier: 2, text: "Resistencia a Veneno y Ácido. Los entornos tóxicos o densos no son extremos para ti." }
                 ]
             },
             {
                 name: "Sangre de Estrella",
                 type: "Humanoide / Dragón",
                 size: "Pequeño o Mediano",
-                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                speed: "30",
                 languages: "Común, Dracónico",
                 physical: "Escamas oscuras con puntos brillantes.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Fuerza)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
                     { title: "Celestial Insight", tier: 3, text: "1/descanso largo: Tras ver una tirada d20, puedes sumar o restar 1d4 al resultado." },
                     { title: "Distant Gaze", tier: 2, text: "Puedes ver a través de oscuridad mágica e ilusiones hasta 30 pies." },
-                    { title: "Cosmic Endurance", tier: 1, text: "Resistencia al daño de Fuerza. Efectos de gravedad o vacío no te afectan." }
+                    { title: "Cosmic Endurance", tier: 2, text: "Resistencia al daño de Fuerza. Efectos de gravedad o vacío no te afectan." }
                 ]
             }
         ]
@@ -436,7 +436,7 @@ const speciesDatabase = [
                 name: "Emberclaw",
                 type: "Humanoide / Dragon",
                 size: "Pequeño",
-                speed: 30,
+                speed: 40,
                 languages: "Común, Dracónico",
                 physical: "Escamas reptilianas que reflejan ecos de la grandeza dracónica.",
                 traits: [
@@ -467,23 +467,18 @@ const speciesDatabase = [
         name: "Grung",
         category: "Bestias",
         description: "Humanoides anfibios de piel vibrante y tóxica. Son territoriales y disciplinados, viviendo en ecosistemas donde la vida fluye entre el agua y la tierra.",
-        subraces: [
-            {
-                name: "Anfibio Selvático",
-                type: "Humanoide / Beast",
-                size: "Pequeño",
-                speed: "25 pies (caminar y nado)",
-                languages: "Común, Grung",
-                physical: "Piel húmeda de colores brillantes (advertencia de toxinas), dedos con almohadillas adhesivas.",
-                traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+        type: "Humanoide / Beast",
+        size: "Pequeño",
+        speed: 25",
+        languages: "Común, Sylvano",
+        physical: "Piel húmeda de colores chillones y textura brillante. Cuerpo elástico con almohadillas en los dedos.",
+        traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Amphibious", tier: 1, text: "Puedes respirar aire y agua." },
-                    { title: "Poison Immunity", tier: 1, text: "Inmune al daño por veneno y condición envenenado." },
-                    { title: "Standing Leap", tier: 2, text: "Salto 25ft long / 15ft alto. Acción adicional para salto gratis sin coste de movimiento." },
-                    { title: "Poisonous Skin", tier: 3, text: "Reacción (1/descanso): Al ser golpeado o agarrado sin armadura, el atacante sufre daño de veneno (2d6, escala nivel)." },
+                    { title: "Poison Immunity", tier: 3, text: "Inmune al daño por veneno y condición envenenado." },
+                    { title: "Standing Leap", tier: 2, text: "Su salto de longitud es de hasta 25 pies y su salto de altura es de hasta 15 pies, con o sin carrera inicial. Como acción adicional, puedes dar un salto sin coste de movimiento." },
+                    { title: "Poisonous Skin", tier: 3, text: "Tu piel secreta toxinas naturales. Como reacción cuando una criatura que te agarre o impacte con un ataque cuerpo a cuerpo mientras no tengas armadura debe superar una salvación de Con (CD = 8 + bonificador por competencia + mod. Constitución) o sufrir 2d6 daño por veneno. Nivel 5 → 3d6, Nivel 11 → 4d6, Nivel 17 → 5d6. Puedes usar esta característica una vez por descanso largo." },
                     { title: "Water Dependency", tier: 1, text: "Debes sumergirte 1 hora al día o sufrir agotamiento." }
-                ]
-            }
         ]
     },
     {
@@ -491,44 +486,36 @@ const speciesDatabase = [
         name: "Tabaxi",
         category: "Bestias",
         description: "Humanoides felinos impulsados por una curiosidad casi patológica. Viajeros y narradores que ven el mundo como una experiencia constante.",
-        subraces: [
-            {
-                name: "Explorador Felino",
-                type: "Humanoide / Beast",
-                size: "Pequeño o Mediano",
-                speed: 30,
-                languages: "Común, Adicional",
-                physical: "Cuerpo esbelto con patrones de manchas o rayas y garras retráctiles.",
-                traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
-                    { title: "Feline Agility", tier: 2, text: "Duplica tu velocidad este turno. Debes estar quieto un turno para recargar." },
-                    { title: "Cat’s Claws", tier: 1, text: "Arma natural: 1d6 + mod (Fuer o Des) cortante." },
+        type: "Humanoide / Beast",
+        size: "Pequeño o Mediano",
+        speed: 30,
+        languages: "Común, Adicional",
+        physical: "Cuerpo esbelto con patrones de manchas o rayas y garras retráctiles.",
+        traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Feline Agility", tier: 2, text: "Cuando te mueves en tu turno en combate, puedes duplicar tu velocidad hasta el final del turno. Una vez usado, debes permanecer inmóvil durante un turno para volver a usarlo." },
+                    { title: "Cat’s Claws", tier: 1, text: "Tus garras son un arma natural que inflige 1d6 + mod. Fuerza cortante. Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres." },
                     { title: "Feline Senses", tier: 1, text: "Competencia en Percepción o Sigilo." }
                 ]
             }
-        ]
     },
     {
         id: "behero",
         name: "Behero",
         category: "Acuaticos/Voladores",
         description: "Majestuosos humanoides con rasgos de búho, guardianes del silencio. Poseen un vuelo inaudible y una sabiduría que parece trascender el tiempo.",
-        subraces: [
-            {
-                name: "Guardián Nocturno",
-                type: "Humanoide / Volador",
-                size: "Mediano",
-                speed: "20 pies (caminar) / 40 pies (vuelo)",
-                languages: "Común, Celestial",
-                physical: "Plumas densas y suaves, ojos grandes capaces de girar casi 360 grados.",
-                traits: [
-                    { title: "Superior Darkvision", tier: 1, text: "Ves en oscuridad total hasta 120 pies." },
+        type: "Humanoide / Volador",
+        size: "Pequeño o Mediano",
+        speed: 30,
+        languages: "Común, Celestial",
+        traits: [
+                    { title: "Flight", tier: 2, text: "Obtienes velocidad de Vuelo igual a tu Velocidad de Caminar" },
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Silent Wings", tier: 2, text: "Tienes ventaja en pruebas de Sigilo mientras vuelas." },
-                    { title: "Talons", tier: 1, text: "Tus garras son armas naturales que infligen 1d6 cortante." },
-                    { title: "Nocturnal Wisdom", tier: 2, text: "Competencia en Perspicacia o Historia." }
+                    { title: "Talons", tier: 1, text: "Tus garras son un arma natural que inflige 1d6 + mod. Fuerza cortante. Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres." },
+                    { title: "Nocturnal Wisdom", tier: 1, text: "Competencia en Perspicacia o Historia." }
                 ]
             }
-        ]
     },
     {
         id: "goblin",
@@ -542,13 +529,13 @@ const speciesDatabase = [
                 size: "Pequeña",
                 speed: 25,
                 languages: "Común, Dracónico, Goblin",
-                physical: "Robustas, cubiertas por un espeso pelo sedoso, con pequeños cuernos curvos.",
+                physical: "Robustas, su pelo es sedoso y fino de tonos blanquesinos. Destacan por sus cuernos gruesos de carnero o de dragón con tonos de piel más tirando a azulados.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Visión en oscuridad 60 pies." },
-                    { title: "Cold Resistance", tier: 1, text: "Resistencia al daño por frío." },
-                    { title: "Thick Fur", tier: 1, text: "Ignoras climas extremadamente fríos." },
-                    { title: "Fury of the Small", tier: 2, text: "Daño adicional igual a competencia contra criaturas más grandes." },
-                    { title: "Natural Toughness", tier: 2, text: "Tu máximo de puntos de vida aumenta en 1 por cada nivel." }
+                    { title: "Cold Endurance", tier: 2, text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo para ti." },
+                    { title: "Fury of the Small", tier: 3, text: "Daño adicional igual a competencia contra criaturas más grandes." },
+                    { title: "Natural Toughness", tier: 2, text: "Tu máximo de puntos de vida aumenta en 1 por cada nivel." },
+                    { title: "Thick Body", tier: 2, text: "Mientras no lleves armadura, obtienes un bono de +1 a la CA." }
                 ]
             },
             {
@@ -557,26 +544,26 @@ const speciesDatabase = [
                 size: "Pequeña",
                 speed: 30,
                 languages: "Común, Extra",
-                physical: "Firmes y agresivas, con colmillos prominentes a menudo reforzados con metal.",
+                physical: "Salvajes, de musculatura firme y curvas potentes. Suelen tener colmillos grandes reforzados con metal, un físico agresivo y con tonos de piel cerca de un verde pantanoso.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
-                    { title: "Fury of the Small", tier: 2, text: "Daño extra a enemigos más grandes." },
-                    { title: "Relentless Fury", tier: 3, text: "Gasta dos usos de Fury para daño doble o un ataque adicional si impactas." },
-                    { title: "Nimble Escape", tier: 3, text: "Acción adicional para Desengancharte o Esconderte." }
+                    { title: "Fury of the Small", tier: 3, text: "Daño extra a enemigos más grandes." },
+                    { title: "Relentless Fury", tier: 2, text: "Gasta dos usos de Fury para daño doble o un ataque adicional si impactas." },
+                    { title: "Nimble Escape", tier: 2, text: "Acción adicional para Desengancharte o Esconderte." }
                 ]
             },
             {
                 name: "Shadefoot",
                 type: "Humanoide / Fey",
                 size: "Pequeña",
-                speed: 30,
+                speed: 40,
                 languages: "Común, Extra",
-                physical: "Criaturas del sigilo, movimientos silenciosos y pasos difíciles de rastrear.",
+                physical: "Constitución delgada y ágil. De manos rápidas y pasos silenciosos, diseñadas para el robo y el sigilo, tienen tonos de piel más palidos o oscuros.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
                     { title: "Pickpocket", tier: 1, text: "Obtienes competencia en la habilidad Juego de Manos." },
-                    { title: "Unseen Skulker", tier: 2, text: "Puedes esconderte con oscurecimiento ligero. Moverte no te revela bajo cobertura." },
-                    { title: "Nimble Escape", tier: 3, text: "Acción adicional para Desengancharte o Esconderte." }
+                    { title: "Unseen Skulker", tier: 3, text: "Puedes esconderte con oscurecimiento ligero. Moverte no te revela bajo cobertura." },
+                    { title: "Nimble Escape", tier: 2, text: "Acción adicional para Desengancharte o Esconderte." }
                 ]
             },
             {
@@ -585,50 +572,51 @@ const speciesDatabase = [
                 size: "Pequeña",
                 speed: 30,
                 languages: "Común, Goblin",
-                physical: "Astutas, caderonas, expertas en cuevas y ruinas.",
+                physical: "Goblins clásicas de caderas anchas y piel tersa. Son expertas en saquear oro y devorar carne en cuevas y ruinas.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
-                    { title: "Fey Ancestry", tier: 1, text: "Ventaja en salvaciones contra ser hechizada." },
-                    { title: "Fury of the Small", tier: 2, text: "Daño extra a enemigos grandes." },
-                    { title: "Nimble Escape", tier: 3, text: "Acción adicional para Desengancharse o Esconderte." }
+                    { title: "Fey Ancestry", tier: 2, text: "Ventaja en salvaciones contra ser hechizada." },
+                    { title: "Fury of the Small", tier: 3, text: "Daño extra a enemigos grandes." },
+                    { title: "Nimble Escape", tier: 2, text: "Acción adicional para Desengancharse o Esconderte." }
                 ]
             }
         ]
     },
     {
         id: "tauro",
-        name: "Tauro (Toro)",
+        name: "Toro",
         category: "Bestias",
-        description: "Los minotauros son humanoides imponentes de fuerza bruta. Su cultura gira en torno al desafío; un minotauro no evita obstáculos, los atraviesa.",
+        description: "Los tauros son humanoides imponentes de fuerza bruta. Su cultura gira en torno al desafío y la libertad del combate y la vida.",
         subraces: [
             {
-                name: "Minotauro Clásico",
+                name: "Toro",
                 type: "Humanoide / Beast",
-                size: "Mediano",
+                size: "Pequeño o Mediano",
                 speed: 35,
                 languages: "Común, Adicional",
-                physical: "Musculatura masiva, cabeza de toro con cuernos prominentes.",
+                physical: "Son exclusivamente machos. Gigantes de musculatura masiva y cuernos prominentes. Pura potencia física y presencia intimidante.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
-                    { title: "Horns", tier: 1, text: "Arma natural: 1d8 + mod. Fuerza perforante." },
-                    { title: "Goring Rush", tier: 3, text: "Tras usar Dash, puedes realizar un ataque de cuernos." },
-                    { title: "Powerful Build", tier: 1, text: "Talla grande para capacidad de carga y empuje." },
-                    { title: "Imposing Presence", tier: 1, text: "Competencia en Intimidación o Persuasión." }
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Horns", tier: 2, text: "Tus cuernos son un arma natural que inflige 1d8 + mod. Fuerza perforante." },
+                    { title: "Goring Rush", tier: 3, text: "Tras usar la acción Dash, puedes realizar un ataque con Horns al terminar el movimiento en una posición adyacente a una criatura." },
+                    { title: "Powerful Build", tier: 2, text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar." },
+                    { title: "Imposing Presence", tier: 1, text: "Tienes competencia en una de las siguientes habilidades de tu elección: Intimidación o Persuasión." }
                 ]
             },
             {
-                name: "Minotauro Asterion",
+                name: "Asterion",
                 type: "Humanoide / Beast",
-                size: "Mediano",
+                size: "Pequeño o Mediano",
                 speed: 30,
                 languages: "Común, Adicional",
-                physical: "De pelaje más suave y porte protector.",
+                physical: "Son exclusivamente hembras. Altas, de pelaje aterciopelado y físico maternal muy desarrollado. Tienen cuernos elegantes y pechos grandes que producen leche regenerativa.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
                     { title: "Horns", tier: 1, text: "Arma natural: 1d6 + mod. Fuerza perforante." },
-                    { title: "Disarming Presence", tier: 3, text: "Ventaja contra miedo. Reacción: Impones desventaja al atacante tras fallar contra ti." },
-                    { title: "Motherly Production", tier: 2, text: "Generas dosis de leche regenerativa (1/2 Prof). Sana Prof y nutre como agua/comida." },
-                    { title: "Powerful Build", tier: 1, text: "Talla grande para carga y empuje." }
+                    { title: "Disarming Presence", tier: 3, text: "Tienes ventaja en salvaciones contra la condición asustado. Además, cuando una criatura falle una tirada de ataque contra ti, puedes usar tu reacción para imponer desventaja en su siguiente ataque antes del final de su próximo turno." },
+                    { title: "Motherly Production", tier: 2, text: "Tus pechos relativamente grandes producen una sustancia regenerativa semi-mágica. Recolección: Al finalizar un Descanso Largo, puedes recolectar en frascos un número de dosis igual a la mitad de tu Bonificador de Competencia. Una criatura puede consumir la leche como cualquier otro consumible. La criatura recupera una cantidad de Puntos de Golpe igual a tu Bonificador de Competencia. Además, la bebida es tan nutritiva que cuenta como agua y comida para un día." },
+                    { title: "Powerful Build", tier: 2, text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar." },
+                    { title: "Imposing Presence", tier: 1, text: "Tienes competencia en una de las siguientes habilidades de tu elección: Intimidación o Persuasión." }
                 ]
             }
         ]
@@ -638,23 +626,21 @@ const speciesDatabase = [
         name: "Plasmoide",
         category: "Anomalías",
         description: "Formas de vida gelatinosas. Adoptan rasgos humanos con facilidad y conservan una calma fluida.",
-        subraces: [
-            {
-                name: "Slime Habitual",
-                type: "Humanoide / Ooze",
-                size: "Pequeño o Mediano",
-                speed: 30,
-                languages: "Común, Adicional",
-                physical: "Cuerpo translúcido capaz de moldearse.",
-                traits: [
-                    { title: "Amorphous", tier: 2, text: "Mueves por espacios angostos como criatura diminuta sin penalizadores." },
-                    { title: "Amorphous Resilience", tier: 1, text: "Resistencia a Ácido y Veneno. Ventaja contra envenenado." },
-                    { title: "Gelatinous Mimicry", tier: 2, text: "Adoptas forma humana por 1 hora (usos = Prof)." },
-                    { title: "Solvant Strike", tier: 1, text: "Arma natural: 1d4 de daño de ácido (puedes usar Destreza)." },
-                    { title: "Digestive Slurry", tier: 2, text: "Disuelves comida internamente. Puedes almacenar un objeto mediano en tu interior." }
+        name: "Slime Habitual",
+        type: "Humanoide / Ooze",
+        size: "Pequeño o Mediano",
+        speed: 30,
+        languages: "Común, Adicional",
+        physical: "Cuerpo translúcido capaz de moldearse.",
+        traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Amorphous", tier: 1, text: "Puedes moverte a través de espacios angostos como si fueras una criatura de un tamaño diminuto; además, no sufres desventaja por desplazarte en espacios que normalmente exigirían que te apretaras." },
+                    { title: "Amorphous Resilience", tier: 2, text: "Tienes ventaja en tiradas de salvación contra la condición envenenada y resistencia al daño por veneno y ácido." },
+                    { title: "Gelatinous Mimicry", tier: 3, text: "Como acción, puedes adoptar una forma humanoide que imite a una criatura de humanoide de altura Mediano o inferior, (Imitando su altura, rasgos pero sigues pareciendo un Plasmoide). Mantienes tus estadísticas; la forma dura hasta 1 hora o hasta que la abandones como acción bonus. Puedes usar este rasgo un número de veces igual a tu bonificador de competencia; recuperas los usos tras un descanso largo." },
+                    { title: "Solvant Strike", tier: 1, text: "Todos tus apéndices gelatinosos o tú interior cuentan como un arma natural: ataque cuerpo a cuerpo + tu bonificador por competencia, daño 1d4 + mod. Fuerza ácido. Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres." },
+                    { title: "Digestive Slurry", tier: 2, text: "Tu cuerpo funciona como un medio disolvente vivo. Puedes consumir comida, pociones y objetos ingeribles normalmente, disolviéndolos dentro de tu masa corporal. No necesitas boca ni órganos digestivos visibles. Puedes almacenar en tu interior un objeto mediano o menor. Extraer un objeto almacenado requiere una acción bonus. Los objetos almacenados son visibles como siluetas difusas dentro de tu cuerpo." }
                 ]
             }
-        ]
     },
     {
         id: "leporino",
@@ -666,17 +652,16 @@ const speciesDatabase = [
                 name: "Saltador de Pradera",
                 type: "Humanoide / Beast",
                 size: "Pequeño o Mediano",
-                speed: 35,
+                speed: 40,
                 languages: "Común, Adicional",
                 physical: "Orejas largas y patas traseras potentes.",
                 traits: [
-                    { title: "Keen Senses", tier: 1, text: "Competencia en Percepción." },
-                    { title: "Fleet Reflexes", tier: 2, text: "Suma Prof a las tiradas de iniciativa." },
-                    { title: "Standing Leap", tier: 2, text: "Salto 15ft long / 10ft alto. Acción adicional para salto gratis." },
-                    { title: "Nimble Movement", tier: 1, text: "Te mueves a través del espacio de criaturas más grandes." }
+                    { title: "Keen Senses", tier: 1, text: "Obtienes competencia en Percepción." },
+                    { title: "Fleet Reflexes", tier: 2, text: "Puedes añadir tu bonificador por competencia a tus tiradas de iniciativa." },
+                    { title: "Standing Leap", tier: 2, text: "Su salto de longitud es de hasta 15 pies y su salto de altura es de hasta 10 pies, con o sin carrera inicial. Como acción adicional, puedes dar un salto sin coste de movimiento." },
+                    { title: "Nimble Movement", tier: 1, text: "Puedes moverte a través del espacio de criaturas más grandes que tú." }
                 ]
             }
-        ]
     },
     {
         id: "mestizo",
@@ -842,7 +827,7 @@ function toggleSkill(id, title, tier, text, side) {
         let allowed = true;
         if (tier === 3 && t3 >= 1) allowed = false;
         if (tier === 2 && t2 >= 2) allowed = false;
-        if (tier === 1 && t1 >= 1) allowed = false;
+        if (tier === 1 && t1 >= 2) allowed = false;
 
         if (!allowed) {
             checkbox.checked = false;
