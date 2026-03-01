@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glosario de Especies - D&D</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fauna+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a44c;
+            --dark-bg: transparent;
+            --panel-bg: #1e1e1f;
+            --text-color: #e0d9c1;
+            --accent: #c9a44c;
+            --trait-bg: rgba(201, 164, 76, 0.05);
+            --border-gold: rgba(201, 164, 76, 0.4);
+            --tier-unique: #ff4500;
+            --tier-complex: #4db8ff;
+            --tier-simple: #90ee90;
+        }
+
+        * { box-sizing: border-box; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; border: 2px solid #1e1e1f; }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Fauna One', serif;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #encyclopedia-container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--panel-bg);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        .header {
+            padding: 25px;
+            border-bottom: 2px solid var(--gold);
+            text-align: center;
+            background: linear-gradient(to bottom, #1e1e1f, #131314);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin: 0;
+            letter-spacing: 4px;
+            font-size: 1.8rem;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #151516;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        input, select {
+            background: #000;
+            border: 1px solid var(--border-gold);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .species-list {
+            width: 250px;
+            border-right: 1px solid var(--border-gold);
+            overflow-y: auto;
+            background: #181819;
+        }
+
+        .species-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            cursor: pointer;
+            transition: .3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .species-item:hover { background: rgba(201, 164, 76, .1); }
+        .species-item.active { background: var(--gold); color: #000; }
+        .species-item .name { font-family: 'Cinzel', serif; font-weight: bold; }
+        .species-item .category { font-size: .7rem; text-transform: uppercase; opacity: .7; }
+
+        .details-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: #1e1e1f;
+        }
+
+        .detail-header { border-bottom: 1px solid var(--gold); margin-bottom: 15px; padding-bottom: 10px; }
+        .detail-header h2 { font-family: 'Cinzel', serif; color: var(--gold); margin: 0; font-size: 2rem; }
+        .subtitle { font-size: .9rem; font-style: italic; color: #aaa; }
+        
+        .subrace-selector { margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-gold); border-radius: 8px; }
+        .subrace-selector label { display: block; font-size: 0.75rem; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px; }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box { background: rgba(0, 0, 0, .3); border: 1px solid var(--border-gold); padding: 10px; border-radius: 6px; }
+        .stat-box label { display: block; font-size: .6rem; color: var(--gold); text-transform: uppercase; margin-bottom: 3px; }
+
+        .section-title { font-family: 'Cinzel', serif; color: var(--gold); margin: 25px 0 12px; font-size: 1.2rem; border-left: 3px solid var(--gold); padding-left: 10px; }
+        
+        .trait-pill { 
+            background: var(--trait-bg); 
+            border: 1px solid var(--border-gold); 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            transition: 0.3s;
+            position: relative;
+        }
+        .trait-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(201, 164, 76, 0.2);
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+        }
+        .trait-pill strong { color: var(--gold); font-family: 'Cinzel'; font-size: 1rem; }
+        
+        .tier-tag {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .tier-3 { background: rgba(255, 69, 0, 0.2); color: var(--tier-unique); border: 1px solid var(--tier-unique); }
+        .tier-2 { background: rgba(77, 184, 255, 0.2); color: var(--tier-complex); border: 1px solid var(--tier-complex); }
+        .tier-1 { background: rgba(144, 238, 144, 0.2); color: var(--tier-simple); border: 1px solid var(--tier-simple); }
+
+        .mestizo-builder-ui {
+            background: rgba(0,0,0,0.3);
+            border: 1px dashed var(--gold);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .mestizo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .parent-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .skill-list-selection {
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            padding: 10px;
+            background: #111;
+        }
+        .skill-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #222;
+        }
+        .skill-option:last-child { border-bottom: none; }
+        
+        .final-character-sheet {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid var(--gold);
+            background: linear-gradient(135deg, #1e1e1f 0%, #2a2a2b 100%);
+            border-radius: 12px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .final-stat-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hidden { display: none; }
+        @media(max-width: 700px) {
+            .main-content { flex-direction: column; }
+            .species-list { width: 100%; height: 200px; }
+            .mestizo-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="encyclopedia-container">
+    <div class="header"><h1>Glosario de Especies</h1></div>
+    
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Buscar especie..." onkeyup="filterSpecies()">
+        <select id="category-filter" onchange="filterSpecies()">
+            <option value="all">Todas las Categorías</option>
+            <option value="Anomalías">Anomalías</option>
+            <option value="Dragones">Dragones</option>
+            <option value="Bestias">Bestias</option>
+            <option value="Acuaticos/Voladores">Acutaticos/Voladores</option>
+            <option value="Híbridos">Híbridos</option>
+        </select>
+    </div>
+
+    <div class="main-content">
+        <div class="species-list" id="species-list"></div>
+        
+        <div class="details-panel" id="details-panel">
+            <div id="empty-state" style="text-align:center;margin-top:100px;opacity:.5">
+                <p>Selecciona una especie para ver sus detalles</p>
+            </div>
+
+            <div id="content-display" class="hidden">
+                <div class="detail-header">
+                    <h2 id="det-name"></h2>
+                    <div class="subtitle" id="det-subtitle"></div>
+                    <div class="subrace-selector" id="subrace-container"></div>
+                </div>
+
+                <div id="standard-info">
+                    <div class="stat-grid">
+                        <div class="stat-box"><label>Tipo</label><span id="det-type"></span></div>
+                        <div class="stat-box"><label>Tamaño</label><span id="det-size"></span></div>
+                        <div class="stat-box"><label>Velocidad</label><span id="det-speed"></span></div>
+                        <div class="stat-box"><label>Lenguajes</label><span id="det-langs"></span></div>
+                    </div>
+
+                    <div class="section-title">Descripción General</div>
+                    <p id="det-desc" style="line-height: 1.6; white-space: pre-wrap;"></p>
+
+                    <div id="physical-section">
+                        <div class="section-title">Físico de la Variante</div>
+                        <p id="det-physical" style="line-height: 1.6; white-space: pre-wrap;"></p>
+                    </div>
+
+                    <div class="section-title">Rasgos Raciales</div>
+                    <div id="det-traits"></div>
+                </div>
+
+                <!-- Mestizo Builder UI -->
+                <div id="mestizo-builder-ui" class="hidden">
+                    <div class="limit-info" style="color: var(--gold); background: rgba(201,164,76,0.1); padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+                        <strong>Regla de Construcción:</strong> Selecciona exactamente 4 habilidades respetando los límites de Tier. Al completar la selección, se generará la ficha final del personaje mestizo.
+                    </div>
+                    <div class="mestizo-grid">
+                        <div class="parent-selector">
+                            <label>Progenitor A</label>
+                            <select id="parent-a-species" onchange="handleParentSelection('a')"></select>
+                            <select id="parent-a-subrace" class="hidden" onchange="updateMestizoSkills()"></select>
+                        </div>
+                        <div class="parent-selector">
+                            <label>Progenitor B</label>
+                            <select id="parent-b-species" onchange="handleParentSelection('b')"></select>
+                            <select id="parent-b-subrace" class="hidden" onchange="updateMestizoSkills()"></select>
+                        </div>
+                    </div>
+                    <div class="section-title">Pool de Habilidades Disponibles</div>
+                    <div id="mestizo-skills-pool" class="skill-list-selection">
+                        <p style="text-align:center; opacity:0.6; padding:20px;">Selecciona ambos progenitores para desplegar el pool genético.</p>
+                    </div>
+
+                    <div id="final-character-display" class="hidden">
+                        <!-- Aquí se inyecta la ficha final -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const speciesDatabase = [
+    {
+        id: "draconido",
+        name: "Dracónido",
+        category: "Dragones",
+        description: "Los dracónidos son los herederos más directos del legado dracónico. Nacidos de linajes estables creados por Nox, conservan fragmentos del poder colosal de los dragones verdaderos: aliento elemental, resistencia sobrenatural y una presencia imponente.",
+        subraces: [
+            {
+                name: "Sangre de Hielo",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                languages: "Común, Dracónico",
+                physical: "Escamas pálidas o azuladas, a menudo cubiertas por una fina escarcha.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Breath Weapon (Frío)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel). CD 8 + Prof + Con." },
+                    { title: "Flowbound Body", tier: 1, text: "Tienes ventaja en pruebas y tiradas de salvación realizadas para escapar de la condición Agarre." },
+                    { title: "Freezing Attack", tier: 2, text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o ataques de Frío, su velocidad se reduce en 10 pies." },
+                    { title: "Child of the Sea", tier: 1, text: "Tienes una velocidad de nado de 30 pies y puedes respirar aire y agua." },
+                    { title: "Cold Endurance", tier: 1, text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo." }
+                ]
+            },
+            {
+                name: "Sangre de Sol",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                languages: "Común, Dracónico",
+                physical: "Escamas doradas o broncíneas que brillan bajo el sol.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Breath Weapon (Fuego)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
+                    { title: "Boiling Blood", tier: 2, text: "Una vez por turno, cuando impactas o dañas con un conjuro, puedes añadir daño de Fuego igual a Prof. (Usos = Prof)." },
+                    { title: "Radiant Pulse", tier: 3, text: "Acción adicional: Emites luz 10ft por 1 min. Aliados elegidos obtienen ventaja en su primera salvación." },
+                    { title: "Radiant Endurance", tier: 1, text: "Resistencia al Fuego. Las altas temperaturas y luz intensa no te imponen penalizadores." }
+                ]
+            },
+            {
+                name: "Sangre de Luna",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                languages: "Común, Dracónico",
+                physical: "Escamas plateadas que reflejan la luz de forma tenue.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Breath Weapon (Psíquico)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
+                    { title: "Reflected Self", tier: 1, text: "Obtienes competencia en Sigilo o Engaño." },
+                    { title: "Veil of Phases", tier: 3, text: "Reacción: Cuando eres impactado, puedes imponer desventaja a esa tirada (1/descanso largo)." },
+                    { title: "Veiled Mind", tier: 1, text: "Resistencia al daño Psíquico y ventaja en salvaciones contra ser hechizado o asustado." }
+                ]
+            },
+            {
+                name: "Sangre de Tormenta",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                languages: "Común, Dracónico",
+                physical: "Escamas azules o eléctricas con crestas vibrantes.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Breath Weapon (Rayo)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
+                    { title: "Storm Step", tier: 2, text: "Al realizar Dash, los ataques de oportunidad contra ti se realizan con desventaja." },
+                    { title: "Crackling Blood", tier: 2, text: "Una vez por turno, al dañar con aliento o ataques eléctricos, tu velocidad aumenta en 5 pies." },
+                    { title: "Storm Endurance", tier: 1, text: "Resistencia al daño Eléctrico. Vientos fuertes y tormentas no son condiciones adversas." }
+                ]
+            },
+            {
+                name: "Sangre de Tierra",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                languages: "Común, Dracónico",
+                physical: "Escamas pétreas, marrones o grisáceas.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Breath Weapon (Contundente)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
+                    { title: "Immovable Frame", tier: 2, text: "Tienes ventaja en tiradas de salvación para evitar ser derribado o movido contra tu voluntad." },
+                    { title: "Stonehide", tier: 1, text: "Mientras no lleves armadura, obtienes un bono de +1 a la CA." },
+                    { title: "Stone Endurance", tier: 1, text: "Obtienes resistencia al daño Contundente." },
+                    { title: "Titan’s Bearing", tier: 1, text: "Cuentas como una talla más grande para carga. Puedes usar equipo pesado sin requisitos de Fuerza." }
+                ]
+            },
+            {
+                name: "Sangre de Vida",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                languages: "Común, Dracónico",
+                physical: "Escamas verdes con patrones de vegetación.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Breath Weapon (Veneno/Ácido)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
+                    { title: "Creeping Vitality", tier: 2, text: "Cuando recuperas puntos de golpe, sumas tu bonificador de competencia a la curación." },
+                    { title: "Adaptive Flesh", tier: 1, text: "Tienes ventaja en salvaciones contra veneno y enfermedad." },
+                    { title: "Verdant Endurance", tier: 1, text: "Resistencia a Veneno y Ácido. Los entornos tóxicos o densos no son extremos para ti." }
+                ]
+            },
+            {
+                name: "Sangre de Estrella",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: "30 pies (caminar) o 25 pies (caminar) + 30 pies (vuelo)",
+                languages: "Común, Dracónico",
+                physical: "Escamas oscuras con puntos brillantes.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en la oscuridad." },
+                    { title: "Breath Weapon (Fuerza)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
+                    { title: "Celestial Insight", tier: 3, text: "1/descanso largo: Tras ver una tirada d20, puedes sumar o restar 1d4 al resultado." },
+                    { title: "Distant Gaze", tier: 2, text: "Puedes ver a través de oscuridad mágica e ilusiones hasta 30 pies." },
+                    { title: "Cosmic Endurance", tier: 1, text: "Resistencia al daño de Fuerza. Efectos de gravedad o vacío no te afectan." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "kobold",
+        name: "Kobold",
+        category: "Anomalías",
+        description: "Pequeños reptilianos nacidos de la sombra de los dragones primigenios creados por Nox. Aunque frágiles, son astutos, tenaces y poseen una devoción instintiva hacia su linaje.",
+        subraces: [
+            {
+                name: "Emberclaw",
+                type: "Humanoide / Dragon",
+                size: "Pequeño",
+                speed: 30,
+                languages: "Común, Dracónico",
+                physical: "Escamas reptilianas que reflejan ecos de la grandeza dracónica.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Draconic Legacy", tier: 1, text: "Resistencia a un tipo de daño elegido: frío, fuego, ácido, rayo o veneno." },
+                    { title: "Draconic Cry", tier: 3, text: "Acción adicional: Grito que otorga ventaja en ataques a aliados contra enemigos a 10ft (usos = Prof)." }
+                ]
+            },
+            {
+                name: "Houndfang",
+                type: "Humanoide / Beast",
+                size: "Pequeño",
+                speed: 30,
+                languages: "Común, Adicional",
+                physical: "Criaturas de puro instinto de caza con rasgos más caninos o bestiales.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Bestial Instincts", tier: 1, text: "Competencia en Percepción o Supervivencia." },
+                    { title: "Smell Sense", tier: 1, text: "Ventaja en pruebas de Percepción que dependan del olfato." },
+                    { title: "Pack Tactics", tier: 3, text: "Ventaja en ataque si un aliado no incapacitado está a 5 pies del enemigo." },
+                    { title: "Mordida Natural", tier: 2, text: "Arma natural: 1d6 + mod (Fuer o Des) perforante." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "grung",
+        name: "Grung",
+        category: "Bestias",
+        description: "Humanoides anfibios de piel vibrante y tóxica. Son territoriales y disciplinados, viviendo en ecosistemas donde la vida fluye entre el agua y la tierra.",
+        subraces: [
+            {
+                name: "Anfibio Selvático",
+                type: "Humanoide / Beast",
+                size: "Pequeño",
+                speed: "25 pies (caminar y nado)",
+                languages: "Común, Grung",
+                physical: "Piel húmeda de colores brillantes (advertencia de toxinas), dedos con almohadillas adhesivas.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Amphibious", tier: 1, text: "Puedes respirar aire y agua." },
+                    { title: "Poison Immunity", tier: 1, text: "Inmune al daño por veneno y condición envenenado." },
+                    { title: "Standing Leap", tier: 2, text: "Salto 25ft long / 15ft alto. Acción adicional para salto gratis sin coste de movimiento." },
+                    { title: "Poisonous Skin", tier: 3, text: "Reacción (1/descanso): Al ser golpeado o agarrado sin armadura, el atacante sufre daño de veneno (2d6, escala nivel)." },
+                    { title: "Water Dependency", tier: 1, text: "Debes sumergirte 1 hora al día o sufrir agotamiento." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "tabaxi",
+        name: "Tabaxi",
+        category: "Bestias",
+        description: "Humanoides felinos impulsados por una curiosidad casi patológica. Viajeros y narradores que ven el mundo como una experiencia constante.",
+        subraces: [
+            {
+                name: "Explorador Felino",
+                type: "Humanoide / Beast",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Adicional",
+                physical: "Cuerpo esbelto con patrones de manchas o rayas y garras retráctiles.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Feline Agility", tier: 2, text: "Duplica tu velocidad este turno. Debes estar quieto un turno para recargar." },
+                    { title: "Cat’s Claws", tier: 1, text: "Arma natural: 1d6 + mod (Fuer o Des) cortante." },
+                    { title: "Feline Senses", tier: 1, text: "Competencia en Percepción o Sigilo." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "behero",
+        name: "Behero",
+        category: "Acuaticos/Voladores",
+        description: "Majestuosos humanoides con rasgos de búho, guardianes del silencio. Poseen un vuelo inaudible y una sabiduría que parece trascender el tiempo.",
+        subraces: [
+            {
+                name: "Guardián Nocturno",
+                type: "Humanoide / Volador",
+                size: "Mediano",
+                speed: "20 pies (caminar) / 40 pies (vuelo)",
+                languages: "Común, Celestial",
+                physical: "Plumas densas y suaves, ojos grandes capaces de girar casi 360 grados.",
+                traits: [
+                    { title: "Superior Darkvision", tier: 1, text: "Ves en oscuridad total hasta 120 pies." },
+                    { title: "Silent Wings", tier: 2, text: "Tienes ventaja en pruebas de Sigilo mientras vuelas." },
+                    { title: "Talons", tier: 1, text: "Tus garras son armas naturales que infligen 1d6 cortante." },
+                    { title: "Nocturnal Wisdom", tier: 2, text: "Competencia en Perspicacia o Historia." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "goblin",
+        name: "Goblin",
+        category: "Anomalías",
+        description: "Las goblins son un pueblo antiguo, nacido en los márgenes del mundo civilizado. Son pequeñas, resistentes y astutas, moldeadas por un mundo duro.",
+        subraces: [
+            {
+                name: "Dragonjaw",
+                type: "Humanoide / Dragón",
+                size: "Pequeña",
+                speed: 25,
+                languages: "Común, Dracónico, Goblin",
+                physical: "Robustas, cubiertas por un espeso pelo sedoso, con pequeños cuernos curvos.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Visión en oscuridad 60 pies." },
+                    { title: "Cold Resistance", tier: 1, text: "Resistencia al daño por frío." },
+                    { title: "Thick Fur", tier: 1, text: "Ignoras climas extremadamente fríos." },
+                    { title: "Fury of the Small", tier: 2, text: "Daño adicional igual a competencia contra criaturas más grandes." },
+                    { title: "Natural Toughness", tier: 2, text: "Tu máximo de puntos de vida aumenta en 1 por cada nivel." }
+                ]
+            },
+            {
+                name: "Ironfang",
+                type: "Humanoide / Fey",
+                size: "Pequeña",
+                speed: 30,
+                languages: "Común, Extra",
+                physical: "Firmes y agresivas, con colmillos prominentes a menudo reforzados con metal.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Fury of the Small", tier: 2, text: "Daño extra a enemigos más grandes." },
+                    { title: "Relentless Fury", tier: 3, text: "Gasta dos usos de Fury para daño doble o un ataque adicional si impactas." },
+                    { title: "Nimble Escape", tier: 3, text: "Acción adicional para Desengancharte o Esconderte." }
+                ]
+            },
+            {
+                name: "Shadefoot",
+                type: "Humanoide / Fey",
+                size: "Pequeña",
+                speed: 30,
+                languages: "Común, Extra",
+                physical: "Criaturas del sigilo, movimientos silenciosos y pasos difíciles de rastrear.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Pickpocket", tier: 1, text: "Obtienes competencia en la habilidad Juego de Manos." },
+                    { title: "Unseen Skulker", tier: 2, text: "Puedes esconderte con oscurecimiento ligero. Moverte no te revela bajo cobertura." },
+                    { title: "Nimble Escape", tier: 3, text: "Acción adicional para Desengancharte o Esconderte." }
+                ]
+            },
+            {
+                name: "Trenchmaker",
+                type: "Humanoide / Fey",
+                size: "Pequeña",
+                speed: 30,
+                languages: "Común, Goblin",
+                physical: "Astutas, caderonas, expertas en cuevas y ruinas.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Fey Ancestry", tier: 1, text: "Ventaja en salvaciones contra ser hechizada." },
+                    { title: "Fury of the Small", tier: 2, text: "Daño extra a enemigos grandes." },
+                    { title: "Nimble Escape", tier: 3, text: "Acción adicional para Desengancharse o Esconderte." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "tauro",
+        name: "Tauro (Toro)",
+        category: "Bestias",
+        description: "Los minotauros son humanoides imponentes de fuerza bruta. Su cultura gira en torno al desafío; un minotauro no evita obstáculos, los atraviesa.",
+        subraces: [
+            {
+                name: "Minotauro Clásico",
+                type: "Humanoide / Beast",
+                size: "Mediano",
+                speed: 35,
+                languages: "Común, Adicional",
+                physical: "Musculatura masiva, cabeza de toro con cuernos prominentes.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Horns", tier: 1, text: "Arma natural: 1d8 + mod. Fuerza perforante." },
+                    { title: "Goring Rush", tier: 3, text: "Tras usar Dash, puedes realizar un ataque de cuernos." },
+                    { title: "Powerful Build", tier: 1, text: "Talla grande para capacidad de carga y empuje." },
+                    { title: "Imposing Presence", tier: 1, text: "Competencia en Intimidación o Persuasión." }
+                ]
+            },
+            {
+                name: "Minotauro Asterion",
+                type: "Humanoide / Beast",
+                size: "Mediano",
+                speed: 30,
+                languages: "Común, Adicional",
+                physical: "De pelaje más suave y porte protector.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
+                    { title: "Horns", tier: 1, text: "Arma natural: 1d6 + mod. Fuerza perforante." },
+                    { title: "Disarming Presence", tier: 3, text: "Ventaja contra miedo. Reacción: Impones desventaja al atacante tras fallar contra ti." },
+                    { title: "Motherly Production", tier: 2, text: "Generas dosis de leche regenerativa (1/2 Prof). Sana Prof y nutre como agua/comida." },
+                    { title: "Powerful Build", tier: 1, text: "Talla grande para carga y empuje." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "plasmoide",
+        name: "Plasmoide",
+        category: "Anomalías",
+        description: "Formas de vida gelatinosas. Adoptan rasgos humanos con facilidad y conservan una calma fluida.",
+        subraces: [
+            {
+                name: "Slime Habitual",
+                type: "Humanoide / Ooze",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Adicional",
+                physical: "Cuerpo translúcido capaz de moldearse.",
+                traits: [
+                    { title: "Amorphous", tier: 2, text: "Mueves por espacios angostos como criatura diminuta sin penalizadores." },
+                    { title: "Amorphous Resilience", tier: 1, text: "Resistencia a Ácido y Veneno. Ventaja contra envenenado." },
+                    { title: "Gelatinous Mimicry", tier: 2, text: "Adoptas forma humana por 1 hora (usos = Prof)." },
+                    { title: "Solvant Strike", tier: 1, text: "Arma natural: 1d4 de daño de ácido (puedes usar Destreza)." },
+                    { title: "Digestive Slurry", tier: 2, text: "Disuelves comida internamente. Puedes almacenar un objeto mediano en tu interior." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "leporino",
+        name: "Leporino",
+        category: "Bestias",
+        description: "Humanoides lagomorfos inquietos y audaces. Viven atentos al entorno y poseen una gran capacidad de reacción.",
+        subraces: [
+            {
+                name: "Saltador de Pradera",
+                type: "Humanoide / Beast",
+                size: "Pequeño o Mediano",
+                speed: 35,
+                languages: "Común, Adicional",
+                physical: "Orejas largas y patas traseras potentes.",
+                traits: [
+                    { title: "Keen Senses", tier: 1, text: "Competencia en Percepción." },
+                    { title: "Fleet Reflexes", tier: 2, text: "Suma Prof a las tiradas de iniciativa." },
+                    { title: "Standing Leap", tier: 2, text: "Salto 15ft long / 10ft alto. Acción adicional para salto gratis." },
+                    { title: "Nimble Movement", tier: 1, text: "Te mueves a través del espacio de criaturas más grandes." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "mestizo",
+        name: "Mestizo (Híbrido)",
+        category: "Híbridos",
+        description: "Unión de dos especies distintas con rasgos combinados únicos e impredecibles.",
+        isMestizo: true,
+        subraces: []
+    }
+];
+
+let selectedSkills = [];
+
+function init() {
+    const list = document.getElementById('species-list');
+    speciesDatabase.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'species-item';
+        item.innerHTML = `<span class="name">${s.name}</span><span class="category">${s.category}</span>`;
+        item.onclick = () => showSpecies(s.id, item);
+        list.appendChild(item);
+    });
+    populateMestizoSelectors();
+}
+
+function showSpecies(id, element) {
+    document.querySelectorAll('.species-item').forEach(i => i.classList.remove('active'));
+    element.classList.add('active');
+
+    const species = speciesDatabase.find(s => s.id === id);
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('content-display').classList.remove('hidden');
+    
+    document.getElementById('det-name').innerText = species.name;
+    document.getElementById('det-desc').innerText = species.description;
+    
+    if (species.isMestizo) {
+        document.getElementById('standard-info').classList.add('hidden');
+        document.getElementById('mestizo-builder-ui').classList.remove('hidden');
+        document.getElementById('subrace-container').innerHTML = '';
+        document.getElementById('det-subtitle').innerText = "Forjador de Linajes";
+    } else {
+        document.getElementById('standard-info').classList.remove('hidden');
+        document.getElementById('mestizo-builder-ui').classList.add('hidden');
+        setupSubraceSelector(species);
+    }
+}
+
+function setupSubraceSelector(species) {
+    const container = document.getElementById('subrace-container');
+    container.innerHTML = `<label>Variante / Subraza</label>`;
+    const select = document.createElement('select');
+    select.onchange = (e) => updateSubraceView(species, e.target.value);
+    
+    species.subraces.forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub.name;
+        opt.innerText = sub.name;
+        select.appendChild(opt);
+    });
+    
+    container.appendChild(select);
+    updateSubraceView(species, species.subraces[0].name);
+}
+
+function updateSubraceView(species, subName) {
+    const sub = species.subraces.find(s => s.name === subName);
+    document.getElementById('det-subtitle').innerText = sub.type;
+    document.getElementById('det-type').innerText = sub.type;
+    document.getElementById('det-size').innerText = sub.size;
+    document.getElementById('det-speed').innerText = sub.speed + " pies";
+    document.getElementById('det-langs').innerText = sub.languages;
+    document.getElementById('det-physical').innerText = sub.physical;
+    
+    const traitContainer = document.getElementById('det-traits');
+    traitContainer.innerHTML = '';
+    sub.traits.forEach(t => {
+        traitContainer.innerHTML += `
+            <div class="trait-pill">
+                <div class="trait-header">
+                    <strong>${t.title}</strong>
+                    <span class="tier-tag tier-${t.tier}">Tier ${t.tier}</span>
+                </div>
+                <div style="font-size:0.9rem; opacity:0.9;">${t.text}</div>
+            </div>`;
+    });
+}
+
+function populateMestizoSelectors() {
+    const selA = document.getElementById('parent-a-species');
+    const selB = document.getElementById('parent-b-species');
+    
+    const options = speciesDatabase.filter(s => !s.isMestizo);
+    [selA, selB].forEach(sel => {
+        sel.innerHTML = '<option value="">Seleccionar...</option>';
+        options.forEach(o => {
+            sel.innerHTML += `<option value="${o.id}">${o.name}</option>`;
+        });
+    });
+}
+
+function handleParentSelection(side) {
+    const speciesId = document.getElementById(`parent-${side}-species`).value;
+    const subSelect = document.getElementById(`parent-${side}-subrace`);
+    
+    if (!speciesId) {
+        subSelect.classList.add('hidden');
+        return;
+    }
+    
+    const species = speciesDatabase.find(s => s.id === speciesId);
+    subSelect.innerHTML = species.subraces.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+    subSelect.classList.remove('hidden');
+    updateMestizoSkills();
+}
+
+function updateMestizoSkills() {
+    const pool = document.getElementById('mestizo-skills-pool');
+    const speciesA = speciesDatabase.find(s => s.id === document.getElementById('parent-a-species').value);
+    const subA = speciesA?.subraces.find(s => s.name === document.getElementById('parent-a-subrace').value);
+    
+    const speciesB = speciesDatabase.find(s => s.id === document.getElementById('parent-b-species').value);
+    const subB = speciesB?.subraces.find(s => s.name === document.getElementById('parent-b-subrace').value);
+
+    if (!subA || !subB) return;
+
+    pool.innerHTML = '';
+    selectedSkills = [];
+    document.getElementById('final-character-display').classList.add('hidden');
+
+    const allTraits = [];
+    [subA, subB].forEach((sub, index) => {
+        sub.traits.forEach(trait => {
+            allTraits.push({ ...trait, parent: sub.name, parentSub: sub, side: index === 0 ? 'A' : 'B' });
+        });
+    });
+
+    allTraits.forEach((trait, i) => {
+        const div = document.createElement('div');
+        div.className = 'skill-option';
+        div.innerHTML = `
+            <input type="checkbox" id="trait-${i}" onchange="toggleSkill(${i}, '${trait.title.replace(/'/g, "\\'")}', ${trait.tier}, '${trait.text.replace(/'/g, "\\'")}', '${trait.side}')">
+            <div style="flex:1">
+                <div style="display:flex; justify-content:space-between">
+                    <strong>${trait.title} <small style="opacity:0.6; font-family:sans-serif;">(${trait.parent})</small></strong>
+                    <span class="tier-tag tier-${trait.tier}">Tier ${trait.tier}</span>
+                </div>
+                <div style="font-size:0.8rem; opacity:0.8; margin-top:4px;">${trait.text}</div>
+            </div>
+        `;
+        pool.appendChild(div);
+    });
+}
+
+function toggleSkill(id, title, tier, text, side) {
+    const checkbox = document.getElementById(`trait-${id}`);
+    
+    if (checkbox.checked) {
+        const t1 = selectedSkills.filter(s => s.tier === 1).length;
+        const t2 = selectedSkills.filter(s => s.tier === 2).length;
+        const t3 = selectedSkills.filter(s => s.tier === 3).length;
+
+        let allowed = true;
+        if (tier === 3 && t3 >= 1) allowed = false;
+        if (tier === 2 && t2 >= 2) allowed = false;
+        if (tier === 1 && t1 >= 1) allowed = false;
+
+        if (!allowed) {
+            checkbox.checked = false;
+            return;
+        }
+        selectedSkills.push({ title, tier, text, side });
+    } else {
+        selectedSkills = selectedSkills.filter(s => s.title !== title || s.side !== side);
+    }
+    
+    checkFinalStatus();
+}
+
+function checkFinalStatus() {
+    const display = document.getElementById('final-character-display');
+    if (selectedSkills.length === 4) {
+        renderFinalSheet();
+        display.classList.remove('hidden');
+    } else {
+        display.classList.add('hidden');
+    }
+}
+
+function renderFinalSheet() {
+    const display = document.getElementById('final-character-display');
+    
+    const speciesA = speciesDatabase.find(s => s.id === document.getElementById('parent-a-species').value);
+    const subA = speciesA.subraces.find(s => s.name === document.getElementById('parent-a-subrace').value);
+    const speciesB = speciesDatabase.find(s => s.id === document.getElementById('parent-b-species').value);
+    const subB = speciesB.subraces.find(s => s.name === document.getElementById('parent-b-subrace').value);
+
+    // Lógica de Atributos Finales
+    const creatureTypes = Array.from(new Set([...subA.type.split(' / '), ...subB.type.split(' / ')]));
+    const avgSpeed = Math.floor((subA.speed + subB.speed) / 2);
+    const sizes = Array.from(new Set([subA.size, subB.size]));
+
+    display.innerHTML = `
+        <div class="final-character-sheet">
+            <div class="section-title" style="margin-top:0">Ficha de Personaje Mestizo</div>
+            <p style="font-style:italic; font-size:0.9rem; opacity:0.8;">Tu linaje ha sido consolidado. Estas son las estadísticas finales de tu creación.</p>
+            
+            <div class="final-stat-card">
+                <div class="stat-box">
+                    <label>Tipo de Criatura</label>
+                    <span>${creatureTypes.join(' y ')}</span>
+                </div>
+                <div class="stat-box">
+                    <label>Velocidad de Movimiento</label>
+                    <span>${avgSpeed} pies (Promedio)</span>
+                </div>
+                <div class="stat-box">
+                    <label>Tamaño Sugerido</label>
+                    <span>${sizes.join(' o ')}</span>
+                </div>
+                <div class="stat-box">
+                    <label>Progenitores</label>
+                    <span>${subA.name} + ${subB.name}</span>
+                </div>
+            </div>
+
+            <div class="section-title" style="font-size:1rem;">Herencia Genética (Habilidades)</div>
+            ${selectedSkills.map(s => `
+                <div class="trait-pill" style="border-color: rgba(201,164,76,0.2)">
+                    <div class="trait-header">
+                        <strong>${s.title}</strong>
+                        <span class="tier-tag tier-${s.tier}">Tier ${s.tier}</span>
+                    </div>
+                    <div style="font-size:0.85rem;">${s.text}</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function filterSpecies() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    const category = document.getElementById('category-filter').value;
+    const items = document.querySelectorAll('.species-item');
+    
+    items.forEach(item => {
+        const name = item.querySelector('.name').innerText.toLowerCase();
+        const cat = item.querySelector('.category').innerText;
+        const matchesSearch = name.includes(search);
+        const matchesCat = category === 'all' || cat === category;
+        item.style.display = (matchesSearch && matchesCat) ? 'flex' : 'none';
+    });
+}
+
+window.onload = init;
+</script>
+
+</body>
+</html>
