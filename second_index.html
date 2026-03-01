@@ -1,312 +1,515 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glosario de Especies - D&D</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fauna+One&display=swap" rel="stylesheet">
-<style>
-:root {
---gold:#c9a44c;
---dark-bg:#0f0f10;
---panel-bg:#1e1e1f;
---text-color:#e0d9c1;
---accent:#8847ff;
---border-gold:rgba(201,164,76,0.4);
-}
-*{box-sizing:border-box}
-body{
-background:var(--dark-bg);
-color:var(--text-color);
-font-family:'Fauna One',serif;
-margin:0;
-padding:20px;
-display:flex;
-justify-content:center;
-}
-#encyclopedia-container{
-width:100%;
-max-width:950px;
-background:var(--panel-bg);
-border:2px solid var(--gold);
-border-radius:12px;
-box-shadow:0 10px 40px rgba(0,0,0,.8);
-overflow:hidden;
-display:flex;
-flex-direction:column;
-height:90vh;
-}
-.header{
-padding:25px;
-border-bottom:2px solid var(--gold);
-text-align:center;
-background:linear-gradient(to bottom,#1e1e1f,#131314);
-}
-.header h1{
-font-family:'Cinzel',serif;
-color:var(--gold);
-margin:0;
-letter-spacing:4px;
-font-size:1.8rem;
-}
-.controls{
-padding:20px;
-background:#151516;
-display:grid;
-grid-template-columns:1fr auto;
-gap:15px;
-border-bottom:1px solid var(--border-gold);
-}
-input,select{
-background:#000;
-border:1px solid var(--border-gold);
-color:var(--text-color);
-padding:10px;
-border-radius:4px;
-font-family:inherit;
-outline:none;
-}
-.main-content{
-display:flex;
-flex:1;
-overflow:hidden;
-}
-.species-list{
-width:250px;
-border-right:1px solid var(--border-gold);
-overflow-y:auto;
-background:#181819;
-}
-.species-item{
-padding:15px;
-border-bottom:1px solid rgba(255,255,255,.05);
-cursor:pointer;
-transition:.3s;
-display:flex;
-flex-direction:column;
-}
-.species-item:hover{background:rgba(201,164,76,.1)}
-.species-item.active{background:var(--gold);color:#000}
-.species-item .name{font-family:'Cinzel',serif;font-weight:bold}
-.species-item .category{font-size:.7rem;text-transform:uppercase;opacity:.7}
-.details-panel{
-flex:1;
-overflow-y:auto;
-padding:30px;
-background:#1e1e1f;
-}
-.detail-header{border-bottom:1px solid var(--gold);margin-bottom:15px;padding-bottom:10px}
-.detail-header h2{font-family:'Cinzel',serif;color:var(--gold);margin:0;font-size:2rem}
-.subtitle{font-size:.9rem;font-style:italic;color:#aaa}
-.subrace-selector{margin-top:10px}
-.subrace-selector select{width:100%;margin-top:5px}
-.stat-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-gap:10px;
-margin-bottom:20px;
-}
-.stat-box{background:rgba(0,0,0,.3);border:1px solid var(--border-gold);padding:10px;border-radius:6px}
-.stat-box label{display:block;font-size:.6rem;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
-.section-title{font-family:'Cinzel',serif;color:var(--gold);margin:20px 0 10px;font-size:1.1rem}
-.trait-pill{background:rgba(136,71,255,.1);border:1px solid var(--accent);padding:10px;border-radius:6px;margin-bottom:10px}
-.trait-pill strong{color:var(--accent);font-family:'Cinzel';display:block;margin-bottom:3px}
-.hidden{display:none}
-@media(max-width:700px){
-.main-content{flex-direction:column}
-.species-list{width:100%;height:200px;border-right:none;border-bottom:1px solid var(--gold)}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glosario de Especies - D&D</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fauna+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a44c;
+            --dark-bg: #0f0f10;
+            --panel-bg: #1e1e1f;
+            --text-color: #e0d9c1;
+            --accent: #c9a44c;
+            --trait-bg: rgba(201, 164, 76, 0.05);
+            --border-gold: rgba(201, 164, 76, 0.4);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Fauna One', serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #encyclopedia-container {
+            width: 100%;
+            max-width: 950px;
+            background: var(--panel-bg);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+
+        .header {
+            padding: 25px;
+            border-bottom: 2px solid var(--gold);
+            text-align: center;
+            background: linear-gradient(to bottom, #1e1e1f, #131314);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin: 0;
+            letter-spacing: 4px;
+            font-size: 1.8rem;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #151516;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        input, select {
+            background: #000;
+            border: 1px solid var(--border-gold);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .species-list {
+            width: 250px;
+            border-right: 1px solid var(--border-gold);
+            overflow-y: auto;
+            background: #181819;
+        }
+
+        .species-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+            cursor: pointer;
+            transition: .3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .species-item:hover { background: rgba(201, 164, 76, .1); }
+        .species-item.active { background: var(--gold); color: #000; }
+        .species-item .name { font-family: 'Cinzel', serif; font-weight: bold; }
+        .species-item .category { font-size: .7rem; text-transform: uppercase; opacity: .7; }
+
+        .details-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: #1e1e1f;
+        }
+
+        .detail-header { border-bottom: 1px solid var(--gold); margin-bottom: 15px; padding-bottom: 10px; }
+        .detail-header h2 { font-family: 'Cinzel', serif; color: var(--gold); margin: 0; font-size: 2rem; }
+        .subtitle { font-size: .9rem; font-style: italic; color: #aaa; }
+        
+        .subrace-selector { margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-gold); border-radius: 8px; }
+        .subrace-selector label { display: block; font-size: 0.75rem; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px; }
+        .subrace-selector select { width: 100%; border-color: var(--gold); }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box { background: rgba(0, 0, 0, .3); border: 1px solid var(--border-gold); padding: 10px; border-radius: 6px; }
+        .stat-box label { display: block; font-size: .6rem; color: var(--gold); text-transform: uppercase; margin-bottom: 3px; }
+
+        .section-title { font-family: 'Cinzel', serif; color: var(--gold); margin: 25px 0 12px; font-size: 1.2rem; border-left: 3px solid var(--gold); padding-left: 10px; }
+        
+        .trait-pill { 
+            background: var(--trait-bg); 
+            border: 1px solid var(--border-gold); 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            transition: 0.3s;
+        }
+        .trait-pill:hover { background: rgba(201, 164, 76, 0.1); }
+        .trait-pill strong { color: var(--gold); font-family: 'Cinzel'; display: block; margin-bottom: 5px; font-size: 1rem; border-bottom: 1px solid rgba(201, 164, 76, 0.2); padding-bottom: 3px; }
+        .trait-pill span { line-height: 1.5; font-size: 0.95rem; display: block; }
+
+        .hidden { display: none; }
+
+        @media(max-width: 700px) {
+            .main-content { flex-direction: column; }
+            .species-list { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid var(--gold); }
+        }
+    </style>
 </head>
 <body>
+
 <div id="encyclopedia-container">
-<div class="header"><h1>Glosario de Especies</h1></div>
-<div class="controls">
-<input type="text" id="search-input" placeholder="Buscar especie..." onkeyup="filterSpecies()">
-<select id="category-filter" onchange="filterSpecies()">
-<option value="all">Todas las Categorías</option>
-<option value="Anomalías">Anomalías</option>
-<option value="Bestias">Bestias</option>
-<option value="Acuáticos / Voladores">Acuáticos / Voladores</option>
-<option value="Dragones">Dragones</option>
-</select>
+    <div class="header"><h1>Glosario de Especies</h1></div>
+    
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Buscar especie..." onkeyup="filterSpecies()">
+        <select id="category-filter" onchange="filterSpecies()">
+            <option value="all">Todas las Categorías</option>
+            <option value="Anomalías">Anomalías</option>
+            <option value="Bestias">Bestias</option>
+            <option value="Acuáticos / Voladores">Acuáticos / Voladores</option>
+            <option value="Dragones">Dragones</option>
+        </select>
+    </div>
+
+    <div class="main-content">
+        <div class="species-list" id="species-list"></div>
+        
+        <div class="details-panel" id="details-panel">
+            <div id="empty-state" style="text-align:center;margin-top:100px;opacity:.5">
+                <p>Selecciona una especie para ver sus detalles</p>
+            </div>
+
+            <div id="content-display" class="hidden">
+                <div class="detail-header">
+                    <h2 id="det-name"></h2>
+                    <div class="subtitle" id="det-subtitle"></div>
+                    <div class="subrace-selector" id="subrace-container"></div>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-box"><label>Tipo</label><span id="det-type"></span></div>
+                    <div class="stat-box"><label>Tamaño</label><span id="det-size"></span></div>
+                    <div class="stat-box"><label>Velocidad</label><span id="det-speed"></span></div>
+                    <div class="stat-box"><label>Lenguajes</label><span id="det-langs"></span></div>
+                </div>
+
+                <div class="section-title">Descripción General</div>
+                <p id="det-desc" style="line-height: 1.6; white-space: pre-wrap;"></p>
+
+                <div class="section-title">Físico de la Variante</div>
+                <p id="det-physical" style="line-height: 1.6; white-space: pre-wrap;"></p>
+
+                <div class="section-title">Rasgos Raciales</div>
+                <div id="det-traits"></div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="main-content">
-<div class="species-list" id="species-list"></div>
-<div class="details-panel" id="details-panel">
-<div id="empty-state" style="text-align:center;margin-top:100px;opacity:.5">
-<p>Selecciona una especie para ver sus detalles</p>
-</div>
-<div id="content-display" class="hidden">
-<div class="detail-header">
-<h2 id="det-name"></h2>
-<div class="subtitle" id="det-subtitle"></div>
-<div class="subrace-selector" id="subrace-container"></div>
-</div>
-<div class="stat-grid">
-<div class="stat-box"><label>Tipo</label><span id="det-type"></span></div>
-<div class="stat-box"><label>Tamaño</label><span id="det-size"></span></div>
-<div class="stat-box"><label>Velocidad</label><span id="det-speed"></span></div>
-<div class="stat-box"><label>Lenguajes</label><span id="det-langs"></span></div>
-</div>
-<div class="section-title">Descripción</div>
-<p id="det-desc"></p>
-<div class="section-title">Físico</div>
-<p id="det-physical"></p>
-<div class="section-title">Rasgos Raciales</div>
-<div id="det-traits"></div>
-</div>
-</div>
-</div>
-</div>
+
 <script>
-const speciesDatabase=[
-{
-id:"goblin",
-name:"Goblin",
-category:"Anomalías",
-description:"Las goblins son un pueblo antiguo, nacido en los márgenes del mundo civilizado. Habitan cavernas, ruinas hundidas, bosques helados y parajes donde la vida lucha por persistir. Son pequeñas, resistentes y astutas, moldeadas por un mundo duro que rara vez muestra piedad. Los eruditos discuten su verdadero origen, pero los relatos más antiguos coinciden en un punto: las goblins no fueron creadas por dioses de la guerra ni del orden, sino que surgieron allí donde el frío, la escasez y la necesidad se entrelazaron. En los mitos susurrados en fogatas y guaridas, se dice que Nox, diosa del frío, del agua y de la naturaleza indómita, influyó en las primeras goblins al imponerles una regla simple e inmutable: sobrevivir.",
-subraces:[
-{
-name:"Trenchmaker",
-type:"Humanoide / Fey",
-size:"Pequeña",
-speed:"30 pies",
-languages:"Common, Goblin",
-physical:"Astutas, caderonas, se suelen ensuciar mucho y moldeadas por ruinas y sus hogares en cuevas. Les suele gustar robar oro y comer carne además de realizar intercambios con otras especies.",
-traits:[
-{title:"Darkvision",text:"Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."},
-{title:"Fey Ancestry",text:"Tienes ventaja en las tiradas de salvación que realices para evitar o terminar la condición encantada sobre ti."
-{title:"Fury of the Small",text:"Cuando dañas a una criatura con un ataque o un conjuro, y la criatura es de un tamaño mayor que el tuyo, puedes hacer que el ataque o conjuro inflija daño adicional. El daño adicional es igual a tu bonificador por competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno."},
-{title:"Nimble Escape",text:"Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos."}
-]
-},
-{
-name:"Dragonjaw",
-type:"Humanoide / Dragon",
-size:"Pequeña",
-speed:"25 pies",
-languages:"Common, Draconic, Goblin",
-physical:"Bajas y robustas, con pelo espeso en la cabeza y pequeños cuernos similares a los de carneros o dragones. Estas goblins están moldeadas por la resistencia antes que por la agilidad en climas fríos. Son persistentes, tenaces y sorprendentemente duras para su tamaño.",
-traits:[
-{title:"Darkvision",text:"Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."},
-{title:"Cold Resistance",text:"Resistencia al daño por frío."},
-{title:"Thick Fur",text:"Estás adaptada a climas gélidos. Ignoras los efectos de clima extremadamente frío, como se describe en las reglas de entorno."},
-{title:"Fury of the Small",text:"Cuando dañas a una criatura con un ataque o un conjuro, y la criatura es de un tamaño mayor que el tuyo, puedes hacer que el ataque o conjuro inflija daño adicional. El daño adicional es igual a tu bonificador por competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno."},
-{title:"Natural Toughness",text:"Tu máximo de puntos de vida aumenta en 1 y aumenta nuevamente en 1 cada vez que subes de nivel."}
-]
-},
-{
-name:"Ironfang",
-type:"Humanoide / Fey",
-size:"Pequeña",
-speed:"30 pies",
-languages:"Common, +1 Elección",
-physical:"Más agresivas, colmillos prominentes, desarrollando más musculo y deseando más el combate y la fuerza que el resto de Goblins de su tipo.",
-traits:[
-{title:"Darkvision",text:"Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."},
-{title:"Fury of the Small",text:"Cuando dañas a una criatura con un ataque o un conjuro, y la criatura es de un tamaño mayor que el tuyo, puedes hacer que el ataque o conjuro inflija daño adicional. El daño adicional es igual a tu bonificador por competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno."},
-{title:"Relentless Fury",text:"Antes de realizar un ataque cuerpo a cuerpo o a distancia puedes usar dos usos de Fury of the Small para declarar un ataque agresivo, si impacta, puedes realizar el daño equivalente a dos usos de Fury of The Small o un Ataque Adicional.."},
-{title:"Nimble Escape",text:"Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos."}
-]
-},
-{
-name:"Shadefoot",
-type:"Humanoide / Fey",
-size:"Pequeña",
-speed:"35 pies",
-languages:"Common + 1",
-physical:"Silenciosas y escurridizas, adaptadas a la emboscada.",
-traits:[
-{title:"Darkvision",text:"Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."},
-{title:"Pickpocket",text:"Competencia en Juego de Manos."},
-{title:"Unseen Skulker",text:"Eres experta en desaparecer en el momento justo. Cuando realizas la acción de Esconderte, puedes intentar ocultarte incluso si estás ligeramente oscurecida o parcialmente cubierta, siempre que no estés a plena vista. Además, moverte mientras estás oculta no revela tu posición si terminas tu movimiento en cobertura o en una zona oscurecida."}
-{title:"Nimble Escape",text:"Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos."}
-]
-id:"draconido",
-name:"Dracónido",
-category:"Dragones",
-description:"Los dracónidos son los herederos más directos del legado dracónico. No son descendientes accidentales ni ecos fragmentados como los kobolds, sino criaturas nacidas de linajes dracónicos estables. Cuando Nox creó a los primeros dragones, algunos de esos seres adoptaron formas más cercanas al mundo material. De esas líneas emergieron los dracónidos: mortales, pero marcados por la esencia del dragón. Poseen la imponencia, la presencia y el orgullo característicos de sus ancestros. Aunque carecen del poder colosal de un dragón verdadero, su sangre conserva fragmentos de ese legado: aliento elemental, resistencia sobrenatural y una presencia difícil de ignorar.",
-subraces:[
-{
-name:"Sangre de Hielo",
-type:"Humanoide / Dragon",
-size:"Pequeño o Mediano",
-speed:"30 pies",
-languages:"Common, Draconic",
-physical:"Astutas, caderonas, se suelen ensuciar mucho y moldeadas por ruinas y sus hogares en cuevas. Les suele gustar robar oro y comer carne además de realizar intercambios con otras especies.",
-traits:[
-{title:"Darkvision",text:"Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."},
-{title:"Fey Ancestry",text:"Tienes ventaja en las tiradas de salvación que realices para evitar o terminar la condición encantada sobre ti."
-{title:"Fury of the Small",text:"Cuando dañas a una criatura con un ataque o un conjuro, y la criatura es de un tamaño mayor que el tuyo, puedes hacer que el ataque o conjuro inflija daño adicional. El daño adicional es igual a tu bonificador por competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno."},
-{title:"Nimble Escape",text:"Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos."}
-]
-]
-}
-]
-}
+const draconicBreathWeapon = { 
+    title: "Breath Weapon", 
+    text: "Puedes liberar el poder de tu linaje dracónico realizando el tipo de daño del elemento al que obtienes resistencia. Cuando realizas la acción de Ataque, puedes reemplazar uno de tus ataques con una exhalación elemental. La exhalación adopta una de las siguientes formas (elige al crear el personaje):\nCono de 15 pies\nLínea de 30 pies (5 pies de ancho)\n\nLas criaturas en el área deben realizar una tirada de salvación de Destreza.\nCD = 8 + bonificador por competencia + modificador de Constitución\nDaño = 1d10\nEl daño aumenta al subir de nivel:\nNivel 5 → 2d10\nNivel 11 → 3d10\nNivel 17 → 4d10\n\nPuedes usar este rasgo un número de veces igual a tu bonificador por competencia, recuperando todos los usos tras un descanso largo." 
+};
+
+const speciesDatabase = [
+    {
+        id: "goblin",
+        name: "Goblin",
+        category: "Anomalías",
+        description: "Las goblins son un pueblo antiguo, nacido en los márgenes del mundo civilizado. Habitan cavernas, ruinas hundidas, bosques helados y parajes donde la vida lucha por persistir. Son pequeñas, resistentes y astutas, moldeadas por un mundo duro que rara vez muestra piedad.",
+        subraces: [
+            {
+                name: "Trenchmaker",
+                type: "Humanoide / Fey",
+                size: "Pequeña",
+                speed: "30 pies",
+                languages: "Common, Goblin",
+                physical: "Astutas, caderonas, se suelen ensuciar mucho y moldeadas por ruinas y sus hogares en cuevas. Les suele gustar robar oro y comer carne además de realizar intercambios con otras especies.",
+                traits: [
+                    { title: "Darkvision", text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Fey Ancestry", text: "Tienes ventaja en las tiradas de salvación que realices para evitar o terminar la condición encantada sobre ti." },
+                    { title: "Fury of the Small", text: "Cuando dañas a una criatura con un ataque o un conjuro, y la criatura es de un tamaño mayor que el tuyo, puedes hacer que el ataque o conjuro inflija daño adicional. El daño adicional es igual a tu bonificador por competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno." },
+                    { title: "Nimble Escape", text: "Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "draconido",
+        name: "Dracónido",
+        category: "Dragones",
+        description: "Los dracónidos son los herederos más directos del legado dracónico. No son descendientes accidentales ni ecos fragmentados como los kobolds, sino criaturas nacidas de linajes dracónicos estables. Cuando Nox creó a los primeros dragones, algunos de esos seres adoptaron formas más cercanas al mundo material. De esas líneas emergieron los dracónidos: mortales, pero marcados por la esencia del dragón.",
+        subraces: [
+            {
+                name: "Sangre de Hielo",
+                type: "Humanoide / Dragon",
+                size: "Pequeño o Mediano",
+                speed: "30 pies",
+                languages: "Common, Draconic",
+                physical: "Cuerpo cubierto de escamas pálidas o azuladas, con una constitución robusta preparada para el frío extremo. Su aliento exhala una bruma gélida.",
+                traits: [
+                    { title: "Draconic Ancestry", text: "Tu linaje dracónido esta ligado a el origen y creación de esté mundo. Elige uno de los siguientes tipos de sangre: Dracónido: Sangre de Hielo" },
+                    draconicBreathWeapon,
+                    { title: "Flowbound Body", text: "Tienes ventaja en pruebas y tiradas de salvación realizadas para escapar de la condición Agarre." },
+                    { title: "Freezing Attack", text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño de Frío, su velocidad se reduce en 10 pies hasta el inicio de tu siguiente turno." },
+                    { title: "Child of the Sea", text: "Tienes una velocidad de nado de 30 pies y puedes respirar aire y agua." },
+                    { title: "Cold Endurance", text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo para ti." }
+                ]
+            },
+            {
+                name: "Sangre de Sol",
+                type: "Humanoide / Dragon",
+                size: "Pequeño o Mediano",
+                speed: "30 pies",
+                languages: "Common, Draconic",
+                physical: "Escamas en tonos ocres, dorados o rojos brillantes. Emanan un calor tenue constante.",
+                traits: [
+                    { title: "Draconic Ancestry", text: "Tu linaje dracónido esta ligado a el origen y creación de esté mundo. Elige uno de los siguientes tipos de sangre: Dracónido: Sangre de Sol" },
+                    draconicBreathWeapon,
+                    { title: "Boiling Blood", text: "Una vez por turno, cuando impactas con un ataque o infliges daño con un conjuro, puedes hacer que el objetivo reciba daño de Fuego adicional igual a tu bonificador de competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo." },
+                    { title: "Radiant Pulse", text: "Como acción adicional, emites luz brillante en un radio de 10 pies durante 1 minuto. La luz es tenue por 10 pies adicionales. Cuando activas este rasgo, elige un número de criaturas aliadas dentro de la luz (incluyéndote) igual a tu bonificador de competencia. Durante la duración, las criaturas elegidas obtienen ventaja en la primera tirada de salvación que realicen. Una vez que utilizas este rasgo, no puedes volver a hacerlo hasta terminar un descanso largo." },
+                    { title: "Radiant Endurance", text: "Obtienes resistencia al daño por Fuego. Las altas temperaturas y entornos abrasadores nunca cuentan como extremos para ti y la luz intensa nunca te impone desventaja en pruebas de Percepción ni penalizadores visuales." }
+                ]
+            },
+            {
+                name: "Sangre de Luna",
+                type: "Humanoide / Dragon",
+                size: "Pequeño o Mediano",
+                speed: "30 pies",
+                languages: "Common, Draconic",
+                physical: "Escamas de color plata mate o gris pálido que parecen absorber la luz.",
+                traits: [
+                    { title: "Draconic Ancestry", text: "Tu linaje dracónido esta ligado a el origen y creación de esté mundo. Elige uno de los siguientes tipos de sangre: Dracónido: Sangre de Luna" },
+                    draconicBreathWeapon,
+                    { title: "Reflected Self", text: "Obtienes competencia en Sigilo o Engaño." },
+                    { title: "Veil of Phases", text: "Cuando una criatura que puedas ver te impacta con un ataque, puedes usar tu reacción para imponer desventaja a esa tirada. Una vez que utilizas este rasgo, no puedes volver a hacerlo hasta terminar un descanso largo." },
+                    { title: "Veiled Mind", text: "Obtienes resistencia al daño Psíquico. Además, tienes ventaja en salvaciones contra ser hechizado o asustado." }
+                ]
+            },
+            {
+                name: "Sangre de Tormenta",
+                type: "Humanoide / Dragon",
+                size: "Pequeño o Mediano",
+                speed: "30 pies",
+                languages: "Common, Draconic",
+                physical: "Escamas azul profundo o violeta eléctrico.",
+                traits: [
+                    { title: "Draconic Ancestry", text: "Tu linaje dracónido esta ligado a el origen y creación de esté mundo. Elige uno de los siguientes tipos de sangre: Dracónido: Sangre de Tormenta" },
+                    draconicBreathWeapon,
+                    { title: "Storm Step", text: "Cuando realizas la acción Dash, los ataques de oportunidad contra ti se realizan con desventaja hasta el final del turno." },
+                    { title: "Crackling Blood", text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño de Eléctrico, tu velocidad aumenta en 5 pies hasta el final de tu turno." },
+                    { title: "Storm Endurance", text: "Obtienes resistencia al daño Eléctrico. Los vientos fuertes y tormentas nunca cuentan como condiciones adversas para ti." }
+                ]
+            },
+            {
+                name: "Sangre de Tierra",
+                type: "Humanoide / Dragon",
+                size: "Pequeño o Mediano",
+                speed: "30 pies",
+                languages: "Common, Draconic",
+                physical: "Escamas gruesas y opacas como la roca.",
+                traits: [
+                    { title: "Draconic Ancestry", text: "Tu linaje dracónido esta ligado a el origen y creación de esté mundo. Elige uno de los siguientes tipos de sangre: Dracónido: Sangre de Tierra" },
+                    draconicBreathWeapon,
+                    { title: "Immovable Frame", text: "Tienes ventaja en tiradas de salvación para evitar ser derribado o movido contra tu voluntad." },
+                    { title: "Stonehide", text: "Mientras no lleves armadura, obtienes un bono de +1 a la CA." },
+                    { title: "Titan’s Bearing", text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar. Puedes portar y usar armas y armaduras no mágicas que requieran Fuerza sin necesidad de cumplir sus requisitos de Fuerza." },
+                    { title: "Stone Endurance", text: "Obtienes resistencia al daño Contundente." }
+                ]
+            },
+            {
+                name: "Sangre de Vida",
+                type: "Humanoide / Dragon",
+                size: "Pequeño o Mediano",
+                speed: "30 pies",
+                languages: "Common, Draconic",
+                physical: "Escamas verde esmeralda o negro bosque.",
+                traits: [
+                    { title: "Draconic Ancestry", text: "Tu linaje dracónido esta ligado a el origen y creación de esté mundo. Elige uno de los siguientes tipos de sangre: Dracónido: Sangre de Vida" },
+                    draconicBreathWeapon,
+                    { title: "Creeping Vitality", text: "Cuando recuperas puntos de golpe mediante cualquier fuente, recuperas puntos adicionales iguales a tu bonificador de competencia." },
+                    { title: "Adaptive Flesh", text: "Tienes ventaja en salvaciones contra veneno y enfermedad." },
+                    { title: "Verdant Endurance", text: "Obtienes resistencia al daño por veneno y ácido, cuando usas tú Breath Weapon puedes elegir cualquiera de los dos tipos de elemento al usarlo. Además, los entornos tóxicos, pantanosos, contaminados o con vegetación densa nunca cuentan como extremos para ti." }
+                ]
+            },
+            {
+                name: "Sangre de Estrella",
+                type: "Humanoide / Dragon",
+                size: "Pequeño o Mediano",
+                speed: "30 pies",
+                languages: "Common, Draconic",
+                physical: "Escamas negro azabache con puntos blancos.",
+                traits: [
+                    { title: "Draconic Ancestry", text: "Tu linaje dracónido esta ligado a el origen y creación de esté mundo. Elige uno de los siguientes tipos de sangre: Dracónido: Sangre de Estrella" },
+                    draconicBreathWeapon,
+                    { title: "Celestial Insight", text: "Una vez por descanso largo, después de ver una tirada d20, puedes sumar o restar 1d4." },
+                    { title: "Distant Gaze", text: "Puedes ver normalmente a través de oscuridad mágica, ilusiones y efectos visuales que obscurezcan hasta 30 pies." },
+                    { title: "Cosmic Endurance", text: "Obtienes resistencia al daño de fuerza. Los efectos que alteran la gravedad, el vacío o la presión cósmica no te afectan." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "tauro",
+        name: "Tauro",
+        category: "Bestias",
+        description: "Los minotauros son humanoides imponentes, criaturas de fuerza bruta y presencia innegable. Nacieron en regiones salvajes, laberintos naturales, ruinas antiguas y territorios donde la supervivencia favorece a los más dominantes. Su cultura gira en torno al desafío, la resistencia y la afirmación de la propia existencia. Un minotauro no evita obstáculos: los atraviesa. Bajo su apariencia intimidante suele existir una sorprendente claridad mental; entienden el mundo en términos directos, simples y contundentes.",
+        subraces: [
+            {
+                name: "Minotauro Estándar",
+                type: "Humanoide / Beast",
+                size: "Mediano",
+                speed: "35 pies",
+                languages: "Common y otro a elección",
+                physical: "Imponentes humanoides con cabeza de toro y musculatura potente.",
+                traits: [
+                    { title: "Ability Score Increase", text: "Aumenta una puntuación en 2 y una diferente en 1, o tres diferentes en 1. Máximo 20." },
+                    { title: "Creature Type", text: "Eres un Humanoide. También eres considerado Beast para cualquier prerrequisito o efecto que requiera tal categoría." },
+                    { title: "Darkvision", text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Horns", text: "Tus cuernos son un arma natural que inflige 1d8 + mod. Fuerza perforante." },
+                    { title: "Goring Rush", text: "Tras usar la acción Dash, puedes realizar un ataque con 'Horns' al terminar el movimiento en una posición adyacente a una criatura." },
+                    { title: "Powerful Build", text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar." },
+                    { title: "Imposing Presence", text: "Tienes competencia en una de las siguientes habilidades de tu elección: Intimidación o Persuasión." }
+                ]
+            },
+            {
+                name: "Minotauro Asterion",
+                type: "Humanoide / Beast",
+                size: "Mediano",
+                speed: "30 pies",
+                languages: "Common y otro a elección",
+                physical: "Variante de minotauro con rasgos que sugieren una conexión más mística o productiva.",
+                traits: [
+                    { title: "Ability Score Increase", text: "Aumenta una puntuación en 2 y una diferente en 1, o tres diferentes en 1. Máximo 20." },
+                    { title: "Creature Type", text: "Eres un Humanoide. También eres considerado Beast para cualquier prerrequisito o efecto que requiera tal categoría." },
+                    { title: "Darkvision", text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Horns", text: "Tus cuernos son un arma natural que inflige 1d6 + mod. Fuerza perforante." },
+                    { title: "Disarming Presence", text: "Tienes ventaja en salvaciones contra la condición asustado. Además, cuando una criatura falle una tirada de ataque contra ti, puedes usar tu reacción para imponer desventaja en su siguiente ataque antes del final de su próximo turno." },
+                    { title: "Powerful Build", text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar." },
+                    { title: "Imposing Presence", text: "Tienes competencia en una de las siguientes habilidades de tu elección: Intimidación o Persuasión." },
+                    { title: "Motherly Production", text: "Tu cuerpo produce una sustancia regenerativa semi-mágica. Recolección: Al finalizar un Descanso Largo, puedes recolectar en frascos un número de dosis igual a la mitad de tu Bonificador de Competencia. Una criatura recupera una cantidad de Puntos de Golpe igual a tu Bonificador de Competencia. Además, cuenta como agua y comida para un día." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "leviath",
+        name: "Leviath",
+        category: "Acuáticos / Voladores",
+        description: "Los Leviath son una raza de origen marítimo, vinculada a las profundidades inexploradas de los océanos. Aunque no están tan definidos en los textos continentales, su presencia se siente en las costas y bajo las olas. Son seres adaptables, capaces de navegar las corrientes más fuertes y resistir las presiones abisales. Su fisiología es un testimonio de la elegancia y la peligrosidad del mar, permitiéndoles una vida dual entre los arrecifes y la superficie.",
+        subraces: [
+            {
+                name: "Linaje Marítimo",
+                type: "Humanoide / Acuático",
+                size: "Mediano",
+                speed: "30 pies (30 nadando)",
+                languages: "Common, Aquan",
+                physical: "Piel suave y resistente al agua, a menudo con escamas finas y membranas discretas.",
+                traits: [
+                    { title: "Anfibio", text: "Puedes respirar tanto aire como agua de forma indefinida." },
+                    { title: "Nadador Nato", text: "Tienes una velocidad de nado igual a tu velocidad a pie (30 pies)." },
+                    { title: "Resistencia de las Profundidades", text: "Tienes resistencia al daño por frío y eres inmune a los efectos de la presión extrema de las profundidades marinas." },
+                    { title: "Sentido Marino", text: "Tienes ventaja en pruebas de Percepción que involucren el oído o el olfato bajo el agua." }
+                ]
+            }
+        ]
+    }
 ];
-let currentSpecies=null;
-function init(){renderList(speciesDatabase)}
-function renderList(list){
-const listContainer=document.getElementById('species-list');
-listContainer.innerHTML='';
-list.forEach(sp=>{
-const div=document.createElement('div');
-div.className='species-item';
-div.id=`item-${sp.id}`;
-div.innerHTML=`<span class="name">${sp.name}</span><span class="category">${sp.category}</span>`;
-div.onclick=()=>showSpecies(sp.id);
-listContainer.appendChild(div);
-});
+
+let currentSpecies = null;
+
+function init() {
+    speciesDatabase.sort((a, b) => a.name.localeCompare(b.name));
+    renderList(speciesDatabase);
 }
-function showSpecies(id){
-const sp=speciesDatabase.find(s=>s.id===id);
-if(!sp)return;
-currentSpecies=sp;
-document.getElementById('empty-state').classList.add('hidden');
-document.getElementById('content-display').classList.remove('hidden');
-document.querySelectorAll('.species-item').forEach(el=>el.classList.remove('active'));
-document.getElementById(`item-${id}`).classList.add('active');
-document.getElementById('det-name').innerText=sp.name;
-document.getElementById('det-subtitle').innerText=sp.category;
-renderSubraceSelector(sp);
-showSubrace(sp.subraces[0]);
+
+function renderList(list) {
+    const listContainer = document.getElementById('species-list');
+    listContainer.innerHTML = '';
+    
+    list.forEach(sp => {
+        const div = document.createElement('div');
+        div.className = 'species-item';
+        div.id = `item-${sp.id}`;
+        div.innerHTML = `
+            <span class="name">${sp.name}</span>
+            <span class="category">${sp.category}</span>
+        `;
+        div.onclick = () => showSpecies(sp.id);
+        listContainer.appendChild(div);
+    });
 }
-function renderSubraceSelector(sp){
-const container=document.getElementById('subrace-container');
-if(!sp.subraces||sp.subraces.length===0){container.innerHTML='';return}
-container.innerHTML=`<label>Subraza</label><select id="subrace-select"></select>`;
-const select=document.getElementById('subrace-select');
-sp.subraces.forEach((sr,i)=>{
-const opt=document.createElement('option');
-opt.value=i;
-opt.textContent=sr.name;
-select.appendChild(opt);
-});
-select.onchange=(e)=>showSubrace(sp.subraces[e.target.value]);
+
+function showSpecies(id) {
+    const sp = speciesDatabase.find(s => s.id === id);
+    if (!sp) return;
+
+    currentSpecies = sp;
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('content-display').classList.remove('hidden');
+    document.querySelectorAll('.species-item').forEach(el => el.classList.remove('active'));
+    document.getElementById(`item-${id}`).classList.add('active');
+
+    document.getElementById('det-name').innerText = sp.name;
+    document.getElementById('det-subtitle').innerText = sp.category;
+    document.getElementById('det-desc').innerText = sp.description;
+
+    renderSubraceSelector(sp);
+    if (sp.subraces && sp.subraces.length > 0) {
+        showSubrace(sp.subraces[0]);
+    }
 }
-function showSubrace(sr){
-document.getElementById('det-type').innerText=sr.type;
-document.getElementById('det-size').innerText=sr.size;
-document.getElementById('det-speed').innerText=sr.speed;
-document.getElementById('det-langs').innerText=sr.languages;
-document.getElementById('det-desc').innerText=currentSpecies.description;
-document.getElementById('det-physical').innerText=sr.physical;
-const traitsContainer=document.getElementById('det-traits');
-traitsContainer.innerHTML=sr.traits.map(t=>`<div class="trait-pill"><strong>${t.title}</strong><span>${t.text}</span></div>`).join('');
+
+function renderSubraceSelector(sp) {
+    const container = document.getElementById('subrace-container');
+    if (!sp.subraces || sp.subraces.length <= 1) {
+        container.classList.add('hidden');
+        if(sp.subraces && sp.subraces.length === 1) showSubrace(sp.subraces[0]);
+        return;
+    }
+
+    container.classList.remove('hidden');
+    container.innerHTML = `
+        <label>Subraza / Linaje Específico</label>
+        <select id="subrace-select"></select>
+    `;
+    
+    const select = document.getElementById('subrace-select');
+    sp.subraces.forEach((sr, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = sr.name;
+        select.appendChild(opt);
+    });
+
+    select.onchange = (e) => showSubrace(sp.subraces[e.target.value]);
 }
-function filterSpecies(){
-const search=document.getElementById('search-input').value.toLowerCase();
-const category=document.getElementById('category-filter').value;
-const filtered=speciesDatabase.filter(sp=>{
-const matchesSearch=sp.name.toLowerCase().includes(search);
-const matchesCategory=category==='all'||sp.category===category;
-return matchesSearch&&matchesCategory;
-});
-renderList(filtered);
+
+function showSubrace(sr) {
+    document.getElementById('det-type').innerText = sr.type;
+    document.getElementById('det-size').innerText = sr.size;
+    document.getElementById('det-speed').innerText = sr.speed;
+    document.getElementById('det-langs').innerText = sr.languages;
+    document.getElementById('det-physical').innerText = sr.physical;
+
+    const traitsContainer = document.getElementById('det-traits');
+    traitsContainer.innerHTML = sr.traits.map(t => `
+        <div class="trait-pill">
+            <strong>${t.title}</strong>
+            <span>${t.text.replace(/\n/g, '<br>')}</span>
+        </div>
+    `).join('');
 }
-window.onload=init;
+
+function filterSpecies() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    const category = document.getElementById('category-filter').value;
+
+    const filtered = speciesDatabase.filter(sp => {
+        const matchesSearch = sp.name.toLowerCase().includes(search);
+        const matchesCategory = category === 'all' || sp.category === category;
+        return matchesSearch && matchesCategory;
+    });
+
+    renderList(filtered);
+}
+
+window.onload = init;
 </script>
 </body>
 </html>
