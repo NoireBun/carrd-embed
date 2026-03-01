@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Triple Destino de Nox</title>
+    <title>TIRADA DE SEX APPEAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fauna+One&display=swap" rel="stylesheet">
     <style>
         #nox-quiz-container, #nox-quiz-container * { box-sizing: border-box; }
@@ -83,30 +83,38 @@
         }
         .tab-btn.active { background: var(--gold); color: #1a1a1b; font-weight: bold; border-color: var(--gold); box-shadow: 0 0 15px rgba(201,164,76,0.3); }
 
-        /* Stats Display */
+        /* Stats Display Final */
         .stats-display-row {
-            display: flex; justify-content: space-between; align-items: center;
-            margin: 30px 0; gap: 10px;
+            display: flex; justify-content: center; align-items: center;
+            margin: 30px 0; gap: 20px;
         }
         
-        .stat-side-container { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-
-        .stat-side {
-            width: 100%; display: flex; flex-direction: column; align-items: center;
+        .stat-main-box {
+            display: flex; flex-direction: column; align-items: center;
             background: linear-gradient(135deg, #1e1e1f, #0a0a0a);
-            padding: 10px 2px; border-radius: 8px; border: 1px solid rgba(201,164,76,0.15);
+            padding: 20px; border-radius: 12px; border: 1px solid var(--gold);
+            min-width: 120px;
         }
-        .stat-side .val { font-family: 'Cinzel'; font-size: 1.4rem; color: #fff; line-height: 1; margin-bottom: 2px; }
-        .stat-side .lbl { font-size: 0.55rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .stat-main-box .val { font-family: 'Cinzel'; font-size: 2.5rem; color: #fff; line-height: 1; }
+        .stat-main-box .lbl { font-size: 0.7rem; color: var(--gold); text-transform: uppercase; font-weight: bold; margin-top: 5px; }
 
         #score-center {
-            flex: 1.8; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: radial-gradient(circle, #252526 0%, #000 100%);
-            height: 140px; border: 4px solid var(--gold); border-radius: 50%;
+            height: 160px; width: 160px; border: 4px solid var(--gold); border-radius: 50%;
             box-shadow: 0 0 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(201,164,76,0.2);
         }
-        #score-center .score-num { font-size: 4rem; font-family: 'Cinzel'; line-height: 1; text-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        #score-center .score-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; position: absolute; bottom: 25px; color: var(--gold); }
+        #score-center .score-num { font-size: 4.5rem; font-family: 'Cinzel'; line-height: 1; }
+        #score-center .score-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; position: absolute; bottom: 30px; color: var(--gold); }
+
+        /* Scrolling Perks Area */
+        #res-perks {
+            max-height: 300px; overflow-y: auto; padding-right: 10px; margin-top: 20px;
+            scrollbar-width: thin; scrollbar-color: var(--gold) #1a1a1b;
+        }
+        #res-perks::-webkit-scrollbar { width: 6px; }
+        #res-perks::-webkit-scrollbar-track { background: #1a1a1b; }
+        #res-perks::-webkit-scrollbar-thumb { background-color: var(--gold); border-radius: 10px; }
 
         .info-header-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .info-pill { background: rgba(0,0,0,0.4); border: 1px solid rgba(201,164,76,0.1); padding: 10px; border-radius: 6px; }
@@ -134,16 +142,16 @@
 
     <!-- PESTAÑA 1: CONFIGURACIÓN -->
     <div id="step-creation" class="fade-in">
-        <h2 class="noble-title">Rito de Sex Appeal</h2>
+        <h2 class="noble-title">TIRADA DE SEX APPEAL</h2>
         <div class="divider"></div>
 
         <div class="input-group">
-            <label>Linaje del Sujeto</label>
+            <label>Especie de la Criatura</label>
             <select id="race-select" onchange="adaptForm()">
                 <optgroup label="Anomalías">
-                    <option value="goblin">Goblin (Solo Hembras)</option>
-                    <option value="plasmoid">Plasmoide (Amorfo)</option>
-                    <option value="myko">Myko (Fúngico)</option>
+                    <option value="goblin">Goblin</option>
+                    <option value="plasmoid">Plasmoide</option>
+                    <option value="myko">Myko</option>
                 </optgroup>
                 <optgroup label="Bestias">
                     <option value="grung">Grung</option>
@@ -162,6 +170,12 @@
                     <option value="kobold">Kobold</option>
                 </optgroup>
             </select>
+        </div>
+
+        <!-- Selector de Subraza Dinámico -->
+        <div id="subrace-group" class="input-group hidden">
+            <label>Subraza / Linaje</label>
+            <select id="subrace-select" onchange="adaptSubrace()"></select>
         </div>
 
         <div style="display: flex; gap: 10px;">
@@ -197,18 +211,15 @@
             </select>
         </div>
 
-        <div id="stat-input-container" class="input-group">
-            <!-- Dinámico por JS -->
-        </div>
+        <div id="stat-input-container" class="input-group"></div>
 
-        <button onclick="startRito()" class="quiz-btn main-action">Realizar Triple Tirada</button>
+        <button onclick="startRito()" class="quiz-btn main-action">Realizar Tiradas</button>
     </div>
 
     <!-- PESTAÑA 2: ANIMACIÓN -->
     <div id="step-roulette" class="hidden text-center fade-in">
         <h2 class="noble-title">Tres Destinos</h2>
         <div class="divider"></div>
-        
         <div class="roulette-container">
             <span class="roulette-label">Destino A</span>
             <div class="roulette-wrapper"><div class="marker"></div><div id="strip-1" class="roulette-strip"></div></div>
@@ -221,7 +232,7 @@
             <span class="roulette-label">Destino C</span>
             <div class="roulette-wrapper"><div class="marker"></div><div id="strip-3" class="roulette-strip"></div></div>
         </div>
-        <p style="color: var(--gold); font-family: 'Cinzel'; font-size: 0.7rem; letter-spacing: 3px; margin-top: 20px;">Calculando potencial biológico...</p>
+        <p style="color: var(--gold); font-family: 'Cinzel'; font-size: 0.7rem; letter-spacing: 3px; margin-top: 20px;">Forjando el atractivo biológico...</p>
     </div>
 
     <!-- PESTAÑA 3: RESULTADOS -->
@@ -241,27 +252,14 @@
             </div>
 
             <div class="stats-display-row">
-                <div class="stat-side-container">
-                    <div class="stat-side">
-                        <span class="val" id="mod-str"></span>
-                        <span class="lbl">Fuerza</span>
-                    </div>
-                    <div class="stat-side">
-                        <span class="val" id="mod-con"></span>
-                        <span class="lbl">Const.</span>
-                    </div>
+                <div class="stat-main-box">
+                    <span class="val" id="main-stat-mod"></span>
+                    <span class="lbl" id="main-stat-lbl"></span>
                 </div>
                 
                 <div id="score-center">
                     <span id="res-score" class="score-num"></span>
                     <span class="score-lbl">Appeal</span>
-                </div>
-
-                <div class="stat-side-container">
-                    <div class="stat-side" style="height: 100%; justify-content: center;">
-                        <span class="val" id="mod-cha" style="font-size: 2.2rem;"></span>
-                        <span class="lbl">Carisma</span>
-                    </div>
                 </div>
             </div>
 
@@ -273,18 +271,25 @@
 </div>
 
 <script>
+    const subraces = {
+        goblin: ["Tretchmaker", "Dragonjaw", "Ironfang", "Shadefoot"],
+        tauro: ["Toro", "Asterion"],
+        draconido: ["Sangre de Hielo", "Sangre de Sol", "Sangre de Luna", "Sangre de Tormenta", "Sangre de Tierra", "Sangre de Vida", "Sangre de Estrella"],
+        kobold: ["Emberclaw", "Houndfang"]
+    };
+
     const races = {
-        goblin: { name: "Goblin", genders: ["female"], heights: ["Pequeño"], mod: +1 },
-        plasmoid: { name: "Plasmoide", genders: ["female", "male", "none"], heights: ["Pequeño", "Mediano"], mod: 0 },
-        myko: { name: "Myko", genders: ["none", "female", "male"], heights: ["Pequeño", "Mediano"], mod: 0 },
-        grung: { name: "Grung", genders: ["female", "male"], heights: ["Pequeño"], mod: 0 },
-        leporino: { name: "Leporino", genders: ["female", "male"], heights: ["Pequeño", "Mediano"], mod: 0 },
-        tabaxi: { name: "Tabaxi", genders: ["female", "male"], heights: ["Mediano"], mod: +2 },
-        tauro: { name: "Tauro", genders: ["female", "male"], heights: ["Pequeño", "Mediano"], mod: 0 },
-        leviath: { name: "Leviath", genders: ["female", "male"], heights: ["Pequeño", "Mediano"], mod: 0 },
-        aarakocra: { name: "Aarakocra", genders: ["female", "male"], heights: ["Mediano"], mod: 0 },
-        draconido: { name: "Dracónido", genders: ["female", "male"], heights: ["Pequeño", "Mediano"], mod: +1 },
-        kobold: { name: "Kobold", genders: ["female", "male"], heights: ["Pequeño"], mod: 0 }
+        goblin: { name: "Goblin", genders: ["female"], heights: ["Pequeño"], mod: +3 },
+        plasmoid: { name: "Plasmoide", genders: ["none", "male", "female"], heights: ["Mediano", "Pequeño"], mod: 0 },
+        myko: { name: "Myko", genders: ["none", "male", "female"], heights: ["Mediano", "Pequeño"], mod: +2 },
+        grung: { name: "Grung", genders: ["male", "female"], heights: ["Pequeño"], mod: 0 },
+        leporino: { name: "Leporino", genders: ["male", "female"], heights: ["Mediano", "Pequeño"], mod: +2 },
+        tabaxi: { name: "Tabaxi", genders: ["male", "female"], heights: ["Mediano", "Pequeño"], mod: +1 },
+        tauro: { name: "Tauro", genders: ["male", "female"], heights: ["Mediano", "Pequeño"], mod: +2 },
+        leviath: { name: "Leviath", genders: ["none", "male", "female"], heights: ["Mediano", "Pequeño"], mod: 0 },
+        aarakocra: { name: "Aarakocra", genders: ["male", "female"], heights: ["Mediano", "Pequeño"], mod: 0 },
+        draconido: { name: "Dracónido", genders: ["male", "female"], heights: ["Mediano", "Pequeño"], mod: +3 },
+        kobold: { name: "Kobold", genders: ["male", "female"], heights: ["Pequeño"], mod: +2 }
     };
 
     let rollResults = [];
@@ -295,19 +300,47 @@
         const race = races[raceKey];
         const gSel = document.getElementById('gender-select');
         const hSel = document.getElementById('height-select');
+        const subGroup = document.getElementById('subrace-group');
+        const subSel = document.getElementById('subrace-select');
+
         gSel.innerHTML = race.genders.map(g => `<option value="${g}">${g==='female'?'Hembra':g==='male'?'Macho':'Amorfo'}</option>`).join('');
         hSel.innerHTML = race.heights.map(h => `<option value="${h}">${h}</option>`).join('');
+
+        if (subraces[raceKey]) {
+            subGroup.classList.remove('hidden');
+            subSel.innerHTML = subraces[raceKey].map(s => `<option value="${s}">${s}</option>`).join('');
+            adaptSubrace(); 
+        } else {
+            subGroup.classList.add('hidden');
+        }
+    }
+
+    function adaptSubrace() {
+        const raceKey = document.getElementById('race-select').value;
+        const subKey = document.getElementById('subrace-select').value;
+        const gSel = document.getElementById('gender-select');
+
+        if (raceKey === 'tauro') {
+            if (subKey === 'Toro') {
+                gSel.innerHTML = `<option value="male">Macho</option>`;
+            } else if (subKey === 'Asterion') {
+                gSel.innerHTML = `<option value="female">Hembra</option>`;
+            }
+        } else {
+            const race = races[raceKey];
+            gSel.innerHTML = race.genders.map(g => `<option value="${g}">${g==='female'?'Hembra':g==='male'?'Macho':'Amorfo'}</option>`).join('');
+        }
     }
 
     function updateStatVisibility() {
         const bonusStat = document.getElementById('stat-bonus-select').value;
         const container = document.getElementById('stat-input-container');
-        const labelText = bonusStat === 'str' ? 'Valor de Fuerza' : bonusStat === 'con' ? 'Valor de Constitución' : 'Valor de Carisma';
+        const labels = { str: 'Fuerza', con: 'Constitución', cha: 'Carisma' };
         
         container.innerHTML = `
-            <label>${labelText}</label>
+            <label>Valor de ${labels[bonusStat]}</label>
             <input type="number" id="main-stat-input" value="10" min="1" max="30" style="text-align:center; font-size: 1.2rem; border-color: var(--gold);">
-            <p style="font-size: 0.6rem; color: var(--gold); margin-top: 5px; opacity: 0.8;">Cada punto sobre 10 otorga un peso de +10 a la escala de destino.</p>
+            <p style="font-size: 0.6rem; color: var(--gold); margin-top: 5px; opacity: 0.8;">Cada punto sobre 10 otorga potencia al destino biológico.</p>
         `;
     }
 
@@ -321,27 +354,16 @@
         const mainVal = parseInt(document.getElementById('main-stat-input').value);
         const rKey = document.getElementById('race-select').value;
 
-        // Reset and set stats
         statsUsed = { str: 10, con: 10, cha: 10 };
         statsUsed[bonusStat] = mainVal;
 
         rollResults = [];
         for(let i=0; i<3; i++) {
-            // Tirada favorecida (Roll 2 d80, take high)
             let r1 = Math.floor(Math.random() * 80) + 1;
             let r2 = Math.floor(Math.random() * 80) + 1;
             let raw = Math.max(r1, r2);
-
-            // Bono solicitado: 10 puntos por cada punto sobre 10
             let statBono = (mainVal - 10) * 10;
-            
-            // Para mantener el equilibrio en una escala de 100, el peso de la estadística 
-            // se suma al resultado bruto. Esto hace que un 20 garantice casi siempre resultados altos.
-            let finalScore = raw + (statBono / 4); // Ajuste de factor 4 para no romper el techo de 100 de forma absurda
-            
-            // Bono racial
-            finalScore += (races[rKey].mod * 5);
-            
+            let finalScore = raw + (statBono / 4) + (races[rKey].mod * 5);
             rollResults.push(Math.min(100, Math.max(1, Math.round(finalScore))));
         }
 
@@ -388,58 +410,80 @@
     function switchTab(idx) {
         document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
         
-        const score = rollResults[idx];
+        let score = rollResults[idx];
         const rKey = document.getElementById('race-select').value;
+        const subKey = document.getElementById('subrace-select').value;
         const gen = document.getElementById('gender-select').value;
         const ori = document.getElementById('orient-select').value;
         const hei = document.getElementById('height-select').value;
+        const bonusStat = document.getElementById('stat-bonus-select').value;
         const race = races[rKey];
 
-        document.getElementById('res-race').innerText = race.name;
+        const fullName = subraces[rKey] ? `${race.name} ("${subKey}")` : race.name;
+        document.getElementById('res-race').innerText = fullName;
         document.getElementById('res-gender').innerText = gen==='female'?'Hembra':gen==='male'?'Macho':'Amorfo';
         document.getElementById('res-height').innerText = hei;
         document.getElementById('res-orient').innerText = ori.toUpperCase();
         
-        document.getElementById('mod-str').innerText = getDndMod(statsUsed.str);
-        document.getElementById('mod-con').innerText = getDndMod(statsUsed.con);
-        document.getElementById('mod-cha').innerText = getDndMod(statsUsed.cha);
-        document.getElementById('res-score').innerText = score;
-
+        const statLabels = { str: 'Fuerza', con: 'Const.', cha: 'Carisma' };
+        document.getElementById('main-stat-mod').innerText = getDndMod(statsUsed[bonusStat]);
+        document.getElementById('main-stat-lbl').innerText = statLabels[bonusStat];
+        
         const center = document.getElementById('score-center');
-        let col = '#b0c3d9';
-        if(score > 90) col = '#eb4b4b'; else if(score > 80) col = '#d32ce6'; else if(score > 60) col = '#8847ff'; else if(score > 40) col = '#4b69ff';
-        center.style.borderColor = col; 
-        center.style.color = col;
-        center.style.boxShadow = `0 0 50px ${col}44, inset 0 0 25px ${col}22`;
 
         let p = "";
         const isAnomaly = (rKey === 'plasmoid' || rKey === 'myko');
+
+        // RASGO ESPECIAL: Alpha Instinct (Dracónido o Tauro Macho Mediano)
+        let isAlpha = false;
+        if (gen === 'male' && hei === 'Mediano' && (rKey === 'draconido' || rKey === 'tauro')) {
+             isAlpha = true;
+             score = Math.min(100, score + 1); // El bono extra
+        }
 
         // Proporciones
         if ((gen === 'female' || rKey === 'goblin') && !isAnomaly) {
             const m = score < 35 ? "AA/A" : score < 55 ? "B/C" : score < 75 ? "D/DD" : score < 92 ? "E/F" : "G/H+";
             p += createPerk("Tamaño de Pechos", "Físico", `Clasificación: Copa ${m}`);
         } else if (gen === 'male' && !isAnomaly) {
-            p += createPerk("Tamaño de Miembro", "Físico", `${(score/4).toFixed(1)} cm de longitud basal.`);
+            let size = (score/4);
+            if (isAlpha) size = Math.max(size, 22.0); // Tamaño grande garantizado
+            p += createPerk("Tamaño del Miembro", "Físico", `${size.toFixed(1)} cm de longitud.`);
         }
 
-        // Motherly Production
+        if (isAlpha) {
+            p += createPerk("Nature Instinct", "Rasgo", "Tu presencia impone respeto y deseo. Tu tamaño de miembro siempre se considera Grande. Obtienes un bono de +1 a las tiradas de Carisma (Persuasión y Intimidación) al no tener armadura.");
+        }
+
+        document.getElementById('res-score').innerText = score;
+
+        let col = '#b0c3d9';
+        if(score > 90) col = '#eb4b4b'; else if(score > 80) col = '#d32ce6'; else if(score > 60) col = '#8847ff'; else if(score > 40) col = '#4b69ff';
+        center.style.borderColor = col; 
+        center.style.color = col;
+        center.style.boxShadow = `0 0 50px ${col}44, inset 0 0 25px ${col}22`;
+
+        // Motherly / Gel Production
         if (!isAnomaly && (gen === 'female' || rKey === 'goblin') && score >= 60) {
             let bonus = score >= 90 ? 3 : score >= 80 ? 2 : 1;
-            p += createPerk(`Motherly Production [+${bonus}]`, "Rasgo Bio", `Tu organismo genera una sustancia regenerativa. Recolección: Obtienes dosis iguales a la mitad de tu Competencia + ${bonus} frascos extra. Curación: Recupera HP igual a tu Competencia + ${bonus}.`);
+            p += createPerk(`Motherly Production [+${bonus}]`, "Rasgo Bio", `Tus pechos son capaces de generar una sustancia regenerativa. Recolección: Obtienes dosis iguales a la mitad de tu Competencia + ${bonus} frascos extra. Curación: Recupera HP igual a tu Competencia + ${bonus}.`);
         }
-
-        // Emanación Nutriente
         if (isAnomaly && score >= 60) {
             let bonus = score >= 90 ? 3 : score >= 80 ? 2 : 1;
-            p += createPerk(`Gel Production [+${bonus}]`, "Rasgo Bio", `Tu superficie secreta una película nutriente. Recolección: Raspas de tu cuerpo dosis iguales a la mitad de tu Competencia + ${bonus} extra. Curación: Recupera HP igual a tu Competencia + ${bonus}.`);
+            p += createPerk(`Gel Production [+${bonus}]`, "Rasgo Bio", `Tu superficie secreta un gel suave y recomfortante. Recolección: Raspas de tu cuerpo dosis iguales a la mitad de tu Competencia + ${bonus} extra. Curación: Recupera HP igual a tu Competencia + ${bonus}.`);
         }
 
-        if (rKey === 'tabaxi') p += createPerk("Seductive Claws", "Racial", "Ventaja en las pruebas de Carisma (Persuasión) al realizar contacto físico.");
+        // Raciales
+        if (rKey === 'tabaxi') p += createPerk("Seductive Claws", "Racial", "Obtienes ventaja en las pruebas de Carisma (Persuasión) al realizar contacto físico.");
+        
+        const hasHeat = ['goblin', 'kobold', 'leporino', 'grung', 'draconido'].includes(rKey);
+        if (hasHeat) {
+            p += createPerk("Heat", "Racial", "Obtienes ventaja en las pruebas de Carisma (Persuasión y Interpretación) al hablar con criaturas de la misma especie. Siempre puedes quedar en estado en todo momento.");
+        }
 
-        if (gen === 'female' || rKey === 'goblin') p += createPerk("Heat", "Racial", "Ventaja en las pruebas de Carisma (Persuasión y Interpretación) al hablar con criaturas de la misma especie. Siempre puedes ser embarazada en todo momento.");
-        if (gen === 'female' || rKey === 'leporino') p += createPerk("Heat", "Racial", "Ventaja en las pruebas de Carisma (Persuasión y Interpretación) al hablar con criaturas de la misma especie. Siempre puedes ser embarazada en todo momento.");
-        if (gen === 'female' || rKey === 'tauro') p += createPerk("Over Lactant", "Racial", "Si obtienes acceso a Motherly Production gracias a la tirada de Sex Appeal; obtienes un bono a la curación de +1.");
+        if (gen === 'female' && rKey === 'tauro') {
+            p += createPerk("Over Lactant", "Racial", "Si obtienes acceso a Motherly Production gracias a la tirada de Sex Appeal; La sustancia regenerativa obtiene un bono a la curación de +1.");
+        }
         
         document.getElementById('res-perks').innerHTML = p;
     }
