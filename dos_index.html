@@ -238,7 +238,7 @@
             <option value="Anomalías">Anomalías</option>
             <option value="Dragones">Dragones</option>
             <option value="Bestias">Bestias</option>
-            <option value="Acuaticos/Voladores">Acutaticos/Voladores</option>
+            <option value="Acuaticos/Voladores">Acuaticos/Voladores</option>
             <option value="Híbridos">Híbridos</option>
         </select>
     </div>
@@ -469,6 +469,7 @@ const speciesDatabase = [
         description: "Humanoides anfibios de piel vibrante y tóxica. Son territoriales y disciplinados, viviendo en ecosistemas donde la vida fluye entre el agua y la tierra.",
         subraces: [
             {
+                name: "Slimeskin",
                 type: "Humanoide / Beast",
                 size: "Pequeño",
                 speed: 25,
@@ -481,6 +482,8 @@ const speciesDatabase = [
                     { title: "Standing Leap", tier: 2, text: "Su salto de longitud es de hasta 25 pies y su salto de altura es de hasta 15 pies, con o sin carrera inicial. Como acción adicional, puedes dar un salto sin coste de movimiento." },
                     { title: "Poisonous Skin", tier: 3, text: "Tu piel secreta toxinas naturales. Como reacción cuando una criatura que te agarre o impacte con un ataque cuerpo a cuerpo mientras no tengas armadura debe superar una salvación de Con (CD = 8 + bonificador por competencia + mod. Constitución) o sufrir 2d6 daño por veneno. Nivel 5 → 3d6, Nivel 11 → 4d6, Nivel 17 → 5d6. Puedes usar esta característica una vez por descanso largo." },
                     { title: "Water Dependency", tier: 1, text: "Debes sumergirte 1 hora al día o sufrir agotamiento." }
+                ]
+            }
         ]
     },
     {
@@ -490,6 +493,7 @@ const speciesDatabase = [
         description: "Humanoides felinos impulsados por una curiosidad casi patológica. Viajeros y narradores que ven el mundo como una experiencia constante.",
         subraces: [
             {
+                name: "Swiftclaw",
                 type: "Humanoide / Beast",
                 size: "Pequeño o Mediano",
                 speed: 30,
@@ -502,6 +506,7 @@ const speciesDatabase = [
                     { title: "Feline Senses", tier: 1, text: "Competencia en Percepción o Sigilo." }
                 ]
             }
+        ]
     },
     {
         id: "behero",
@@ -510,10 +515,12 @@ const speciesDatabase = [
         description: "Majestuosos humanoides con rasgos de búho, guardianes del silencio. Poseen un vuelo inaudible y una sabiduría que parece trascender el tiempo.",
         subraces: [
             {
+                name: "Nightwing",
                 type: "Humanoide / Volador",
                 size: "Pequeño o Mediano",
                 speed: 30,
                 languages: "Común, Celestial",
+                physical: "Rasgos de búho con plumaje denso y ojos grandes capaces de captar la mínima luz.",
                 traits: [
                     { title: "Flight", tier: 2, text: "Obtienes velocidad de Vuelo igual a tu Velocidad de Caminar" },
                     { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
