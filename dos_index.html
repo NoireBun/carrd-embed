@@ -429,7 +429,7 @@ const speciesDatabase = [
     {
         id: "kobold",
         name: "Kobold",
-        category: "Anomalías",
+        category: "Dragones",
         description: "Pequeños reptilianos nacidos de la sombra de los dragones primigenios creados por Nox. Aunque frágiles, son astutos, tenaces y poseen una devoción instintiva hacia su linaje.",
         subraces: [
             {
@@ -597,8 +597,31 @@ const speciesDatabase = [
         ]
     },
     {
+        id: "myko",
+        name: "Myko",
+        category: "Anomalías",
+        description: "Majestuosos humanoides con rasgos de búho, guardianes del silencio. Poseen un vuelo inaudible y una sabiduría que parece trascender el tiempo.",
+        subraces: [
+            {
+                name: "Nightwing",
+                type: "Humanoide / -",
+                size: "Pequeño o Mediano",
+                speed: 25,
+                languages: "Común, Celestial",
+                physical: "Rasgos de búho con plumaje denso y ojos grandes capaces de captar la mínima luz.",
+                traits: [
+                    { title: "Telephatic Rapport", tier: 3, text: "Puedes comunicarte telepáticamente con una criatura dispuesta a 120 pies de ti. No necesita compartir idioma contigo, pero debe entender al menos un idioma. Esta comunicación transmite sensaciones e imágenes simples más que palabras precisas." },
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Fungal Resilience", tier: 2, text: "Tienes ventaja en las tiradas de salvación contra venenos y enfermedades, y resistencia al daño por veneno. Además, tienes ventaja en las tiradas de Constitución para resistir enfermedades naturales (no sobrenaturales impuestas por artefactos o magia poderosa)." },
+                    { title: "Soft Body", tier: 1, text: "Tu estructura esponjosa amortigua las caídas y te ayuda a sobrevivir en terrenos varios: sufres la mitad del daño por caída." },
+                    { title: "Imposing Presence", tier: 1, text: "Tienes competencia en una de las siguientes habilidades de tu elección: Intimidación o Persuasión." }
+                ]
+            }
+        ]
+    },
+    {
         id: "tauro",
-        name: "Toro",
+        name: "Tauro",
         category: "Bestias",
         description: "Los tauros son humanoides imponentes de fuerza bruta. Su cultura gira en torno al desafío y la libertad del combate y la vida.",
         subraces: [
@@ -642,7 +665,7 @@ const speciesDatabase = [
         description: "Formas de vida gelatinosas. Adoptan rasgos humanos con facilidad y conservan una calma fluida.",
         subraces: [
             {
-                name: "Slime Habitual",
+                name: "Slime",
                 type: "Humanoide / Ooze",
                 size: "Pequeño o Mediano",
                 speed: 30,
@@ -666,7 +689,7 @@ const speciesDatabase = [
         description: "Humanoides lagomorfos inquietos y audaces. Viven atentos al entorno y poseen una gran capacidad de reacción.",
         subraces: [
             {
-                name: "Saltador de Pradera",
+                name: "Hillhopper",
                 type: "Humanoide / Beast",
                 size: "Pequeño o Mediano",
                 speed: 40,
@@ -861,7 +884,7 @@ function toggleSkill(id, title, tier, text, side) {
 
 function checkFinalStatus() {
     const display = document.getElementById('final-character-display');
-    if (selectedSkills.length === 4) {
+    if (selectedSkills.length === 5) {
         renderFinalSheet();
         display.classList.remove('hidden');
     } else {
