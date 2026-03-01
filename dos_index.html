@@ -281,7 +281,7 @@
                 <!-- Mestizo Builder UI -->
                 <div id="mestizo-builder-ui" class="hidden">
                     <div class="limit-info" style="color: var(--gold); background: rgba(201,164,76,0.1); padding: 10px; border-radius: 4px; margin-bottom: 15px;">
-                        <strong>Regla de Construcción:</strong> Selecciona exactamente 4 habilidades. 1 de TIER 1, 2 de TIER 2, 1 de TIER 1. Al completar la selección, se generará la ficha final del personaje mestizo.
+                        <strong>Regla de Construcción:</strong> Selecciona exactamente 5 habilidades. Una de tier 3, dos de tier 2 y dos de tier 1. Al completar la selección, se generará la ficha final del personaje mestizo. Si se permite la combinación de Subrazas siempre y cuando se cumplan los requisitos de habilidades.
                     </div>
                     <div class="mestizo-grid">
                         <div class="parent-selector">
@@ -326,10 +326,10 @@ const speciesDatabase = [
                 physical: "Escamas pálidas o azuladas, a menudo cubiertas por una fina escarcha.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Breath Weapon (Frío)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel). CD 8 + Prof + Con." },
+                    { title: "Breath Weapon (Frío)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
                     { title: "Flowbound Body", tier: 1, text: "Tienes ventaja en pruebas y tiradas de salvación realizadas para escapar de la condición Agarre." },
-                    { title: "Freezing Attack", tier: 2, text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o ataques de Frío, su velocidad se reduce en 10 pies." },
-                    { title: "Child of the Sea", tier: 1, text: "Tienes una velocidad de nado de 30 pies y puedes respirar aire y agua." },
+                    { title: "Freezing Attack", tier: 2, text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño de Frío, su velocidad se reduce en 10 pies hasta el inicio de tu siguiente turno." },
+                    { title: "Child of the Sea", tier: 1, text: "Obtiene velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua." },
                     { title: "Cold Endurance", tier: 2, text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo." }
                 ]
             },
@@ -342,10 +342,10 @@ const speciesDatabase = [
                 physical: "Escamas doradas o broncíneas que brillan bajo el sol.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Breath Weapon (Fuego)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
-                    { title: "Boiling Blood", tier: 2, text: "Una vez por turno, cuando impactas o dañas con un conjuro, puedes añadir daño de Fuego igual a Prof. (Usos = Prof)." },
-                    { title: "Radiant Pulse", tier: 3, text: "Acción adicional: Emites luz 10ft por 1 min. Aliados elegidos obtienen ventaja en su primera salvación." },
-                    { title: "Radiant Endurance", tier: 2, text: "Resistencia al Fuego. Las altas temperaturas y luz intensa no te imponen penalizadores." }
+                    { title: "Breath Weapon (Fuego)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Boiling Blood", tier: 2, text: "Una vez por turno, cuando impactas con un ataque o infliges daño con un conjuro, puedes hacer que el objetivo reciba daño de Fuego adicional igual a tu bonificador de competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo." },
+                    { title: "Radiant Pulse", tier: 3, text: "Como acción adicional, emites luz brillante en un radio de 10 pies durante 1 minuto. La luz es tenue por 10 pies adicionales. Cuando activas este rasgo, elige un número de criaturas aliadas dentro de la luz (incluyéndote) igual a tu bonificador de competencia. Durante la duración, las criaturas elegidas obtienen ventaja en la primera tirada de salvación que realicen. Una vez que utilizas este rasgo, no puedes volver a hacerlo hasta terminar un descanso largo." },
+                    { title: "Radiant Endurance", tier: 2, text: "Obtienes resistencia al daño por Fuego. Las altas temperaturas y entornos abrasadores nunca cuentan como extremos para ti y la luz intensa nunca te impone desventaja en pruebas de Percepción ni penalizadores visuales." }
                 ]
             },
             {
@@ -357,10 +357,10 @@ const speciesDatabase = [
                 physical: "Escamas plateadas que reflejan la luz de forma tenue.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Breath Weapon (Psíquico)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
+                    { title: "Breath Weapon (Psíquico)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
                     { title: "Reflected Self", tier: 1, text: "Obtienes competencia en Sigilo o Engaño." },
-                    { title: "Veil of Phases", tier: 3, text: "Reacción: Cuando eres impactado, puedes imponer desventaja a esa tirada (1/descanso largo)." },
-                    { title: "Veiled Mind", tier: 2, text: "Resistencia al daño Psíquico y ventaja en salvaciones contra ser hechizado o asustado." }
+                    { title: "Veil of Phases", tier: 3, text: "Cuando una criatura que puedas ver te impacta con un ataque, puedes usar tu reacción para imponer desventaja a esa tirada. Una vez que utilizas este rasgo, no puedes volver a hacerlo hasta terminar un descanso largo." },
+                    { title: "Veiled Mind", tier: 2, text: "Obtienes resistencia al daño Psíquico. Además, tienes ventaja en salvaciones contra ser hechizado o asustado." }
                 ]
             },
             {
@@ -372,10 +372,10 @@ const speciesDatabase = [
                 physical: "Escamas azules o eléctricas con crestas vibrantes.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Breath Weapon (Rayo)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
-                    { title: "Storm Step", tier: 2, text: "Al realizar Dash, los ataques de oportunidad contra ti se realizan con desventaja." },
-                    { title: "Crackling Blood", tier: 2, text: "Una vez por turno, al dañar con aliento o ataques eléctricos, tu velocidad aumenta en 5 pies." },
-                    { title: "Storm Endurance", tier: 2, text: "Resistencia al daño Eléctrico. Vientos fuertes y tormentas no son condiciones adversas." }
+                    { title: "Breath Weapon (Rayo)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Storm Step", tier: 2, text: "Cuando realizas la acción Dash, los ataques de oportunidad contra ti se realizan con desventaja hasta el final del turno." },
+                    { title: "Crackling Blood", tier: 2, text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño de Eléctrico, tu velocidad aumenta en 5 pies hasta el final de tu turno." },
+                    { title: "Storm Endurance", tier: 2, text: "Obtienes resistencia al daño Eléctrico. Los vientos fuertes y tormentas nunca cuentan como condiciones adversas para ti." }
                 ]
             },
             {
@@ -387,11 +387,11 @@ const speciesDatabase = [
                 physical: "Escamas pétreas, marrones o grisáceas.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Breath Weapon (Contundente)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
+                    { title: "Breath Weapon (Contundente)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
                     { title: "Immovable Frame", tier: 2, text: "Tienes ventaja en tiradas de salvación para evitar ser derribado o movido contra tu voluntad." },
-                    { title: "Stonehide", tier: 1, text: "Mientras no lleves armadura, obtienes un bono de +1 a la CA." },
+                    { title: "Hardened Scales", tier: 1, text: "Tus escamas son duras como piedra. Mientras no lleves armadura, puedes calcular tu CA como 13 + tu modificador de Destreza o Constitución. Puedes usar un escudo y aun así obtener este beneficio." },
                     { title: "Stone Endurance", tier: 2, text: "Obtienes resistencia al daño Contundente." },
-                    { title: "Titan’s Bearing", tier: 1, text: "Cuentas como una talla más grande para carga. Puedes usar equipo pesado sin requisitos de Fuerza." }
+                    { title: "Titan’s Bearing", tier: 1, text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar. Puedes portar y usar armas y armaduras no mágicas que requieran Fuerza sin necesidad de cumplir sus requisitos de Fuerza." }
                 ]
             },
             {
@@ -403,10 +403,10 @@ const speciesDatabase = [
                 physical: "Escamas verdes con patrones de vegetación.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Breath Weapon (Veneno/Ácido)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
-                    { title: "Creeping Vitality", tier: 2, text: "Cuando recuperas puntos de golpe, sumas tu bonificador de competencia a la curación." },
+                    { title: "Breath Weapon (Veneno/Ácido)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Creeping Vitality", tier: 2, text: "Cuando recuperas puntos de golpe mediante cualquier fuente, recuperas puntos adicionales iguales a tu bonificador de competencia." },
                     { title: "Adaptive Flesh", tier: 1, text: "Tienes ventaja en salvaciones contra veneno y enfermedad." },
-                    { title: "Verdant Endurance", tier: 2, text: "Resistencia a Veneno y Ácido. Los entornos tóxicos o densos no son extremos para ti." }
+                    { title: "Verdant Endurance", tier: 2, text: "Obtienes resistencia al daño por veneno y ácido, cuando usas tú Breath Weapon puedes elegir cualquiera de los dos tipos de elemento al usarlo. Además, los entornos tóxicos, pantanosos, contaminados o con vegetación densa nunca cuentan como extremos para ti." }
                 ]
             },
             {
@@ -418,10 +418,10 @@ const speciesDatabase = [
                 physical: "Escamas oscuras con puntos brillantes.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Breath Weapon (Fuerza)", tier: 2, text: "Exhalación de 15ft (cono) o 30ft (línea). Daño 1d10 (escala nivel)." },
-                    { title: "Celestial Insight", tier: 3, text: "1/descanso largo: Tras ver una tirada d20, puedes sumar o restar 1d4 al resultado." },
-                    { title: "Distant Gaze", tier: 2, text: "Puedes ver a través de oscuridad mágica e ilusiones hasta 30 pies." },
-                    { title: "Cosmic Endurance", tier: 2, text: "Resistencia al daño de Fuerza. Efectos de gravedad o vacío no te afectan." }
+                    { title: "Breath Weapon (Fuerza)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Celestial Insight", tier: 3, text: "Una vez por descanso largo, después de ver una tirada d20, puedes sumar o restar 1d4." },
+                    { title: "Distant Gaze", tier: 2, text: "Puedes ver normalmente a través de oscuridad mágica, ilusiones y efectos visuales que obscurezcan hasta 30 pies." },
+                    { title: "Cosmic Endurance", tier: 2, text: "Obtienes resistencia al daño de fuerza. Los efectos que alteran la gravedad, el vacío o la presión cósmica no te afectan." }
                 ]
             }
         ]
