@@ -467,12 +467,14 @@ const speciesDatabase = [
         name: "Grung",
         category: "Bestias",
         description: "Humanoides anfibios de piel vibrante y tóxica. Son territoriales y disciplinados, viviendo en ecosistemas donde la vida fluye entre el agua y la tierra.",
-        type: "Humanoide / Beast",
-        size: "Pequeño",
-        speed: 25,
-        languages: "Común, Sylvano",
-        physical: "Piel húmeda de colores chillones y textura brillante. Cuerpo elástico con almohadillas en los dedos.",
-        traits: [
+        subraces: [
+            {
+                type: "Humanoide / Beast",
+                size: "Pequeño",
+                speed: 25,
+                languages: "Común, Sylvano",
+                physical: "Piel húmeda de colores chillones y textura brillante. Cuerpo elástico con almohadillas en los dedos.",
+                traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Amphibious", tier: 1, text: "Puedes respirar aire y agua." },
                     { title: "Poison Immunity", tier: 3, text: "Inmune al daño por veneno y condición envenenado." },
@@ -486,12 +488,14 @@ const speciesDatabase = [
         name: "Tabaxi",
         category: "Bestias",
         description: "Humanoides felinos impulsados por una curiosidad casi patológica. Viajeros y narradores que ven el mundo como una experiencia constante.",
-        type: "Humanoide / Beast",
-        size: "Pequeño o Mediano",
-        speed: 30,
-        languages: "Común, Adicional",
-        physical: "Cuerpo esbelto con patrones de manchas o rayas y garras retráctiles.",
-        traits: [
+        subraces: [
+            {
+                type: "Humanoide / Beast",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Adicional",
+                physical: "Cuerpo esbelto con patrones de manchas o rayas y garras retráctiles.",
+                traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Feline Agility", tier: 2, text: "Cuando te mueves en tu turno en combate, puedes duplicar tu velocidad hasta el final del turno. Una vez usado, debes permanecer inmóvil durante un turno para volver a usarlo." },
                     { title: "Cat’s Claws", tier: 1, text: "Tus garras son un arma natural que inflige 1d6 + mod. Fuerza cortante. Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres." },
@@ -504,11 +508,13 @@ const speciesDatabase = [
         name: "Behero",
         category: "Acuaticos/Voladores",
         description: "Majestuosos humanoides con rasgos de búho, guardianes del silencio. Poseen un vuelo inaudible y una sabiduría que parece trascender el tiempo.",
-        type: "Humanoide / Volador",
-        size: "Pequeño o Mediano",
-        speed: 30,
-        languages: "Común, Celestial",
-        traits: [
+        subraces: [
+            {
+                type: "Humanoide / Volador",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Celestial",
+                traits: [
                     { title: "Flight", tier: 2, text: "Obtienes velocidad de Vuelo igual a tu Velocidad de Caminar" },
                     { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Silent Wings", tier: 2, text: "Tienes ventaja en pruebas de Sigilo mientras vuelas." },
@@ -516,6 +522,7 @@ const speciesDatabase = [
                     { title: "Nocturnal Wisdom", tier: 1, text: "Competencia en Perspicacia o Historia." }
                 ]
             }
+        ]
     },
     {
         id: "goblin",
@@ -626,13 +633,15 @@ const speciesDatabase = [
         name: "Plasmoide",
         category: "Anomalías",
         description: "Formas de vida gelatinosas. Adoptan rasgos humanos con facilidad y conservan una calma fluida.",
-        name: "Slime Habitual",
-        type: "Humanoide / Ooze",
-        size: "Pequeño o Mediano",
-        speed: 30,
-        languages: "Común, Adicional",
-        physical: "Cuerpo translúcido capaz de moldearse.",
-        traits: [
+        subraces: [
+            {
+                name: "Slime Habitual",
+                type: "Humanoide / Ooze",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Adicional",
+                physical: "Cuerpo translúcido capaz de moldearse.",
+                traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Amorphous", tier: 1, text: "Puedes moverte a través de espacios angostos como si fueras una criatura de un tamaño diminuto; además, no sufres desventaja por desplazarte en espacios que normalmente exigirían que te apretaras." },
                     { title: "Amorphous Resilience", tier: 2, text: "Tienes ventaja en tiradas de salvación contra la condición envenenada y resistencia al daño por veneno y ácido." },
@@ -641,6 +650,7 @@ const speciesDatabase = [
                     { title: "Digestive Slurry", tier: 2, text: "Tu cuerpo funciona como un medio disolvente vivo. Puedes consumir comida, pociones y objetos ingeribles normalmente, disolviéndolos dentro de tu masa corporal. No necesitas boca ni órganos digestivos visibles. Puedes almacenar en tu interior un objeto mediano o menor. Extraer un objeto almacenado requiere una acción bonus. Los objetos almacenados son visibles como siluetas difusas dentro de tu cuerpo." }
                 ]
             }
+        ]
     },
     {
         id: "leporino",
@@ -662,6 +672,7 @@ const speciesDatabase = [
                     { title: "Nimble Movement", tier: 1, text: "Puedes moverte a través del espacio de criaturas más grandes que tú." }
                 ]
             }
+        ]
     },
     {
         id: "mestizo",
