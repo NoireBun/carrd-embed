@@ -470,14 +470,14 @@ const speciesDatabase = [
         subraces: [
             {
                 name: "Slimeskin",
-                type: "Humanoide / Beastia",
+                type: "Humanoide / Bestia",
                 size: "Pequeño",
                 speed: 25,
                 languages: "Común, Sylvano",
                 physical: "Piel húmeda de colores chillones y textura brillante. Cuerpo elástico con almohadillas en los dedos.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Amphibious", tier: 1, text: "Puedes respirar aire y agua." },
+                    { title: "Amphibious", tier: 1, text: "Obtiene velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua." },
                     { title: "Poison Immunity", tier: 3, text: "Inmune al daño por veneno y condición envenenado." },
                     { title: "Standing Leap", tier: 2, text: "Su salto de longitud es de hasta 25 pies y su salto de altura es de hasta 15 pies, con o sin carrera inicial. Como acción adicional, puedes dar un salto sin coste de movimiento." },
                     { title: "Poisonous Skin", tier: 3, text: "Tu piel secreta toxinas naturales. Como reacción cuando una criatura que te agarre o impacte con un ataque cuerpo a cuerpo mientras no tengas armadura debe superar una salvación de Con (CD = 8 + bonificador por competencia + mod. Constitución) o sufrir 2d6 daño por veneno. Nivel 5 → 3d6, Nivel 11 → 4d6, Nivel 17 → 5d6. Puedes usar esta característica una vez por descanso largo." },
@@ -494,7 +494,7 @@ const speciesDatabase = [
         subraces: [
             {
                 name: "Swiftclaw",
-                type: "Humanoide / Beastia",
+                type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 30,
                 languages: "Común, Adicional",
@@ -628,7 +628,7 @@ const speciesDatabase = [
         subraces: [
             {
                 name: "Toro",
-                type: "Humanoide / Beastia",
+                type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 35,
                 languages: "Común, Adicional",
@@ -643,7 +643,7 @@ const speciesDatabase = [
             },
             {
                 name: "Asterion",
-                type: "Humanoide / Beastia",
+                type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 30,
                 languages: "Común, Adicional",
@@ -691,7 +691,7 @@ const speciesDatabase = [
         subraces: [
             {
                 name: "Hillhopper",
-                type: "Humanoide / Beastia",
+                type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 40,
                 languages: "Común, Adicional",
@@ -918,10 +918,10 @@ function renderFinalSheet() {
                 </div>
                 <div class="stat-box">
                     <label>Velocidad de Movimiento</label>
-                    <span>${avgSpeed} pies (Promedio)</span>
+                    <span>${avgSpeed} pies (Redondeado Abajo)</span>
                 </div>
                 <div class="stat-box">
-                    <label>Tamaño Sugerido</label>
+                    <label>Tamaños a Elegir</label>
                     <span>${sizes.join(' o ')}</span>
                 </div>
                 <div class="stat-box">
