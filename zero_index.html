@@ -539,7 +539,7 @@ const speciesDatabase = [
     {
         id: "grung",
         name: "Grung",
-        category: "Bestias",
+        category: "Humanoide / Bestia",
         description: "Humanoides anfibios de piel vibrante y tóxica. Son territoriales y disciplinados, viviendo en ecosistemas donde la vida fluye entre el agua y la tierra.",
         subraces: [
             {
@@ -563,12 +563,12 @@ const speciesDatabase = [
     {
         id: "tabaxi",
         name: "Tabaxi",
-        category: "Bestias",
+        category: "Humanoide / Bestia",
         description: "Humanoides felinos impulsados por una curiosidad casi patológica. Viajeros y narradores que ven el mundo como una experiencia constante.",
         subraces: [
             {
                 name: "Swiftclaw",
-                type: "Humanoide / Beast",
+                type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 30,
                 languages: "Común, Adicional",
@@ -576,7 +576,7 @@ const speciesDatabase = [
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Feline Agility", tier: 2, text: "Duplica tu velocidad este turno. Debes estar quieto un turno para recargar." },
-                    { title: "Cat’s Claws", tier: 1, text: "Tus garras son un arma natural que inflige 1d6 + mod. Fuerza cortante. Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres." },
+                    { title: "Cat’s Claws", tier: 2, text: "Tus garras son un arma natural que inflige 1d6 + mod. Fuerza cortante. Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres." },
                     { title: "Feline Senses", tier: 1, text: "Competencia en Percepción o Sigilo." }
                 ]
             }
@@ -585,22 +585,22 @@ const speciesDatabase = [
     {
         id: "behero",
         name: "Behero",
-        category: "Acuaticos/Voladores",
+        category: "Humanoide / Bestia",
         description: "Majestuosos humanoides con rasgos de búho, guardianes del silencio. Poseen un vuelo inaudible y una sabiduría que parece trascender el tiempo.",
         subraces: [
             {
                 name: "Nightwing",
-                type: "Humanoide / Volador",
+                type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 30,
                 languages: "Común, Celestial",
                 physical: "Plumas densas y suaves, ojos grandes capaces de girar casi 360 grados.",
                 traits: [
-                    { title: "Superior Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Flight", tier: 2, text: "Obtiene velocidad de Vuelo igual a tu Velocidad de Caminar. No puedes usar esta velocidad si llevas armadura media o pesada."},
                     { title: "Silent Wings", tier: 2, text: "Tienes ventaja en pruebas de Sigilo mientras vuelas."},
                     { title: "Talons", tier: 1, text: "Tus garras son un arma natural que inflige 1d6 + mod. Fuerza cortante. Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres." },
-                    { title: "Nocturnal Wisdom", tier: 2, text: "Competencia en Perspicacia o Historia." }
+                    { title: "Nocturnal Wisdom", tier: 1, text: "Competencia en Perspicacia o Historia." }
                 ]
             }
         ]
@@ -612,12 +612,28 @@ const speciesDatabase = [
         description: "Las goblins son un pueblo antiguo, nacido en los márgenes del mundo civilizado. Son pequeñas, resistentes y astutas.",
         subraces: [
             {
+                name: "Clumptent",
+                type: "Humanoide / Fey",
+                size: "Pequeño",
+                speed: 30,
+                languages: "Común, Goblin",
+                image: "https://pbs.twimg.com/media/F32Bgp0XsAAtERC?format=jpg&name=4096x4096",
+                physical: "Poseen una fisonomía atlética pero simple, con una altura promedio de 100 cm. Su piel, de tonos verde musgo u olivo, es notablemente elástica y suave, adaptada para el movimiento ágil en humedales. Destacan sus ojos grandes y brillantes en tonos ambarinos. Suelen ser fanaticas de lo brillante y de la carne.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Fey Ancestry", tier: 2, text: "Tienes ventaja en las tiradas de salvación que realices para evitar o terminar la condición encantada sobre ti." },
+                    { title: "Fury of the Small", tier: 3, text: "Cuando dañas a una criatura con un ataque o un conjuro, y la criatura es de un tamaño mayor que el tuyo, puedes hacer que el ataque o conjuro inflija daño adicional. El daño adicional es igual a tu bonificador por competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno." },
+                    { title: "Nimble Escape", tier: 2, text: "Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos." },
+                    { title: "Imposing Presence", tier: 1, text: "Tienes competencia en una de las siguientes habilidades de tu elección: Intimidación o Persuasión." }
+                ]
+            },
+            {
                 name: "Dragonjaw",
                 type: "Humanoide / Fey / Dragón",
                 size: "Pequeño",
                 speed: 25,
                 languages: "Común, Dracónico, Goblin",
-                physical: "Son la variante más robusta y baja, rondando los 80 cm. Su constitución es densa y su cuerpo suele acumular más grasa, con extremidades fuertes y una piel pálida o azulada protegida por un cabello sedoso y térmico. Su rasgo más distintivo son los cuernos curvados que brotan de su cabeza, similares a los de un carnero o algunos dragones, y una temperatura corporal naturalmente elevada al tacto.",
+                physical: "Son la variante más robusta y baja, rondando los 80 cm. Su constitución es densa y su cuerpo suele acumular más grasa, con extremidades fuertes y una piel pálida o azulada protegida por un cabello sedoso y térmico. Su rasgo más distintivo son los cuernos curvados que brotan de su cabeza, similares a los de un carnero o algunos dragones, y una temperatura corporal naturalmente elevada al tacto. Suelen desarrollar dientes superiores similares a colmillos en la niñez, lo cual les permite comer carnes más duras. Suelen ser las más timidas pero sociales de las goblins, siendo las que más tienen contacto con otras sociedades.",
                 image: "https://pbs.twimg.com/media/FG4-Q9LXEAIdokW?format=jpg&name=medium",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
@@ -632,7 +648,8 @@ const speciesDatabase = [
                 type: "Humanoide / Fey",
                 size: "Pequeño",
                 speed: 30,
-                languages: "Común, Extra",
+                languages: "Común, Goblin",
+                image: "https://pbs.twimg.com/media/GKz7B5KWkAAw2N4?format=jpg&name=medium",
                 physical: "Con una estatura que alcanza los 120 cm, son las más altas y de fisico más imponente. Su cuerpo es muscular y piel verde oscuro o pantanoso. Poseen mandíbulas prominentes con colmillos superiores similares a las de una Dragonjaw, y su porte es siempre agresivo. Suelen ser herreras o gladiadoras en pequeñas villas o asentamientos de otras razas. Estás no suelen andar con otros grupos de Goblins.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
@@ -646,30 +663,15 @@ const speciesDatabase = [
                 type: "Humanoide / Fey",
                 size: "Pequeño",
                 speed: 40,
-                languages: "Común, Extra",
-                image: "https://pbs.twimg.com/media/FG4-Q9LXEAIdokW?format=jpg&name=medium",
+                languages: "Común, Goblin, un Lenguaje Adicional",
+                image: "https://pbs.twimg.com/media/FhGzuKfXgAEF6b8?format=jpg&name=4096x4096",
                 physical: "Son pequeñas y de huesos ligeros, promediando los 90 cm. Su piel es de tonos oscuros como las Ironfang y aveces tonos más exoticos como el púrpura profundo, café o el gris ceniza. Tienen ojos de tonos usualmente brillantes, como rojos, morados o ambar, y una flexibilidad articular asombrosa que les permite contorsionarse y ocupar espacios extremadamente reducidos.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Pickpocket", tier: 1, text: "Obtienes competencia en la habilidad Juego de Manos." },
                     { title: "Unseen Skulker", tier: 3, text: "Eres experta en desaparecer en el momento justo. Cuando realizas la acción de Esconderte, puedes intentar ocultarte incluso si estás ligeramente oscurecida o parcialmente cubierta, siempre que no estés a plena vista. Además, moverte mientras estás oculta no revela tu posición si terminas tu movimiento en cobertura o en una zona oscurecida." },
-                    { title: "Nimbleness", tier: 1, text: "Puedes moverte a través del espacio de cualquier criatura que sea de un tamaño mayor que el tuyo."},
+                    { title: "Nimble Movement", tier: 1, text: "Puedes moverte a través del espacio de cualquier criatura que sea de un tamaño mayor que el tuyo."},
                     { title: "Nimble Escape", tier: 2, text: "Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos." }
-                ]
-            },
-            {
-                name: "Trenchmaker",
-                type: "Humanoide / Fey",
-                size: "Pequeño",
-                speed: 30,
-                languages: "Común, Goblin",
-                physical: "Poseen una fisonomía atlética pero simple, con una altura promedio de 100 cm. Su piel, de tonos verde musgo u olivo, es notablemente elástica y suave, adaptada para el movimiento ágil en humedales. Destacan sus ojos grandes y brillantes en tonos ambarinos. Suelen ser fanaticas de lo brillante y de la carne.",
-                traits: [
-                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Fey Ancestry", tier: 2, text: "Tienes ventaja en las tiradas de salvación que realices para evitar o terminar la condición encantada sobre ti." },
-                    { title: "Fury of the Small", tier: 3, text: "Cuando dañas a una criatura con un ataque o un conjuro, y la criatura es de un tamaño mayor que el tuyo, puedes hacer que el ataque o conjuro inflija daño adicional. El daño adicional es igual a tu bonificador por competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno." },
-                    { title: "Nimble Escape", tier: 2, text: "Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos." },
-                    { title: "Imposing Presence", tier: 1, text: "Tienes competencia en una de las siguientes habilidades de tu elección: Intimidación o Persuasión." }
                 ]
             }
         ]
@@ -709,7 +711,7 @@ const speciesDatabase = [
                 type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 35,
-                languages: "Común, Adicional",
+                languages: "Común, un Lenguaje Adicional",
                 physical: "Musculatura masiva, cuerpo de toro humanoide con cuernos prominentes, son exclusivamente machos.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
@@ -724,11 +726,11 @@ const speciesDatabase = [
                 type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 30,
-                languages: "Común, Adicional",
+                languages: "Común, un Lenguaje Adicional",
                 physical: "De pelaje más suave de porte protector y maternal, son exclusivamente hembras.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
-                    { title: "Horns", tier: 1, text: "Tus cuernos son un arma natural que inflige 1d6 + mod. Fuerza perforante." },
+                    { title: "Horns", tier: 2, text: "Tus cuernos son un arma natural que inflige 1d6 + mod. Fuerza perforante." },
                     { title: "Disarming Presence", tier: 3, text: "Tienes ventaja en salvaciones contra la condición asustado. Además, cuando una criatura falle una tirada de ataque contra ti, puedes usar tu reacción para imponer desventaja en su siguiente ataque antes del final de su próximo turno." },
                     { title: "Motherly Production", tier: 2, text: "Tus pechos relativamente grandes producen una sustancia regenerativa semi-mágica. Recolección: Al finalizar un Descanso Largo, puedes recolectar en frascos un número de dosis igual a la mitad de tu Bonificador de Competencia. Una criatura puede consumir la leche como cualquier otro consumible. La criatura recupera una cantidad de Puntos de Golpe igual a tu Bonificador de Competencia. Además, la bebida es tan nutritiva que cuenta como agua y comida para un día." },
                     { title: "Powerful Build", tier: 2, text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar." },
@@ -738,23 +740,24 @@ const speciesDatabase = [
         ]
     },
     {
-        id: "plasmoide",
-        name: "Plasmoide",
+        id: "slimekin",
+        name: "Slimekin",
         category: "Humanoide / Babosidad",
         description: "Formas de vida gelatinosas. Adoptan rasgos humanos con facilidad y conservan una calma fluida.",
         subraces: [
             {
-                name: "Slime Habitual",
+                name: "Lakewarden",
                 type: "Humanoide / Babosidad",
                 size: "Pequeño o Mediano",
                 speed: 25,
-                languages: "Común, Adicional",
+                languages: "Común, un Lenguaje Adicional",
                 physical: "Cuerpo translúcido capaz de moldearse.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Amorphous", tier: 1, text: "Puedes moverte a través de espacios angostos como si fueras una criatura de un tamaño diminuto; además, no sufres desventaja por desplazarte en espacios que normalmente exigirían que te apretaras." },
-                    { title: "Amorphous Resilience", tier: 2, text: "Tienes ventaja en tiradas de salvación contra la condición envenenada y resistencia al daño por veneno y ácido." },
+                    { title: "Amorphous Resilience", tier: 3, text: "Tienes ventaja en tiradas de salvación contra la condición envenenada y resistencia al daño por veneno y ácido." },
                     { title: "Gelatinous Mimicry", tier: 3, text: "Como acción, puedes adoptar una forma humanoide que imite a una criatura de humanoide de altura Mediano o inferior, (Imitando su altura, rasgos pero sigues pareciendo un Plasmoide). Mantienes tus estadísticas; la forma dura hasta 1 hora o hasta que la abandones como acción bonus. Puedes usar este rasgo un número de veces igual a tu bonificador de competencia; recuperas los usos tras un descanso largo." },
+                    { title: "Child of the Water", tier: 1, text: "Obtiene velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua."},
                     { title: "Solvant Strike", tier: 1, text: "Todos tus apéndices gelatinosos o tú interior cuentan como un arma natural: ataque cuerpo a cuerpo + tu bonificador por competencia, daño 1d4 + mod. Fuerza ácido. Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres." },
                     { title: "Digestive Slurry", tier: 2, text: "Tu cuerpo funciona como un medio disolvente vivo. Puedes consumir comida, pociones y objetos ingeribles normalmente, disolviéndolos dentro de tu masa corporal. No necesitas boca ni órganos digestivos visibles. Puedes almacenar en tu interior un objeto mediano o menor. Extraer un objeto almacenado requiere una acción bonus. Los objetos almacenados son visibles como siluetas difusas dentro de tu cuerpo." }
                 ]
@@ -772,13 +775,14 @@ const speciesDatabase = [
                 type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 40,
-                languages: "Común, Adicional",
+                languages: "Común, un Lenguaje Adicional",
                 physical: "Orejas largas y patas traseras potentes.",
                 traits: [
                     { title: "Keen Senses", tier: 1, text: "Obtienes competencia en Percepción." },
                     { title: "Fleet Reflexes", tier: 2, text: "Puedes añadir tu bonificador por competencia a tus tiradas de iniciativa." },
                     { title: "Standing Leap", tier: 2, text: "Su salto de longitud es de hasta 15 pies y su salto de altura es de hasta 10 pies, con o sin carrera inicial. Como acción adicional, puedes dar un salto sin coste de movimiento." },
-                    { title: "Nimble Movement", tier: 1, text: "Puedes moverte a través del espacio de criaturas más grandes que tú." }
+                    { title: "Nimble Movement", tier: 1, text: "Puedes moverte a través del espacio de cualquier criatura que sea de un tamaño mayor que el tuyo." },
+                    { title: "Lucky", tier: 3, text: "Cuando obtienes un 1 en una tirada de ataque, una prueba de característica o una tirada de salvación, puedes volver a tirar el dado y debes usar la nueva tirada. Puedes usar esta caracteristica una cantidad de veces igual a tu bonificador por competencia, y recuperas todos los usos gastados al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno."}
                 ]
             }
         ]
