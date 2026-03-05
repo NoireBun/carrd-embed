@@ -401,7 +401,7 @@ const speciesDatabase = [
                 physical: "Escamas pálidas o azuladas, a menudo cubiertas por una fina escarcha.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
-                    { title: "Breath Weapon (Frío)", tier: 2, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Breath Weapon (Frío)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
                     { title: "Flowbound Body", tier: 1, text: "Tienes ventaja en pruebas y tiradas de salvación realizadas para escapar de la condición Agarre." },
                     { title: "Freezing Attack", tier: 2, text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño de Frío, su velocidad se reduce en 10 pies hasta el inicio de tu siguiente turno." },
                     { title: "Child of the Water", tier: 1, text: "Obtiene velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua." },
@@ -431,10 +431,10 @@ const speciesDatabase = [
                 languages: "Común, Dracónico",
                 physical: "Escamas plateadas que reflejan la luz de forma tenue.",
                 traits: [
-                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Psíquico)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
                     { title: "Reflected Self", tier: 1, text: "Obtienes competencia en Sigilo o Engaño." },
-                    { title: "Veil of Phases", tier: 3, text: "Cuando una criatura que puedas ver te impacta con un ataque, puedes usar tu reacción para imponer desventaja a esa tirada. Una vez que utilizas este rasgo, no puedes volver a hacerlo hasta terminar un descanso largo." },
+                    { title: "Veil of Phases", tier: 3, text: "Cuando una criatura que puedas ver te impacta con un ataque, puedes usar tu reacción para volverte semi-trasparente imponiendo desventaja a esa tirada. Si el ataque falla, puedes moverte hasta la mitad de tú Velocidad de Caminar como parte de la reacción. Una vez que utilizas este rasgo, no puedes volver a hacerlo hasta terminar un descanso largo." },
                     { title: "Veiled Mind", tier: 2, text: "Obtienes resistencia al daño Psíquico. Además, tienes ventaja en salvaciones contra ser hechizado o asustado." }
                 ]
             },
@@ -567,15 +567,15 @@ const speciesDatabase = [
     {
         id: "leviath",
         name: "Leviath",
-        category: "Humanoide / Bestia",
-        description: "Humanoides anfibios de piel vibrante y tóxica. Son territoriales y disciplinados, viviendo en ecosistemas donde la vida fluye entre el agua y la tierra.",
+        category: "Humanoide / Bestia / Dragon",
+        description: "Peces / Tiburones",
         subraces: [
             {
                 name: "Sharkonoid",
                 type: "Humanoide / Bestia / Dragon",
                 size: "Pequeño o Mediano o Grande",
                 speed: 30,
-                languages: "Común, Sylvano",
+                languages: "Común, Dracónico",
                 image: "https://i.pinimg.com/1200x/8d/0b/94/8d0b941c30ac9a664c784ab261231f4e.jpg",
                 physical: "Piel húmeda de colores chillones y textura brillante. Cuerpo elástico con almohadillas en los dedos.",
                 traits: [
@@ -622,7 +622,7 @@ const speciesDatabase = [
                 type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 30,
-                languages: "Común, Celestial",
+                languages: "Común, Sylvan, uno Adicional",
                 physical: "Plumas densas y suaves, ojos grandes capaces de girar casi 360 grados.",
                 traits: [
                     { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
@@ -692,7 +692,7 @@ const speciesDatabase = [
                 type: "Humanoide / Fey",
                 size: "Pequeño",
                 speed: 40,
-                languages: "Común, Goblin, un Lenguaje Adicional",
+                languages: "Común, Goblin, uno Adicional",
                 image: "https://pbs.twimg.com/media/FhGzuKfXgAEF6b8?format=jpg&name=4096x4096",
                 physical: "Son pequeñas y de huesos ligeros, promediando los 90 cm. Su piel es de tonos oscuros como las Ironfang y aveces tonos más exoticos como el púrpura profundo, café o el gris ceniza. Tienen ojos de tonos usualmente brillantes, como rojos, morados o ambar, y una flexibilidad articular asombrosa que les permite contorsionarse y ocupar espacios extremadamente reducidos.",
                 traits: [
@@ -716,7 +716,7 @@ const speciesDatabase = [
                 type: "Humanoide / Planta / Babosidad",
                 size: "Pequeño o Mediano",
                 speed: 25,
-                languages: "Común, Celestial",
+                languages: "Común, Sylvan",
                 physical: "Son suavecitos, de varios tonos similares a muchos hongos comestibles o venenosos incluyendo sus caracteristicas..",
                 traits: [
                     { title: "Telephatic Rapport", tier: 3, text: "Puedes comunicarte telepáticamente con una criatura dispuesta a 120 pies de ti. No necesita compartir idioma contigo, pero debe entender al menos un idioma. Esta comunicación transmite sensaciones e imágenes simples más que palabras precisas." },
@@ -740,7 +740,7 @@ const speciesDatabase = [
                 type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 35,
-                languages: "Común, un Lenguaje Adicional",
+                languages: "Común, uno Adicional",
                 physical: "Musculatura masiva, cuerpo de toro humanoide con cuernos prominentes, son exclusivamente machos.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
@@ -755,7 +755,7 @@ const speciesDatabase = [
                 type: "Humanoide / Bestia",
                 size: "Pequeño o Mediano",
                 speed: 30,
-                languages: "Común, un Lenguaje Adicional",
+                languages: "Común, uno Adicional",
                 physical: "De pelaje más suave de porte protector y maternal, son exclusivamente hembras.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
@@ -779,7 +779,7 @@ const speciesDatabase = [
                 type: "Humanoide / Babosidad",
                 size: "Pequeño o Mediano",
                 speed: 25,
-                languages: "Común, un Lenguaje Adicional",
+                languages: "Común, uno Adicional",
                 image: "https://i.pinimg.com/736x/96/b6/95/96b695df5a821939640521b4923dd018.jpg",
                 physical: "Cuerpo translúcido capaz de moldearse.",
                 traits: [
