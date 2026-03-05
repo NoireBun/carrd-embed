@@ -397,6 +397,7 @@ const speciesDatabase = [
                 size: "Pequeño o Mediano",
                 speed: 30,
                 languages: "Común, Dracónico",
+                image: "https://i.pinimg.com/736x/28/3f/48/283f4804c141b613b3c0b3d90c07c83f.jpg",
                 physical: "Escamas pálidas o azuladas, a menudo cubiertas por una fina escarcha.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
@@ -463,7 +464,7 @@ const speciesDatabase = [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Breath Weapon (Contundente)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho (elige la forma cada vez). Cada criatura en esa área debe realizar una tirada de salvación de Destreza (CD 8 más tu modificador de Constitución y tu Bonificador por Competencia). Si falla la tirada, la criatura recibe 1d10 de daño del tipo determinado por tu resistencia de tu Sangre Dracónica. Si tiene éxito, la criatura recibe la mitad del daño. Este daño aumenta en 1d10 al alcanzar los niveles de personaje 5 (2d10), 11 (3d10) y 17 (4d10)." },
                     { title: "Immovable Frame", tier: 2, text: "Tienes ventaja en tiradas de salvación para evitar ser derribado o movido contra tu voluntad." },
-                    { title: "Hardened Scales", tier: 1, text: "Tus escamas son duras como piedra. Mientras no lleves armadura, puedes calcular tu CA como 13 + tu modificador de Destreza o Constitución. Puedes usar un escudo y aun así obtener este beneficio." },
+                    { title: "Hardened Scales", tier: 3, text: "Tus escamas son duras como piedra. Mientras no lleves armadura, puedes calcular tu CA como 13 + tu modificador de Destreza o Constitución. Puedes usar un escudo y aun así obtener este beneficio." },
                     { title: "Stone Endurance", tier: 2, text: "Obtienes resistencia al daño Contundente." },
                     { title: "Titan’s Bearing", tier: 1, text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar. Puedes portar y usar armas y armaduras no mágicas que requieran Fuerza sin necesidad de cumplir sus requisitos de Fuerza." }
                 ]
@@ -512,6 +513,7 @@ const speciesDatabase = [
                 size: "Pequeño",
                 speed: 40,
                 languages: "Común, Dracónico",
+                image: "https://i.pinimg.com/736x/ed/0c/e7/ed0ce7c203af1f471565441ec85d373c.jpg",
                 physical: "Escamas reptilianas que reflejan ecos de la grandeza dracónica.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
@@ -525,6 +527,7 @@ const speciesDatabase = [
                 size: "Pequeño",
                 speed: 30,
                 languages: "Común, Adicional",
+                image: "https://i.pinimg.com/736x/ed/0c/e7/ed0ce7c203af1f471565441ec85d373c.jpg",
                 physical: "Criaturas de puro instinto de caza con rasgos más caninos o bestiales.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad." },
@@ -544,10 +547,11 @@ const speciesDatabase = [
         subraces: [
             {
                 name: "Slimeskin",
-                type: "Humanoide / Bestia",
+                type: "Humanoide / Bestia / Babosidad",
                 size: "Pequeño",
                 speed: 25,
                 languages: "Común, Sylvano",
+                image: "https://pbs.twimg.com/media/Fyb0QgVWAAEh5xJ?format=jpg&name=4096x4096",
                 physical: "Piel húmeda de colores chillones y textura brillante. Cuerpo elástico con almohadillas en los dedos.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
@@ -555,6 +559,31 @@ const speciesDatabase = [
                     { title: "Poison Immunity", tier: 3, text: "Inmune al daño por veneno y condición envenenado." },
                     { title: "Standing Leap", tier: 2, text: "Su salto de longitud es de hasta 25 pies y su salto de altura es de hasta 15 pies, con o sin carrera inicial. Como acción adicional, puedes dar un salto sin coste de movimiento." },
                     { title: "Poisonous Skin", tier: 3, text: "Tu piel secreta toxinas naturales. Como reacción cuando una criatura que te agarre o impacte con un ataque cuerpo a cuerpo mientras no tengas armadura debe superar una salvación de Con (CD = 8 + bonificador por competencia + mod. Constitución) o sufrir 2d6 daño por veneno. Nivel 5 → 3d6, Nivel 11 → 4d6, Nivel 17 → 5d6. Puedes usar esta característica una vez por descanso largo." },
+                    { title: "Water Dependency", tier: 1, text: "Debes sumergirte 1 hora al día o sufrir agotamiento." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "leviath",
+        name: "Leviath",
+        category: "Humanoide / Bestia",
+        description: "Humanoides anfibios de piel vibrante y tóxica. Son territoriales y disciplinados, viviendo en ecosistemas donde la vida fluye entre el agua y la tierra.",
+        subraces: [
+            {
+                name: "Sharkonoid",
+                type: "Humanoide / Bestia / Dragon",
+                size: "Pequeño, Mediano o Grande",
+                speed: 30,
+                languages: "Común, Sylvano",
+                image: "https://i.pinimg.com/1200x/8d/0b/94/8d0b941c30ac9a664c784ab261231f4e.jpg",
+                physical: "Piel húmeda de colores chillones y textura brillante. Cuerpo elástico con almohadillas en los dedos.",
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Amphibious", tier: 1, text: "Obtiene velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua." },
+                    { title: "Leviathan Will", tier: 3, text: "Tienes ventaja en las tiradas de salvación contra ser encantado, asustado, paralizado, envenenado, aturdido o dormido." },
+                    { title: "Shark Scales", tier: 3, text: "Tienes la piel dura y escamosa. Mientras no lleves armadura, puedes calcular tu CA como 13 + tu modificador de Destreza o Constitución. Puedes usar un escudo y aun así obtener este beneficio." },
+                    { title: "Powerful Build", tier: 2, text: "Se considera una talla más grande al determinar su capacidad de carga y el peso que puede empujar, arrastrar o levantar." },
                     { title: "Water Dependency", tier: 1, text: "Debes sumergirte 1 hora al día o sufrir agotamiento." }
                 ]
             }
@@ -609,7 +638,7 @@ const speciesDatabase = [
         id: "goblin",
         name: "Goblin",
         category: "Humanoide / Fey",
-        description: "Las goblins son un pueblo antiguo, nacido en los márgenes del mundo civilizado. Son pequeñas, resistentes y astutas.",
+        description: "Las goblins son una estirpe antigua y resiliente, nacida de los márgenes del mundo donde la naturaleza es más cruda. A diferencia de otras razas humanoides, las goblins son una especie exclusivamente femenina. No existen machos en su linaje; en su lugar, poseen una biología mística y adaptable que les permite perpetuar su especie tanto entre ellas como mediante la unión con otras razas, sin embargo si su descendencia retiene al menos una caracteristica perteneciente a ellas, siempre sera una hembra.",
         subraces: [
             {
                 name: "Clumptent",
@@ -634,7 +663,7 @@ const speciesDatabase = [
                 speed: 25,
                 languages: "Común, Dracónico, Goblin",
                 physical: "Son la variante más robusta y baja, rondando los 80 cm. Su constitución es densa y su cuerpo suele acumular más grasa, con extremidades fuertes y una piel pálida o azulada protegida por un cabello sedoso y térmico. Su rasgo más distintivo son los cuernos curvados que brotan de su cabeza, similares a los de un carnero o algunos dragones, y una temperatura corporal naturalmente elevada al tacto. Suelen desarrollar dientes superiores similares a colmillos en la niñez, lo cual les permite comer carnes más duras. Suelen ser las más timidas pero sociales de las goblins, siendo las que más tienen contacto con otras sociedades.",
-                image: "https://pbs.twimg.com/media/FG4-Q9LXEAIdokW?format=jpg&name=medium",
+                image: "https://pbs.twimg.com/media/GLdH5AaX0AAEmEW?format=jpg&name=4096x4096",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
                     { title: "Cold Resistance", tier: 2, text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo para ti.", resistance: "Frío" },
@@ -751,6 +780,7 @@ const speciesDatabase = [
                 size: "Pequeño o Mediano",
                 speed: 25,
                 languages: "Común, un Lenguaje Adicional",
+                image: "https://i.pinimg.com/736x/96/b6/95/96b695df5a821939640521b4923dd018.jpg",
                 physical: "Cuerpo translúcido capaz de moldearse.",
                 traits: [
                     { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
@@ -776,6 +806,7 @@ const speciesDatabase = [
                 size: "Pequeño o Mediano",
                 speed: 40,
                 languages: "Común, un Lenguaje Adicional",
+                image: "https://i.pinimg.com/1200x/96/a8/8f/96a88f20af762e1d9a4318644bc03201.jpg",
                 physical: "Orejas largas y patas traseras potentes.",
                 traits: [
                     { title: "Keen Senses", tier: 1, text: "Obtienes competencia en Percepción." },
@@ -984,7 +1015,7 @@ function generateFinalSheet() {
 
     // Regla Goblin: Género Hembra obligatoria
     const isGoblinLineage = (idA === 'goblin' || idB === 'goblin');
-    const genderHtml = isGoblinLineage ? `<p style="color:var(--gold); font-size: 0.9rem; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 4px; border-left: 2px solid var(--gold); margin-top: 10px;"><strong>Género:</strong> Hembra (Linaje Goblin dominante)</p>` : '';
+    const genderHtml = isGoblinLineage ? `<p style="color:var(--gold); font-size: 0.9rem; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 4px; border-left: 2px solid var(--gold); margin-top: 10px;"><strong>Género:</strong> Hembra</p>` : '';
 
     // Amalgama de Tipos
     const typesA = subA.type.split(/\s+\/\s+/);
