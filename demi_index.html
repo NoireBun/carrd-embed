@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYNTH:VEINS&SMOKE — Netspace Dungeon Architect</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap');
+
+:root {
+  --bg:       #050A0F;
+  --bg2:      #0A1520;
+  --bg3:      #0F1E2D;
+  --card:     #101C2A;
+  --cyan:     #00E5FF;
+  --cyan2:    #00B4CC;
+  --green:    #39FF14;
+  --orange:   #FF6B35;
+  --purple:   #A855F7;
+  --red:      #FF4444;
+  --gold:     #FFD700;
+  --white:    #E6EDF3;
+  --dim:      #4A6B8A;
+  --dim2:     #2A3F55;
+  --mono:     'Share Tech Mono', monospace;
+  --display:  'Orbitron', monospace;
+  --vt:       'VT323', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--mono);
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  cursor: crosshair;
+}
+
+/* SCANLINES */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,229,255,0.015) 2px,
+    rgba(0,229,255,0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px;
+  background: var(--bg2);
+  border-bottom: 2px solid var(--cyan);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scanH 3s linear infinite;
+}
+@keyframes scanH { 0%{opacity:0.3} 50%{opacity:1} 100%{opacity:0.3} }
+
+.logo {
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--cyan);
+  letter-spacing: 3px;
+  text-shadow: 0 0 15px var(--cyan);
+  white-space: nowrap;
+}
+.logo span { color: var(--orange); }
+
+.header-mid {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.diff-label {
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.diff-select {
+  background: var(--bg3);
+  border: 1px solid var(--dim2);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 5px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color .2s;
+}
+.diff-select:focus, .diff-select:hover { border-color: var(--cyan); }
+
+.btn {
+  padding: 7px 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid;
+  background: transparent;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.btn-cyan  { color: var(--cyan);   border-color: var(--cyan);   }
+.btn-cyan:hover  { background: rgba(0,229,255,0.1); box-shadow: 0 0 12px var(--cyan); }
+.btn-green { color: var(--green);  border-color: var(--green);  }
+.btn-green:hover { background: rgba(57,255,20,0.1);  box-shadow: 0 0 12px var(--green); }
+.btn-orange{ color: var(--orange); border-color: var(--orange); }
+.btn-orange:hover{ background: rgba(255,107,53,0.1); box-shadow: 0 0 12px var(--orange); }
+.btn-red   { color: var(--red);    border-color: var(--red);    }
+.btn-red:hover   { background: rgba(255,68,68,0.1);  box-shadow: 0 0 12px var(--red); }
+.btn-purple{ color: var(--purple); border-color: var(--purple); }
+.btn-purple:hover{ background: rgba(168,85,247,0.1); box-shadow: 0 0 12px var(--purple); }
+
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+
+/* STATUS BAR */
+.statusbar {
+  display: flex;
+  gap: 20px;
+  padding: 4px 20px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--dim2);
+  font-size: 11px;
+  color: var(--dim);
+  flex-shrink: 0;
+}
+.status-item { display: flex; gap: 6px; align-items: center; }
+.status-item b { color: var(--cyan); }
+
+/* MAIN LAYOUT */
+.main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* LEFT TOOLBOX */
+.toolbox {
+  width: 180px;
+  background: var(--bg2);
+  border-right: 1px solid var(--dim2);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+.toolbox-section {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--dim2);
+}
+.toolbox-title {
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.tool-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  margin: 3px 0;
+  cursor: grab;
+  border: 1px solid var(--dim2);
+  background: var(--card);
+  font-size: 11px;
+  transition: all .15s;
+  user-select: none;
+}
+.tool-node:hover { border-color: var(--cyan); color: var(--cyan); }
+.tool-node:active { cursor: grabbing; }
+.tool-node .icon { font-size: 14px; }
+
+/* CANVAS AREA */
+.canvas-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(0,229,255,0.03) 0%, transparent 70%),
+    linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+#dungeon-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#dungeon-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* NODES */
+.dnode {
+  position: absolute;
+  width: 120px;
+  cursor: move;
+  user-select: none;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+.dnode-inner {
+  border: 2px solid;
+  background: var(--card);
+  padding: 8px;
+  position: relative;
+  transition: box-shadow .2s;
+}
+.dnode.selected .dnode-inner {
+  box-shadow: 0 0 0 2px var(--cyan), 0 0 20px rgba(0,229,255,0.4);
+}
+.dnode-type {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.dnode-name {
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dnode-gate-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--vt);
+  font-size: 14px;
+  border: 2px solid;
+}
+.dnode-connect-btn {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--dim);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all .15s;
+  z-index: 20;
+}
+.dnode-connect-btn:hover { border-color: var(--cyan); background: var(--cyan); }
+
+/* Node type colors */
+.node-type-start    { border-color: #39FF14; }
+.node-type-start    .dnode-type { color: #39FF14; }
+.node-type-ice      { border-color: #FF4444; }
+.node-type-ice      .dnode-type { color: #FF4444; }
+.node-type-gate     { border-color: #00E5FF; }
+.node-type-gate     .dnode-type { color: #00E5FF; }
+.node-type-core     { border-color: #FFD700; }
+.node-type-core     .dnode-type { color: #FFD700; }
+.node-type-junction { border-color: #A855F7; }
+.node-type-junction .dnode-type { color: #A855F7; }
+
+/* RIGHT PANEL */
+.panel {
+  width: 300px;
+  background: var(--bg2);
+  border-left: 1px solid var(--dim2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.panel-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--dim2);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.panel-body { flex: 1; overflow-y: auto; padding: 12px 14px; }
+
+.field-group { margin-bottom: 12px; }
+.field-label {
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+input[type=text], input[type=number], select, textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--dim2);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 6px 8px;
+  outline: none;
+  transition: border-color .2s;
+  resize: vertical;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--cyan); }
+
+.ice-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  margin: 2px;
+  cursor: pointer;
+  border: 1px solid var(--dim2);
+  background: var(--card);
+  transition: all .15s;
+}
+.ice-badge.sel { border-color: var(--red); color: var(--red); }
+
+.puzzle-preview {
+  background: var(--bg3);
+  border: 1px solid var(--dim2);
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.puzzle-preview .pv-title {
+  color: var(--orange);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* SEQUENCE PUZZLE */
+.seq-cells { display: flex; gap: 4px; flex-wrap: wrap; margin: 6px 0; }
+.seq-cell {
+  width: 36px; height: 36px;
+  background: var(--bg);
+  border: 1px solid var(--dim2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--vt);
+  font-size: 18px;
+  color: var(--cyan);
+  cursor: pointer;
+  transition: all .15s;
+}
+.seq-cell:hover { border-color: var(--cyan); }
+.seq-cell.answer { border-color: var(--orange); color: var(--orange); }
+.seq-cell.hidden { color: var(--dim); }
+
+/* MAZE PUZZLE */
+.maze-grid {
+  display: grid;
+  gap: 2px;
+  margin: 6px 0;
+}
+.maze-cell {
+  width: 22px; height: 22px;
+  cursor: pointer;
+  border: 1px solid var(--dim2);
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .1s;
+}
+.maze-cell.wall    { background: var(--dim2); }
+.maze-cell.path    { background: rgba(0,229,255,0.15); border-color: var(--cyan); color: var(--cyan); }
+.maze-cell.start   { background: rgba(57,255,20,0.25); border-color: var(--green); }
+.maze-cell.end     { background: rgba(255,107,53,0.25); border-color: var(--orange); }
+.maze-cell.solved  { background: rgba(57,255,20,0.4); }
+
+/* EXPORT OVERLAY */
+.export-target {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1200px;
+  background: var(--bg);
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--cyan);
+  padding: 20px;
+  max-width: 560px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 40px rgba(0,229,255,0.2);
+}
+.modal-title {
+  font-family: var(--display);
+  font-size: 14px;
+  color: var(--cyan);
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--dim2);
+}
+
+/* PUZZLE EDITOR MODALS */
+.puzzle-section { margin-bottom: 14px; }
+.puzzle-section-title {
+  font-size: 10px;
+  color: var(--orange);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* Sprint rooms */
+.sprint-rooms { display: flex; flex-direction: column; gap: 4px; }
+.sprint-room {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.sprint-room input { flex: 1; }
+.sprint-room .round-badge {
+  width: 22px; height: 22px;
+  border: 1px solid var(--dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--dim); flex-shrink: 0;
+}
+
+/* Vault keys */
+.vault-keys { display: flex; flex-direction: column; gap: 6px; }
+.vault-key { display: flex; gap: 6px; align-items: center; }
+.key-num {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--orange);
+  color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: bold; flex-shrink: 0;
+}
+
+/* DUNGEON EXPORT CARD */
+.export-card {
+  font-family: var(--mono);
+  background: #050A0F;
+  padding: 30px;
+  color: #E6EDF3;
+  min-width: 900px;
+}
+.export-card .ec-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 22px;
+  color: #00E5FF;
+  letter-spacing: 4px;
+  margin-bottom: 4px;
+}
+.export-card .ec-sub {
+  font-size: 11px;
+  color: #4A6B8A;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+.ec-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+.ec-node {
+  border: 1.5px solid;
+  padding: 10px 14px;
+  min-width: 180px;
+  flex: 1;
+}
+.ec-node-type { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px; }
+.ec-node-name { font-size: 14px; font-weight: bold; margin-bottom: 6px; }
+.ec-node-detail { font-size: 10px; color: #4A6B8A; line-height: 1.5; }
+.ec-divider { border: none; border-top: 1px solid #2A3F55; margin: 16px 0; }
+.ec-stats { display: flex; gap: 20px; font-size: 11px; color: #4A6B8A; }
+.ec-stats b { color: #00E5FF; }
+
+/* PUZZLE CARD */
+.puzzle-card {
+  font-family: var(--mono);
+  background: #050A0F;
+  padding: 24px;
+  color: #E6EDF3;
+  width: 700px;
+}
+.puzzle-card .pc-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #2A3F55;
+}
+.puzzle-card .pc-badge {
+  width: 48px; height: 48px;
+  border: 2px solid;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'VT323', monospace;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.puzzle-card .pc-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+.puzzle-card .pc-sub { font-size: 11px; color: #4A6B8A; margin-top: 3px; }
+.puzzle-card .pc-body { font-size: 12px; line-height: 1.8; }
+.puzzle-card .pc-section { margin-bottom: 12px; }
+.puzzle-card .pc-section-title { font-size: 10px; color: #FF6B35; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--dim2); }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan2); }
+
+/* GLITCH ANIM */
+@keyframes glitch {
+  0%,90%,100% { transform: none; }
+  91% { transform: skewX(2deg) translateX(2px); }
+  93% { transform: skewX(-2deg) translateX(-2px); }
+  95% { transform: none; }
+  97% { transform: skewX(1deg); }
+}
+.glitch { animation: glitch 8s infinite; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg2);
+  border: 1px solid var(--cyan);
+  padding: 8px 20px;
+  font-size: 12px;
+  color: var(--cyan);
+  z-index: 5000;
+  letter-spacing: 1px;
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* CONNECTING LINE ANIMATION */
+.connecting-hint {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background: var(--bg2);
+  border: 1px solid var(--orange);
+  padding: 10px 20px;
+  font-size: 12px;
+  color: var(--orange);
+  z-index: 100;
+  pointer-events: none;
+  display: none;
+}
+.connecting-hint.show { display: block; }
+
+/* Node delete btn */
+.dnode-del {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 16px;
+  height: 16px;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+  display: none;
+}
+.dnode:hover .dnode-del { display: flex; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo glitch">SYNTH<span>:</span>V&amp;S <span>//</span> NETSPACE ARCHITECT</div>
+  <div class="header-mid">
+    <span class="diff-label">Difficulty:</span>
+    <select class="diff-select" id="diffSel">
+      <option value="low">LOW — Street Level</option>
+      <option value="corp" selected>CORPORATE — Tier 2</option>
+      <option value="mil">MILITARY — Tier 3</option>
+      <option value="black">BLACK SITE — Maximum</option>
+    </select>
+    <button class="btn btn-green" onclick="autoGenerate()">⚡ AUTO-GENERATE</button>
+    <button class="btn btn-cyan" onclick="clearAll()">◻ CLEAR ALL</button>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="btn btn-orange" onclick="exportDungeon()">⬇ EXPORT DUNGEON MAP</button>
+    <button class="btn btn-purple" onclick="exportAllPuzzles()">⬇ EXPORT ALL PUZZLES</button>
+  </div>
+</div>
+
+<!-- STATUS -->
+<div class="statusbar" id="statusbar">
+  <div class="status-item">NODES: <b id="st-nodes">0</b></div>
+  <div class="status-item">GATES: <b id="st-gates">0</b></div>
+  <div class="status-item">ICE: <b id="st-ice">0</b></div>
+  <div class="status-item">TRACE LIMIT: <b id="st-trace">10</b></div>
+  <div class="status-item">CONNECTIONS: <b id="st-conn">0</b></div>
+  <div class="status-item" style="margin-left:auto;color:var(--dim)">
+    DRAG nodes from left panel · CLICK node to configure · SHIFT+CLICK to connect
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOOLBOX -->
+  <div class="toolbox">
+    <div class="toolbox-section">
+      <div class="toolbox-title">⬡ Add Nodes</div>
+      <div class="tool-node" draggable="true" ondragstart="startDrag(event,'start')" style="border-color:var(--green);color:var(--green)">
+        <span class="icon">▶</span> Entry Point
+      </div>
+      <div class="tool-node" draggable="true" ondragstart="startDrag(event,'gate')" style="border-color:var(--cyan);color:var(--cyan)">
+        <span class="icon">⬡</span> Node Gate
+      </div>
+      <div class="tool-node" draggable="true" ondragstart="startDrag(event,'ice')" style="border-color:var(--red);color:var(--red)">
+        <span class="icon">◈</span> ICE Encounter
+      </div>
+      <div class="tool-node" draggable="true" ondragstart="startDrag(event,'core')" style="border-color:var(--gold);color:var(--gold)">
+        <span class="icon">★</span> Data Core
+      </div>
+      <div class="tool-node" draggable="true" ondragstart="startDrag(event,'junction')" style="border-color:var(--purple);color:var(--purple)">
+        <span class="icon">◇</span> Junction
+      </div>
+    </div>
+
+    <div class="toolbox-section">
+      <div class="toolbox-title">⬡ Gate Types</div>
+      <div style="font-size:10px;line-height:2;color:var(--dim)">
+        <div><span style="color:var(--cyan)">α</span> Sequence Lock</div>
+        <div><span style="color:var(--cyan)">β</span> Signal Maze</div>
+        <div><span style="color:var(--cyan)">γ</span> ICE Negotiation</div>
+        <div><span style="color:var(--cyan)">δ</span> Recursive Vault</div>
+        <div><span style="color:var(--cyan)">ε</span> Mirror Protocol</div>
+        <div><span style="color:var(--cyan)">ζ</span> Blackout Sprint</div>
+      </div>
+    </div>
+
+    <div class="toolbox-section">
+      <div class="toolbox-title">⬡ Trace Limit</div>
+      <input type="number" id="traceLimitInput" value="10" min="3" max="20" 
+        style="width:100%;font-size:18px;font-family:var(--vt);color:var(--orange);text-align:center"
+        oninput="updateStatus()">
+      <div style="font-size:9px;color:var(--dim);margin-top:4px;text-align:center">TC MAX BEFORE EJECT</div>
+    </div>
+
+    <div class="toolbox-section" style="flex:1">
+      <div class="toolbox-title">⬡ Quick Actions</div>
+      <button class="btn btn-cyan btn-sm" style="width:100%;margin:3px 0" onclick="connectMode()">⟷ CONNECT MODE</button>
+      <button class="btn btn-red btn-sm" style="width:100%;margin:3px 0" onclick="deleteSelected()">✕ DELETE SELECTED</button>
+      <button class="btn btn-purple btn-sm" style="width:100%;margin:3px 0" onclick="exportSelectedPuzzle()">⬇ EXPORT PUZZLE</button>
+    </div>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="canvas-wrap" id="canvasWrap"
+    ondragover="event.preventDefault()"
+    ondrop="dropNode(event)">
+    <svg id="dungeon-svg"></svg>
+    <div id="dungeon-canvas"></div>
+    <div style="position:absolute;bottom:10px;left:10px;font-size:10px;color:var(--dim);pointer-events:none">
+      NETSPACE // GRID VIEW // DRAG TO POSITION NODES
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="panel">
+    <div class="panel-header">
+      <span id="panel-title">NODE CONFIG</span>
+      <button class="btn btn-purple btn-sm" onclick="exportSelectedPuzzle()" id="exportPuzzleBtn" style="display:none">⬇ PNG</button>
+    </div>
+    <div class="panel-body" id="panel-body">
+      <div style="color:var(--dim);font-size:12px;line-height:1.8;padding:10px 0">
+        <div style="color:var(--cyan);margin-bottom:10px;font-size:11px;letter-spacing:2px">// INSTRUCTIONS</div>
+        <div>① Drag node types from the left panel onto the canvas</div><br>
+        <div>② Click a node to select and configure it here</div><br>
+        <div>③ SHIFT+CLICK a node then click another to connect</div><br>
+        <div>④ Use AUTO-GENERATE for instant dungeons</div><br>
+        <div>⑤ Export dungeon map or individual puzzles as PNG</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONNECTING HINT -->
+<div class="connecting-hint" id="connectHint">
+  CONNECT MODE: Click another node to link it
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal" id="modalContent" onclick="event.stopPropagation()">
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let nodes = [];
+let connections = [];
+let selectedNode = null;
+let connectingFrom = null;
+let nodeIdCounter = 0;
+let dragType = null;
+
+// ─── GATE CONFIGS ────────────────────────────────────────────
+function defaultGateConfig(type) {
+  switch(type) {
+    case 'alpha': return {
+      label: 'SEQUENCE LOCK',
+      sequence: ['07','1C','33','5A','8D'],
+      answer: 'E2',
+      hint: 'The progression is not what it seems...',
+      tc_penalty: 1,
+      slot_hint: 'T1 Slot reveals one correct element'
+    };
+    case 'beta': return {
+      label: 'SIGNAL MAZE',
+      gridSize: 5,
+      grid: null, // auto-init
+      startPos: [0,0],
+      endPos: [4,4],
+      tc_penalty: 1,
+      slot_hint: 'T2 Slot reveals next 2 connectors'
+    };
+    case 'gamma': return {
+      label: 'ICE NEGOTIATION',
+      ai_name: 'GUARDIAN_v4',
+      riddle: 'I exist to protect, yet I am the greatest threat to those who fear openness. What am I?',
+      answer: 'A firewall.',
+      hint: 'The guardian speaks in paradoxes.',
+      required_success: 3,
+      tc_on_fail: 'Deploy Warden ICE',
+      slot_hint: 'T1 Slot grants advantage on one roll'
+    };
+    case 'delta': return {
+      label: 'RECURSIVE VAULT',
+      keys: [
+        { name: 'KEY-ALPHA', description: 'Hidden behind Shepherd ICE, 2nd layer', type: 'ice' },
+        { name: 'KEY-BETA',  description: 'Solve this mini-sequence: 3, 6, 12, ??', type: 'puzzle' },
+        { name: 'KEY-GAMMA', description: 'Find the admin port within 3 rounds', type: 'search' }
+      ],
+      rounds_limit: 10,
+      tc_per_missing: 2
+    };
+    case 'epsilon': return {
+      label: 'MIRROR PROTOCOL',
+      mirror_hp_fraction: 0.5,
+      mirror_note: 'Uses Netrunner\'s own Program list. Cannot expend Signal Slots during fight.',
+      programs_cap: 1,
+      flavor: 'The reflection speaks with your voice. It knows every trick you know.'
+    };
+    case 'zeta': return {
+      label: 'BLACKOUT SPRINT',
+      rounds: 5,
+      rooms: [
+        { name: 'Firewall Gate 1', action: 'DC 14 Hacking check' },
+        { name: 'Shepherd ICE Block', action: 'Destroy or evade (1 round)' },
+        { name: 'Data Junction', action: 'DC 12 Hacking check' },
+        { name: 'Core Antechamber', action: 'Automatic — just move fast' },
+      ],
+      success_bonus: 'Disadvantage on IC saves for 1 hour',
+      failure_result: 'Forced Jack Out, TC resets to 5'
+    };
+    default: return {};
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NODE CREATION
+// ═══════════════════════════════════════════════════════════════
+function createNode(type, x, y, name='') {
+  const id = ++nodeIdCounter;
+  const defaults = {
+    start:    { name: 'ENTRY SHELL', color: '#39FF14', symbol: '▶' },
+    gate:     { name: 'NODE GATE',   color: '#00E5FF', symbol: '⬡' },
+    ice:      { name: 'ICE BLOCK',   color: '#FF4444', symbol: '◈' },
+    core:     { name: 'DATA CORE',   color: '#FFD700', symbol: '★' },
+    junction: { name: 'JUNCTION',    color: '#A855F7', symbol: '◇' },
+  };
+  const d = defaults[type] || defaults.junction;
+  const node = {
+    id, type, x, y,
+    name: name || d.name,
+    color: d.color, symbol: d.symbol,
+    // Gate-specific
+    gateType: type === 'gate' ? 'alpha' : null,
+    gateConfig: type === 'gate' ? defaultGateConfig('alpha') : null,
+    // ICE-specific
+    iceType: type === 'ice' ? 'shepherd' : null,
+    iceNote: '',
+    // Core-specific
+    coreContents: type === 'core' ? 'Target data package' : '',
+    // General
+    dmNotes: '',
+  };
+  nodes.push(node);
+  renderNode(node);
+  updateStatus();
+  return node;
+}
+
+function renderNode(node) {
+  const wrap = document.getElementById('dungeon-canvas');
+  const el = document.createElement('div');
+  el.className = `dnode node-type-${node.type}`;
+  el.id = `node-${node.id}`;
+  el.style.left = node.x + 'px';
+  el.style.top  = node.y + 'px';
+  el.dataset.id = node.id;
+
+  const gateLabels = {
+    alpha:'α', beta:'β', gamma:'γ', delta:'δ', epsilon:'ε', zeta:'ζ'
+  };
+
+  el.innerHTML = `
+    <div class="dnode-del" onclick="deleteNode(${node.id})">✕</div>
+    <div class="dnode-inner" style="border-color:${node.color}">
+      <div class="dnode-type">${node.type.toUpperCase()}</div>
+      <div class="dnode-name" id="nodename-${node.id}">${node.name}</div>
+      ${node.type === 'gate' ? `<div class="dnode-gate-badge" style="border-color:${node.color};background:#050A0F;color:${node.color}">${gateLabels[node.gateType]}</div>` : ''}
+      ${node.type === 'ice' ? `<div style="font-size:9px;color:#FF4444;margin-top:2px">${getIceLabel(node.iceType)}</div>` : ''}
+    </div>
+    <div class="dnode-connect-btn" onclick="startConnect(${node.id})"></div>
+  `;
+
+  // Drag to move
+  el.addEventListener('mousedown', (e) => {
+    if (e.target.classList.contains('dnode-connect-btn')) return;
+    if (e.target.classList.contains('dnode-del')) return;
+    if (e.shiftKey) { startConnect(node.id); return; }
+    selectNode(node.id);
+    dragNodeStart(e, node);
+  });
+
+  wrap.appendChild(el);
+}
+
+function getIceLabel(t) {
+  return {shepherd:'SHEPHERD', choker:'CHOKER', warden:'WARDEN', black:'BLACK ICE', daemon:'DAEMON CORE'}[t] || t;
+}
+
+function dragNodeStart(e, node) {
+  const wrap = document.getElementById('canvasWrap');
+  const rect = wrap.getBoundingClientRect();
+  const ox = e.clientX - node.x;
+  const oy = e.clientY - node.y;
+  function onMove(ev) {
+    node.x = ev.clientX - ox;
+    node.y = ev.clientY - oy;
+    const el = document.getElementById(`node-${node.id}`);
+    if (el) { el.style.left = node.x+'px'; el.style.top = node.y+'px'; }
+    drawConnections();
+  }
+  function onUp() {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+  }
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DRAG FROM TOOLBOX
+// ═══════════════════════════════════════════════════════════════
+function startDrag(e, type) { dragType = type; e.dataTransfer.effectAllowed = 'copy'; }
+
+function dropNode(e) {
+  e.preventDefault();
+  if (!dragType) return;
+  const wrap = document.getElementById('canvasWrap');
+  const rect = wrap.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  createNode(dragType, x, y);
+  dragType = null;
+  toast('Node placed');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CONNECTIONS
+// ═══════════════════════════════════════════════════════════════
+function startConnect(id) {
+  if (connectingFrom === null) {
+    connectingFrom = id;
+    document.getElementById('connectHint').classList.add('show');
+    toast('Click another node to connect');
+  } else {
+    if (connectingFrom !== id) {
+      const exists = connections.find(c =>
+        (c.a === connectingFrom && c.b === id) ||
+        (c.a === id && c.b === connectingFrom)
+      );
+      if (!exists) { connections.push({ a: connectingFrom, b: id }); drawConnections(); }
+    }
+    connectingFrom = null;
+    document.getElementById('connectHint').classList.remove('show');
+    updateStatus();
+  }
+}
+
+function connectMode() {
+  toast('SHIFT+CLICK a node to start connecting, then click target');
+}
+
+function drawConnections() {
+  const svg = document.getElementById('dungeon-svg');
+  svg.innerHTML = '';
+  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML = `<marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+    <path d="M0,0 L6,3 L0,6 Z" fill="#00E5FF" opacity="0.8"/>
+  </marker>
+  <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+  svg.appendChild(defs);
+
+  connections.forEach(c => {
+    const na = nodes.find(n => n.id === c.a);
+    const nb = nodes.find(n => n.id === c.b);
+    if (!na || !nb) return;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', na.x); line.setAttribute('y1', na.y);
+    line.setAttribute('x2', nb.x); line.setAttribute('y2', nb.y);
+    line.setAttribute('stroke', '#00E5FF');
+    line.setAttribute('stroke-width', '1.5');
+    line.setAttribute('stroke-opacity', '0.5');
+    line.setAttribute('stroke-dasharray', '6,4');
+    line.setAttribute('marker-end', 'url(#arr)');
+    line.setAttribute('filter', 'url(#glow)');
+    svg.appendChild(line);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SELECTION & PANEL
+// ═══════════════════════════════════════════════════════════════
+function selectNode(id) {
+  document.querySelectorAll('.dnode').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById(`node-${id}`);
+  if (el) el.classList.add('selected');
+  selectedNode = nodes.find(n => n.id === id);
+  renderPanel();
+}
+
+function renderPanel() {
+  const node = selectedNode;
+  if (!node) return;
+
+  document.getElementById('panel-title').textContent = `// ${node.type.toUpperCase()} CONFIG`;
+  const expBtn = document.getElementById('exportPuzzleBtn');
+  expBtn.style.display = node.type === 'gate' ? 'block' : 'none';
+
+  const pb = document.getElementById('panel-body');
+  pb.innerHTML = '';
+
+  // Name field
+  addField(pb, 'Node Name', `<input type="text" value="${node.name}" onchange="updateNodeName(${node.id},this.value)">`);
+
+  // DM notes
+  addField(pb, 'DM Notes', `<textarea rows="2" onchange="node_prop(${node.id},'dmNotes',this.value)">${node.dmNotes||''}</textarea>`);
+
+  if (node.type === 'gate') {
+    const gt = node.gateType;
+    const gateOptions = `
+      <select onchange="setGateType(${node.id},this.value)">
+        <option value="alpha" ${gt==='alpha'?'selected':''}>α — Sequence Lock</option>
+        <option value="beta"  ${gt==='beta'?'selected':''}>β — Signal Maze</option>
+        <option value="gamma" ${gt==='gamma'?'selected':''}>γ — ICE Negotiation</option>
+        <option value="delta" ${gt==='delta'?'selected':''}>δ — Recursive Vault</option>
+        <option value="epsilon" ${gt==='epsilon'?'selected':''}>ε — Mirror Protocol</option>
+        <option value="zeta" ${gt==='zeta'?'selected':''}>ζ — Blackout Sprint</option>
+      </select>`;
+    addField(pb, 'Gate Type', gateOptions);
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn btn-cyan';
+    editBtn.style.width = '100%';
+    editBtn.style.marginTop = '8px';
+    editBtn.textContent = '⬡ CONFIGURE PUZZLE';
+    editBtn.onclick = () => openPuzzleEditor(node.id);
+    pb.appendChild(editBtn);
+
+    // Puzzle preview
+    const prev = document.createElement('div');
+    prev.className = 'puzzle-preview';
+    prev.innerHTML = renderPuzzlePreview(node);
+    pb.appendChild(prev);
+
+  } else if (node.type === 'ice') {
+    const iceOptions = `
+      <select onchange="node_prop(${node.id},'iceType',this.value);renderPanel()">
+        <option value="shepherd" ${node.iceType==='shepherd'?'selected':''}>Shepherd ICE (CR 1/2)</option>
+        <option value="choker"   ${node.iceType==='choker'?'selected':''}>Choker ICE (CR 2)</option>
+        <option value="warden"   ${node.iceType==='warden'?'selected':''}>Warden ICE (CR 4)</option>
+        <option value="black"    ${node.iceType==='black'?'selected':''}>Black ICE (CR 8)</option>
+        <option value="daemon"   ${node.iceType==='daemon'?'selected':''}>Daemon Core (CR 13)</option>
+      </select>`;
+    addField(pb, 'ICE Type', iceOptions);
+    const iceInfo = {
+      shepherd:'Neural Spike +3 | 3d4 psychic | Alerts system',
+      choker:  'Thread Lock +5 | 5d6 psychic | Restrained in Net',
+      warden:  'Persona Burn +7 | 7d8 psychic | -2 INT for 1hr',
+      black:   'Flatline +10 | 10d10 psychic | Failed save = unconscious',
+      daemon:  'Abyss Stare +15 | 12d12 psychic | Permanent memory loss'
+    };
+    const infoPrev = document.createElement('div');
+    infoPrev.className = 'puzzle-preview';
+    infoPrev.innerHTML = `<div class="pv-title">ICE STATS</div><div style="color:#FF4444;font-size:11px">${iceInfo[node.iceType]||''}</div>`;
+    pb.appendChild(infoPrev);
+    addField(pb, 'Special Notes', `<textarea rows="2" onchange="node_prop(${node.id},'iceNote',this.value)">${node.iceNote||''}</textarea>`);
+
+  } else if (node.type === 'core') {
+    addField(pb, 'Core Contents', `<textarea rows="3" onchange="node_prop(${node.id},'coreContents',this.value)">${node.coreContents||''}</textarea>`);
+  }
+}
+
+function addField(parent, label, inputHtml) {
+  const g = document.createElement('div');
+  g.className = 'field-group';
+  g.innerHTML = `<div class="field-label">${label}</div>${inputHtml}`;
+  parent.appendChild(g);
+}
+
+function renderPuzzlePreview(node) {
+  const cfg = node.gateConfig;
+  if (!cfg) return '';
+  const labels = {
+    alpha:'α — SEQUENCE LOCK', beta:'β — SIGNAL MAZE', gamma:'γ — ICE NEGOTIATION',
+    delta:'δ — RECURSIVE VAULT', epsilon:'ε — MIRROR PROTOCOL', zeta:'ζ — BLACKOUT SPRINT'
+  };
+  let html = `<div class="pv-title">${labels[node.gateType]||''}</div>`;
+
+  switch(node.gateType) {
+    case 'alpha':
+      html += `<div style="margin:4px 0">SEQUENCE: <span style="color:var(--cyan)">${(cfg.sequence||[]).join(' → ')}</span> → <span style="color:var(--orange)">??</span></div>`;
+      html += `<div>ANSWER: <span style="color:var(--green)">${cfg.answer||'?'}</span></div>`;
+      break;
+    case 'beta':
+      html += `<div>MAZE: ${cfg.gridSize||5}×${cfg.gridSize||5} grid</div>`;
+      html += `<div>START [0,0] → END [${(cfg.gridSize||5)-1},${(cfg.gridSize||5)-1}]</div>`;
+      break;
+    case 'gamma':
+      html += `<div>AI: <span style="color:var(--cyan)">${cfg.ai_name||''}</span></div>`;
+      html += `<div style="margin-top:4px;font-style:italic;color:var(--dim)">"${(cfg.riddle||'').substring(0,80)}..."</div>`;
+      html += `<div>Successes needed: <span style="color:var(--orange)">${cfg.required_success||3}</span></div>`;
+      break;
+    case 'delta':
+      html += `<div>Keys: <span style="color:var(--gold)">${(cfg.keys||[]).length}</span> required</div>`;
+      html += `<div>Rounds limit: <span style="color:var(--orange)">${cfg.rounds_limit||10}</span></div>`;
+      break;
+    case 'epsilon':
+      html += `<div style="font-style:italic;color:var(--dim)">"${(cfg.flavor||'').substring(0,80)}"</div>`;
+      html += `<div>Mirror HP: <span style="color:var(--red)">50% of Netrunner</span></div>`;
+      break;
+    case 'zeta':
+      html += `<div>Rounds: <span style="color:var(--red)">${cfg.rounds||5}</span></div>`;
+      html += `<div>Rooms: <span style="color:var(--cyan)">${(cfg.rooms||[]).length}</span></div>`;
+      break;
+  }
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NODE HELPERS
+// ═══════════════════════════════════════════════════════════════
+function updateNodeName(id, val) {
+  const node = nodes.find(n=>n.id===id);
+  if (!node) return;
+  node.name = val;
+  const el = document.getElementById(`nodename-${id}`);
+  if (el) el.textContent = val;
+}
+function node_prop(id, key, val) {
+  const node = nodes.find(n=>n.id===id);
+  if (node) node[key] = val;
+}
+function setGateType(id, type) {
+  const node = nodes.find(n=>n.id===id);
+  if (!node) return;
+  node.gateType = type;
+  node.gateConfig = defaultGateConfig(type);
+  // Re-render node badge
+  const el = document.getElementById(`node-${id}`);
+  if (el) {
+    const old = el.querySelector('.dnode-gate-badge');
+    if (old) { const labels={alpha:'α',beta:'β',gamma:'γ',delta:'δ',epsilon:'ε',zeta:'ζ'}; old.textContent = labels[type]||'?'; }
+  }
+  renderPanel();
+}
+function deleteNode(id) {
+  nodes = nodes.filter(n=>n.id!==id);
+  connections = connections.filter(c=>c.a!==id && c.b!==id);
+  const el = document.getElementById(`node-${id}`);
+  if (el) el.remove();
+  if (selectedNode && selectedNode.id === id) { selectedNode = null; document.getElementById('panel-body').innerHTML = ''; }
+  drawConnections();
+  updateStatus();
+}
+function deleteSelected() {
+  if (selectedNode) deleteNode(selectedNode.id);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STATUS
+// ═══════════════════════════════════════════════════════════════
+function updateStatus() {
+  document.getElementById('st-nodes').textContent = nodes.length;
+  document.getElementById('st-gates').textContent = nodes.filter(n=>n.type==='gate').length;
+  document.getElementById('st-ice').textContent   = nodes.filter(n=>n.type==='ice').length;
+  document.getElementById('st-trace').textContent = document.getElementById('traceLimitInput').value;
+  document.getElementById('st-conn').textContent  = connections.length;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PUZZLE EDITOR MODALS
+// ═══════════════════════════════════════════════════════════════
+function openPuzzleEditor(id) {
+  const node = nodes.find(n=>n.id===id);
+  if (!node || node.type !== 'gate') return;
+  const cfg = node.gateConfig;
+
+  const editors = {
+    alpha: buildAlphaEditor,
+    beta:  buildBetaEditor,
+    gamma: buildGammaEditor,
+    delta: buildDeltaEditor,
+    epsilon: buildEpsilonEditor,
+    zeta: buildZetaEditor,
+  };
+
+  const content = document.getElementById('modalContent');
+  const labels = {
+    alpha:'α SEQUENCE LOCK', beta:'β SIGNAL MAZE', gamma:'γ ICE NEGOTIATION',
+    delta:'δ RECURSIVE VAULT', epsilon:'ε MIRROR PROTOCOL', zeta:'ζ BLACKOUT SPRINT'
+  };
+
+  content.innerHTML = `
+    <div class="modal-title">CONFIGURE NODE GATE — ${labels[node.gateType]||''}</div>
+    <div id="puzzle-editor-body"></div>
+    <div style="display:flex;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--dim2)">
+      <button class="btn btn-green" style="flex:1" onclick="savePuzzle(${id})">✓ SAVE GATE CONFIG</button>
+      <button class="btn btn-red" onclick="closeModal()">✕ CANCEL</button>
+    </div>
+  `;
+  document.getElementById('modalOverlay').style.display = 'flex';
+
+  const body = document.getElementById('puzzle-editor-body');
+  (editors[node.gateType] || (() => {}))(body, cfg);
+}
+
+function buildAlphaEditor(body, cfg) {
+  if (!cfg.sequence) cfg.sequence = ['07','1C','33','5A','8D'];
+  body.innerHTML = `
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Sequence Elements (shown to players)</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px" id="seq-cells-edit">
+        ${cfg.sequence.map((v,i)=>`
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:9px;color:var(--dim)">${i+1}</div>
+            <input type="text" maxlength="4" value="${v}" style="width:48px;text-align:center;font-size:16px;font-family:var(--vt);color:var(--cyan)"
+              oninput="cfg_alpha_seq(${i},this.value)">
+          </div>
+        `).join('')}
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="font-size:9px;color:var(--orange)">ANSWER</div>
+          <input type="text" maxlength="4" value="${cfg.answer||''}" style="width:48px;text-align:center;font-size:16px;font-family:var(--vt);color:var(--orange);border-color:var(--orange)"
+            oninput="window._editCfg.answer=this.value">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-cyan btn-sm" onclick="addSeqElement()">+ ADD ELEMENT</button>
+        <button class="btn btn-red btn-sm" onclick="removeSeqElement()">- REMOVE LAST</button>
+      </div>
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Hint for players (optional)</div>
+      <input type="text" value="${cfg.hint||''}" oninput="window._editCfg.hint=this.value">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">TC Penalty on failure</div>
+      <input type="number" value="${cfg.tc_penalty||1}" min="0" max="5" oninput="window._editCfg.tc_penalty=parseInt(this.value)" style="width:80px">
+    </div>
+  `;
+  window._editCfg = cfg;
+  window.cfg_alpha_seq = (i,v) => { window._editCfg.sequence[i]=v; };
+  window.addSeqElement = () => { window._editCfg.sequence.push('??'); rebuildEditor(); };
+  window.removeSeqElement = () => { if(window._editCfg.sequence.length>2)window._editCfg.sequence.pop(); rebuildEditor(); };
+  function rebuildEditor() { buildAlphaEditor(body, cfg); }
+}
+
+function buildBetaEditor(body, cfg) {
+  const sz = cfg.gridSize || 5;
+  if (!cfg.grid) { cfg.grid = Array.from({length:sz},()=>Array(sz).fill('path')); cfg.grid[0][0]='start'; cfg.grid[sz-1][sz-1]='end'; }
+  window._editCfg = cfg;
+
+  let gridHtml = `<div class="maze-grid" style="grid-template-columns:repeat(${sz},24px)">`;
+  for(let r=0;r<sz;r++) for(let c=0;c<sz;c++) {
+    const cell = cfg.grid[r][c];
+    gridHtml += `<div class="maze-cell ${cell}" onclick="toggleMazeCell(${r},${c})">${cell==='start'?'S':cell==='end'?'E':''}</div>`;
+  }
+  gridHtml += '</div>';
+
+  body.innerHTML = `
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Signal Maze Grid (click cells to toggle walls/paths)</div>
+      <div style="font-size:10px;color:var(--dim);margin-bottom:8px">Green=Start, Orange=End, Blue=Open Path, Dark=Wall</div>
+      ${gridHtml}
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Grid Size</div>
+      <select oninput="window._editCfg.gridSize=parseInt(this.value);window._editCfg.grid=null;buildBetaEditor(document.getElementById('puzzle-editor-body'),window._editCfg)">
+        ${[4,5,6,7].map(n=>`<option value="${n}" ${n===sz?'selected':''}>${n}×${n}</option>`).join('')}
+      </select>
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Signal Slot hint text</div>
+      <input type="text" value="${cfg.slot_hint||''}" oninput="window._editCfg.slot_hint=this.value">
+    </div>
+  `;
+  window.toggleMazeCell = (r,c) => {
+    const g = window._editCfg.grid;
+    if(g[r][c]==='wall') g[r][c]='path';
+    else if(g[r][c]==='path') g[r][c]='wall';
+    buildBetaEditor(body, cfg);
+  };
+}
+
+function buildGammaEditor(body, cfg) {
+  window._editCfg = cfg;
+  body.innerHTML = `
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Guardian AI Name</div>
+      <input type="text" value="${cfg.ai_name||''}" oninput="window._editCfg.ai_name=this.value">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Challenge / Riddle (shown to players)</div>
+      <textarea rows="3" oninput="window._editCfg.riddle=this.value">${cfg.riddle||''}</textarea>
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Correct Answer (DM reference)</div>
+      <input type="text" value="${cfg.answer||''}" oninput="window._editCfg.answer=this.value">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Hint</div>
+      <input type="text" value="${cfg.hint||''}" oninput="window._editCfg.hint=this.value">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Successes needed</div>
+      <input type="number" value="${cfg.required_success||3}" min="1" max="5" oninput="window._editCfg.required_success=parseInt(this.value)" style="width:80px">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">On Failure</div>
+      <input type="text" value="${cfg.tc_on_fail||''}" oninput="window._editCfg.tc_on_fail=this.value">
+    </div>
+  `;
+}
+
+function buildDeltaEditor(body, cfg) {
+  if (!cfg.keys) cfg.keys = [];
+  window._editCfg = cfg;
+  const keysHtml = cfg.keys.map((k,i)=>`
+    <div class="vault-key">
+      <div class="key-num">${i+1}</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+        <input type="text" value="${k.name}" placeholder="Key name" oninput="window._editCfg.keys[${i}].name=this.value">
+        <input type="text" value="${k.description}" placeholder="Location/challenge" oninput="window._editCfg.keys[${i}].description=this.value">
+        <select oninput="window._editCfg.keys[${i}].type=this.value">
+          <option value="ice" ${k.type==='ice'?'selected':''}>Behind ICE</option>
+          <option value="puzzle" ${k.type==='puzzle'?'selected':''}>Mini Puzzle</option>
+          <option value="search" ${k.type==='search'?'selected':''}>Search Challenge</option>
+          <option value="skill" ${k.type==='skill'?'selected':''}>Skill Check</option>
+        </select>
+      </div>
+    </div>
+  `).join('');
+
+  body.innerHTML = `
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Vault Keys</div>
+      <div class="vault-keys">${keysHtml}</div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button class="btn btn-cyan btn-sm" onclick="window._editCfg.keys.push({name:'KEY-NEW',description:'',type:'ice'});buildDeltaEditor(document.getElementById('puzzle-editor-body'),window._editCfg)">+ ADD KEY</button>
+        ${cfg.keys.length>1?`<button class="btn btn-red btn-sm" onclick="window._editCfg.keys.pop();buildDeltaEditor(document.getElementById('puzzle-editor-body'),window._editCfg)">- REMOVE</button>`:''}
+      </div>
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Rounds Limit</div>
+      <input type="number" value="${cfg.rounds_limit||10}" min="3" max="30" oninput="window._editCfg.rounds_limit=parseInt(this.value)" style="width:80px">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">TC Penalty per missing key (on retry)</div>
+      <input type="number" value="${cfg.tc_per_missing||2}" min="0" max="5" oninput="window._editCfg.tc_per_missing=parseInt(this.value)" style="width:80px">
+    </div>
+  `;
+}
+
+function buildEpsilonEditor(body, cfg) {
+  window._editCfg = cfg;
+  body.innerHTML = `
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Mirror Flavor Text</div>
+      <textarea rows="3" oninput="window._editCfg.flavor=this.value">${cfg.flavor||''}</textarea>
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Mirror HP Fraction</div>
+      <select oninput="window._editCfg.mirror_hp_fraction=parseFloat(this.value)">
+        <option value="0.25" ${cfg.mirror_hp_fraction===0.25?'selected':''}>25% of Netrunner HP</option>
+        <option value="0.5"  ${cfg.mirror_hp_fraction===0.5?'selected':''}>50% of Netrunner HP</option>
+        <option value="0.75" ${cfg.mirror_hp_fraction===0.75?'selected':''}>75% of Netrunner HP</option>
+        <option value="1.0"  ${cfg.mirror_hp_fraction===1.0?'selected':''}>100% (equal HP)</option>
+      </select>
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Programs per round (Mirror)</div>
+      <input type="number" value="${cfg.programs_cap||1}" min="1" max="3" oninput="window._editCfg.programs_cap=parseInt(this.value)" style="width:80px">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Special Notes</div>
+      <textarea rows="2" oninput="window._editCfg.mirror_note=this.value">${cfg.mirror_note||''}</textarea>
+    </div>
+  `;
+}
+
+function buildZetaEditor(body, cfg) {
+  if (!cfg.rooms) cfg.rooms = [];
+  window._editCfg = cfg;
+  const roomsHtml = cfg.rooms.map((r,i)=>`
+    <div class="sprint-room">
+      <div class="round-badge">${i+1}</div>
+      <input type="text" value="${r.name}" placeholder="Room name" oninput="window._editCfg.rooms[${i}].name=this.value" style="flex:1">
+      <input type="text" value="${r.action}" placeholder="Required action / DC" oninput="window._editCfg.rooms[${i}].action=this.value" style="flex:1.5">
+    </div>
+  `).join('');
+
+  body.innerHTML = `
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Sprint Rooms (left to right = round 1 to end)</div>
+      <div class="sprint-rooms">${roomsHtml}</div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button class="btn btn-cyan btn-sm" onclick="window._editCfg.rooms.push({name:'New Room',action:'DC 14 check'});buildZetaEditor(document.getElementById('puzzle-editor-body'),window._editCfg)">+ ADD ROOM</button>
+        ${cfg.rooms.length>1?`<button class="btn btn-red btn-sm" onclick="window._editCfg.rooms.pop();buildZetaEditor(document.getElementById('puzzle-editor-body'),window._editCfg)">- REMOVE</button>`:''}
+      </div>
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Total Rounds (countdown)</div>
+      <input type="number" value="${cfg.rounds||5}" min="2" max="15" oninput="window._editCfg.rounds=parseInt(this.value)" style="width:80px">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Success Bonus</div>
+      <input type="text" value="${cfg.success_bonus||''}" oninput="window._editCfg.success_bonus=this.value">
+    </div>
+    <div class="puzzle-section">
+      <div class="puzzle-section-title">Failure Result</div>
+      <input type="text" value="${cfg.failure_result||''}" oninput="window._editCfg.failure_result=this.value">
+    </div>
+  `;
+}
+
+function savePuzzle(id) {
+  const node = nodes.find(n=>n.id===id);
+  if (node && window._editCfg) node.gateConfig = window._editCfg;
+  closeModal();
+  renderPanel();
+  toast('Puzzle configuration saved');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').style.display = 'none';
+    window._editCfg = null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AUTO-GENERATE
+// ═══════════════════════════════════════════════════════════════
+function autoGenerate() {
+  clearAll();
+  const diff = document.getElementById('diffSel').value;
+  const configs = {
+    low:   { gates:2, ice:1, trace:12, gateTypes:['alpha','gamma'],        iceTypes:['shepherd'],                    name:'STREET LEVEL NETSPACE' },
+    corp:  { gates:3, ice:2, trace:10, gateTypes:['alpha','beta','delta'],  iceTypes:['shepherd','choker'],           name:'CORPORATE FIREWALL' },
+    mil:   { gates:4, ice:3, trace:8,  gateTypes:['beta','gamma','delta','zeta'], iceTypes:['choker','warden','black'], name:'MILITARY-GRADE NETSPACE' },
+    black: { gates:5, ice:4, trace:6,  gateTypes:['alpha','beta','gamma','delta','epsilon','zeta'], iceTypes:['warden','black','black','daemon'], name:'BLACK SITE — MAXIMUM SECURITY' },
+  };
+  const c = configs[diff] || configs.corp;
+  document.getElementById('traceLimitInput').value = c.trace;
+
+  const wrap = document.getElementById('canvasWrap');
+  const W = wrap.offsetWidth || 900;
+  const H = wrap.offsetHeight || 500;
+
+  // Layout: horizontal chain with some vertical offset
+  const startX = 120, step = (W - 240) / (c.gates + c.ice + 1);
+  let cx = startX;
+
+  // Entry
+  const startNode = createNode('start', cx, H/2, 'ENTRY SHELL');
+  cx += step;
+  let prevId = startNode.id;
+
+  // Shuffle gates and ice into a sequence
+  const sequence = [];
+  const gateList = [...c.gateTypes];
+  const iceList  = [...c.iceTypes];
+  // Interleave: gate, ice, gate, ice...
+  let gi=0, ii=0;
+  while(gi < gateList.length || ii < iceList.length) {
+    if(gi < gateList.length) sequence.push({kind:'gate', sub:gateList[gi++]});
+    if(ii < iceList.length)  sequence.push({kind:'ice',  sub:iceList[ii++]});
+  }
+
+  let yVariance = 0;
+  sequence.forEach((s, idx) => {
+    yVariance = Math.sin(idx) * 80;
+    const y = H/2 + yVariance;
+    let node;
+    if (s.kind === 'gate') {
+      const gt = s.sub;
+      node = createNode('gate', cx, y, `GATE_${gt.toUpperCase()}`);
+      node.gateType = gt;
+      node.gateConfig = defaultGateConfig(gt);
+      // re-render badge
+      const el = document.getElementById(`node-${node.id}`);
+      if (el) {
+        const badge = el.querySelector('.dnode-gate-badge');
+        const labels={alpha:'α',beta:'β',gamma:'γ',delta:'δ',epsilon:'ε',zeta:'ζ'};
+        if(badge) badge.textContent = labels[gt]||'?';
+      }
+    } else {
+      node = createNode('ice', cx, y, `${getIceLabel(s.sub)}_${idx}`);
+      node.iceType = s.sub;
+      // Refresh ice type display
+      const el = document.getElementById(`node-${node.id}`);
+      if (el) {
+        const td = el.querySelector('.dnode-inner div:last-child');
+        // Re-render node to show ice type
+        const inner = el.querySelector('.dnode-inner');
+        if(inner) {
+          const typeEl = inner.querySelector('.dnode-type');
+          const nameEl = inner.querySelector('.dnode-name');
+          inner.innerHTML = '';
+          const dt = document.createElement('div'); dt.className='dnode-type'; dt.textContent='ICE'; inner.appendChild(dt);
+          const dn = document.createElement('div'); dn.className='dnode-name'; dn.id=`nodename-${node.id}`; dn.textContent=node.name; inner.appendChild(dn);
+          const ib = document.createElement('div'); ib.style.cssText='font-size:9px;color:#FF4444;margin-top:2px'; ib.textContent=getIceLabel(s.sub); inner.appendChild(ib);
+        }
+      }
+    }
+    connections.push({a: prevId, b: node.id});
+    prevId = node.id;
+    cx += step;
+  });
+
+  // Core
+  const core = createNode('core', cx, H/2, `${c.name} — DATA CORE`);
+  core.coreContents = `Primary objective target. Secured behind ${c.trace} TC limit.`;
+  connections.push({a: prevId, b: core.id});
+
+  drawConnections();
+  updateStatus();
+  toast(`AUTO-GENERATED: ${c.name}`);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CLEAR
+// ═══════════════════════════════════════════════════════════════
+function clearAll() {
+  nodes = [];
+  connections = [];
+  selectedNode = null;
+  document.getElementById('dungeon-canvas').innerHTML = '';
+  document.getElementById('dungeon-svg').innerHTML = '';
+  document.getElementById('panel-body').innerHTML = '<div style="color:var(--dim);font-size:12px;padding:10px">Select a node to configure it.</div>';
+  updateStatus();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════════════════════════
+function buildDungeonExportEl() {
+  const traceLimit = document.getElementById('traceLimitInput').value;
+  const gateCount = nodes.filter(n=>n.type==='gate').length;
+  const iceCount  = nodes.filter(n=>n.type==='ice').length;
+  const gateLabels = {alpha:'α',beta:'β',gamma:'γ',delta:'δ',epsilon:'ε',zeta:'ζ'};
+  const gateNames  = {
+    alpha:'SEQUENCE LOCK', beta:'SIGNAL MAZE', gamma:'ICE NEGOTIATION',
+    delta:'RECURSIVE VAULT', epsilon:'MIRROR PROTOCOL', zeta:'BLACKOUT SPRINT'
+  };
+  const iceColors  = {shepherd:'#39FF14',choker:'#00E5FF',warden:'#FF6B35',black:'#FF4444',daemon:'#A855F7'};
+  const nodeColors = {start:'#39FF14',gate:'#00E5FF',ice:'#FF4444',core:'#FFD700',junction:'#A855F7'};
+
+  const el = document.createElement('div');
+  el.style.cssText = 'font-family:monospace;background:#050A0F;padding:30px;color:#E6EDF3;width:1100px;min-height:400px';
+  el.innerHTML = `
+    <div style="font-family:monospace;font-size:22px;color:#00E5FF;letter-spacing:4px;margin-bottom:4px;font-weight:bold">
+      SYNTH:VEINS&amp;SMOKE // NETSPACE DUNGEON MAP
+    </div>
+    <div style="font-size:11px;color:#4A6B8A;letter-spacing:3px;margin-bottom:20px">
+      [ GATES: ${gateCount}  |  ICE ENCOUNTERS: ${iceCount}  |  TRACE LIMIT: ${traceLimit}  |  TOTAL NODES: ${nodes.length} ]
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start">
+      ${nodes.map((n,i) => {
+        const color = n.type==='ice' ? (iceColors[n.iceType]||'#FF4444') : (nodeColors[n.type]||'#E6EDF3');
+        let detail = '';
+        if (n.type==='gate') detail = `Gate ${gateLabels[n.gateType]||'?'} — ${gateNames[n.gateType]||n.gateType}`;
+        if (n.type==='ice')  detail = `${getIceLabel(n.iceType)} // Psychic damage`;
+        if (n.type==='core') detail = n.coreContents || 'Target data package';
+        if (n.dmNotes) detail += (detail?'<br>':'') + `<span style="color:#4A6B8A">↳ ${n.dmNotes}</span>`;
+        return `
+          <div style="border:1.5px solid ${color};padding:10px 14px;min-width:180px;flex:1;max-width:200px;background:#0A1520">
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${color};margin-bottom:3px">
+              ${n.type.toUpperCase()} ${n.type==='gate'?gateLabels[n.gateType]:''}
+            </div>
+            <div style="font-size:13px;font-weight:bold;margin-bottom:5px;word-break:break-word">${n.name}</div>
+            <div style="font-size:10px;color:#4A6B8A;line-height:1.5">${detail}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+    <hr style="border:none;border-top:1px solid #2A3F55;margin:20px 0">
+    <div style="display:flex;gap:20px;font-size:11px;color:#4A6B8A">
+      <span>SYNTH:VEINS&amp;SMOKE — NETRUNNER CLASS</span>
+      <span>TRACE COUNTER LIMIT: <b style="color:#FF6B35">${traceLimit}</b></span>
+      <span>NODE COUNT: <b style="color:#00E5FF">${nodes.length}</b></span>
+    </div>
+  `;
+  return el;
+}
+
+async function exportDungeon() {
+  toast('Generating dungeon map PNG...');
+  const el = buildDungeonExportEl();
+  document.body.appendChild(el);
+  el.style.position = 'fixed';
+  el.style.left = '-9999px';
+  el.style.top = '0';
+
+  try {
+    const canvas = await html2canvas(el, { backgroundColor: '#050A0F', scale: 2, useCORS: true });
+    downloadCanvas(canvas, 'SYNTH_Netspace_DungeonMap.png');
+    toast('Dungeon map exported!');
+  } catch(e) { toast('Export error: ' + e.message); }
+  el.remove();
+}
+
+function buildPuzzleExportEl(node) {
+  const cfg = node.gateConfig;
+  const gateLabels = {alpha:'α',beta:'β',gamma:'γ',delta:'δ',epsilon:'ε',zeta:'ζ'};
+  const gateNames  = {
+    alpha:'SEQUENCE LOCK', beta:'SIGNAL MAZE', gamma:'ICE NEGOTIATION',
+    delta:'RECURSIVE VAULT', epsilon:'MIRROR PROTOCOL', zeta:'BLACKOUT SPRINT'
+  };
+  const gateColors = {alpha:'#00E5FF',beta:'#39FF14',gamma:'#A855F7',delta:'#FFD700',epsilon:'#FF4444',zeta:'#FF6B35'};
+  const color = gateColors[node.gateType] || '#00E5FF';
+  const gt = node.gateType;
+
+  let bodyHtml = '';
+
+  if (gt === 'alpha') {
+    const seqStr = (cfg.sequence||[]).map((v,i)=>`
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid #00E5FF;font-size:18px;color:#00E5FF;margin-right:6px">${v}</div>
+    `).join('') + `
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:2px solid #FF6B35;font-size:18px;color:#FF6B35;margin-right:6px">??</div>
+    `;
+    bodyHtml = `
+      <div style="margin-bottom:14px">
+        <div style="font-size:10px;color:#FF6B35;letter-spacing:2px;margin-bottom:8px">SEQUENCE</div>
+        <div>${seqStr}</div>
+      </div>
+      ${cfg.hint ? `<div style="color:#4A6B8A;font-size:11px;font-style:italic;margin-bottom:10px">"${cfg.hint}"</div>` : ''}
+      <div style="font-size:10px;color:#4A6B8A;margin-bottom:4px">RULES</div>
+      <div style="font-size:11px;color:#8B949E;line-height:1.6">
+        Identify the pattern and input the next value. Failure: TC +${cfg.tc_penalty||1}.<br>
+        ${cfg.slot_hint||''}
+      </div>
+      <div style="margin-top:14px;border-top:1px solid #2A3F55;padding-top:10px">
+        <div style="font-size:10px;color:#FF6B35;margin-bottom:4px">DM ANSWER</div>
+        <div style="font-size:20px;color:#39FF14;font-weight:bold">${cfg.answer||'?'}</div>
+      </div>`;
+  } else if (gt === 'beta') {
+    const sz = cfg.gridSize||5;
+    const grid = cfg.grid || Array.from({length:sz},(_,r)=>Array.from({length:sz},(_,c)=>(r===0&&c===0?'start':r===sz-1&&c===sz-1?'end':'path')));
+    const cellColors = {wall:'#2A3F55', path:'rgba(0,229,255,0.15)', start:'rgba(57,255,20,0.3)', end:'rgba(255,107,53,0.3)'};
+    const cellBorders= {wall:'#2A3F55', path:'#00E5FF', start:'#39FF14', end:'#FF6B35'};
+    let gridHtml = `<div style="display:grid;grid-template-columns:repeat(${sz},28px);gap:3px;margin:8px 0">`;
+    for(let r=0;r<sz;r++) for(let c=0;c<sz;c++) {
+      const cell = (grid[r]||[])[c]||'path';
+      gridHtml += `<div style="width:28px;height:28px;background:${cellColors[cell]||cellColors.path};border:1px solid ${cellBorders[cell]||cellBorders.path};display:flex;align-items:center;justify-content:center;font-size:10px;color:${cellBorders[cell]}">${cell==='start'?'S':cell==='end'?'E':''}</div>`;
+    }
+    gridHtml += '</div>';
+    bodyHtml = `
+      <div style="font-size:10px;color:#FF6B35;margin-bottom:6px">SIGNAL ROUTING GRID (${sz}×${sz})</div>
+      ${gridHtml}
+      <div style="font-size:11px;color:#4A6B8A;margin-top:8px">Route signal from <span style="color:#39FF14">S</span> to <span style="color:#FF6B35">E</span> through open paths. Wrong paths: TC +${cfg.tc_penalty||1}.<br>${cfg.slot_hint||''}</div>`;
+  } else if (gt === 'gamma') {
+    bodyHtml = `
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;color:#FF6B35;margin-bottom:4px">GUARDIAN AI</div>
+        <div style="font-size:15px;color:#A855F7;font-weight:bold">${cfg.ai_name||'GUARDIAN_v4'}</div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;color:#FF6B35;margin-bottom:4px">CHALLENGE</div>
+        <div style="font-size:13px;color:#E6EDF3;font-style:italic;line-height:1.6;border-left:2px solid #A855F7;padding-left:10px">"${cfg.riddle||''}"</div>
+      </div>
+      ${cfg.hint?`<div style="color:#4A6B8A;font-size:11px;margin-bottom:10px">HINT: ${cfg.hint}</div>`:''}
+      <div style="font-size:10px;color:#4A6B8A;line-height:1.6">Need ${cfg.required_success||3} successes before 2 failures. On fail: ${cfg.tc_on_fail||'Warden ICE deployed'}.<br>${cfg.slot_hint||''}</div>
+      <div style="margin-top:12px;border-top:1px solid #2A3F55;padding-top:10px">
+        <div style="font-size:10px;color:#FF6B35;margin-bottom:4px">DM ANSWER</div>
+        <div style="color:#39FF14;font-size:12px">${cfg.answer||'?'}</div>
+      </div>`;
+  } else if (gt === 'delta') {
+    const keys = cfg.keys||[];
+    bodyHtml = `
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;color:#FF6B35;margin-bottom:8px">VAULT KEYS (${keys.length} required)</div>
+        ${keys.map((k,i)=>`
+          <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px">
+            <div style="width:22px;height:22px;border-radius:50%;background:#FF6B35;color:#050A0F;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;flex-shrink:0">${i+1}</div>
+            <div><div style="color:#FFD700;font-weight:bold;font-size:12px">${k.name}</div><div style="color:#4A6B8A;font-size:11px;margin-top:2px">${k.description} [${k.type}]</div></div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="font-size:11px;color:#4A6B8A;line-height:1.6">Rounds limit: ${cfg.rounds_limit||10}. Each missing key on retry: TC +${cfg.tc_per_missing||2}.</div>`;
+  } else if (gt === 'epsilon') {
+    bodyHtml = `
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;color:#FF6B35;margin-bottom:6px">MIRROR BEHAVIOR</div>
+        <div style="font-style:italic;color:#8B949E;line-height:1.6;border-left:2px solid #FF4444;padding-left:10px">"${cfg.flavor||''}"</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div style="border:1px solid #2A3F55;padding:8px">
+          <div style="font-size:9px;color:#4A6B8A;margin-bottom:3px">MIRROR HP</div>
+          <div style="color:#FF4444;font-size:14px">${Math.round((cfg.mirror_hp_fraction||0.5)*100)}% of Netrunner</div>
+        </div>
+        <div style="border:1px solid #2A3F55;padding:8px">
+          <div style="font-size:9px;color:#4A6B8A;margin-bottom:3px">PROGRAMS/ROUND</div>
+          <div style="color:#FF4444;font-size:14px">${cfg.programs_cap||1} max</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#4A6B8A;line-height:1.6">${cfg.mirror_note||''}</div>`;
+  } else if (gt === 'zeta') {
+    const rooms = cfg.rooms||[];
+    bodyHtml = `
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;color:#FF6B35;margin-bottom:8px">SPRINT SEQUENCE — ${cfg.rounds||5} ROUNDS</div>
+        ${rooms.map((r,i)=>`
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+            <div style="width:22px;height:22px;background:#FF6B35;color:#050A0F;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;flex-shrink:0">${i+1}</div>
+            <div style="flex:1">
+              <div style="color:#E6EDF3;font-size:12px">${r.name}</div>
+              <div style="color:#4A6B8A;font-size:10px">${r.action}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="border-top:1px solid #2A3F55;padding-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <div style="font-size:9px;color:#39FF14;margin-bottom:3px">SUCCESS</div>
+          <div style="font-size:11px;color:#8B949E">${cfg.success_bonus||''}</div>
+        </div>
+        <div>
+          <div style="font-size:9px;color:#FF4444;margin-bottom:3px">FAILURE</div>
+          <div style="font-size:11px;color:#8B949E">${cfg.failure_result||''}</div>
+        </div>
+      </div>`;
+  }
+
+  const el = document.createElement('div');
+  el.style.cssText = 'font-family:monospace;background:#050A0F;padding:28px;color:#E6EDF3;width:720px';
+  el.innerHTML = `
+    <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #2A3F55">
+      <div style="width:52px;height:52px;border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;color:${color}">${gateLabels[gt]||'?'}</div>
+      <div>
+        <div style="font-size:8px;letter-spacing:3px;color:#4A6B8A;text-transform:uppercase;margin-bottom:3px">NODE GATE</div>
+        <div style="font-size:17px;letter-spacing:2px;color:${color};font-weight:bold">${gateNames[gt]||gt.toUpperCase()}</div>
+        <div style="font-size:12px;color:#E6EDF3;margin-top:3px">${node.name}</div>
+      </div>
+    </div>
+    <div>${bodyHtml}</div>
+    <div style="margin-top:16px;padding-top:10px;border-top:1px solid #2A3F55;font-size:9px;color:#2A3F55;display:flex;justify-content:space-between">
+      <span>SYNTH:VEINS&amp;SMOKE // NETRUNNER CLASS</span>
+      <span>NODE GATE ${gateLabels[gt]} — ${gateNames[gt]}</span>
+    </div>
+  `;
+  return el;
+}
+
+async function exportSelectedPuzzle() {
+  if (!selectedNode || selectedNode.type !== 'gate') {
+    toast('Select a Gate node first');
+    return;
+  }
+  toast('Generating puzzle card PNG...');
+  const el = buildPuzzleExportEl(selectedNode);
+  document.body.appendChild(el);
+  el.style.position = 'fixed';
+  el.style.left = '-9999px';
+  el.style.top = '0';
+
+  try {
+    const canvas = await html2canvas(el, { backgroundColor: '#050A0F', scale: 2, useCORS: true });
+    downloadCanvas(canvas, `SYNTH_Gate_${selectedNode.gateType}_${selectedNode.name.replace(/\s/g,'_')}.png`);
+    toast('Puzzle card exported!');
+  } catch(e) { toast('Export error: ' + e.message); }
+  el.remove();
+}
+
+async function exportAllPuzzles() {
+  const gateNodes = nodes.filter(n=>n.type==='gate');
+  if (gateNodes.length === 0) { toast('No Gate nodes found'); return; }
+  toast(`Exporting ${gateNodes.length} puzzle cards...`);
+  for (const node of gateNodes) {
+    const el = buildPuzzleExportEl(node);
+    document.body.appendChild(el);
+    el.style.position = 'fixed'; el.style.left = '-9999px'; el.style.top = '0';
+    try {
+      const canvas = await html2canvas(el, { backgroundColor: '#050A0F', scale: 2, useCORS: true });
+      downloadCanvas(canvas, `SYNTH_Gate_${node.gateType}_${node.name.replace(/\s/g,'_')}.png`);
+    } catch(e) {}
+    el.remove();
+    await new Promise(r=>setTimeout(r,400));
+  }
+  toast(`All ${gateNodes.length} puzzle cards exported!`);
+}
+
+function downloadCanvas(canvas, filename) {
+  const a = document.createElement('a');
+  a.download = filename;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '// ' + msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (document.activeElement === document.body) deleteSelected();
+  }
+  if (e.key === 'Escape') {
+    connectingFrom = null;
+    document.getElementById('connectHint').classList.remove('show');
+    closeModal();
+  }
+});
+
+updateStatus();
+</script>
+</body>
+</html>
