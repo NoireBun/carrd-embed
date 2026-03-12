@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYNTH:V&S — Netspace Architect</title>
+<title>Highriders — Netspace Architect</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap');
@@ -122,7 +122,10 @@ input[type=text]:focus,textarea:focus{border-color:var(--cyan);}
   width:60%;height:60%;border-radius:50%;
   position:absolute;pointer-events:none;
 }
-.ff-active-pair{border:2px solid var(--cyan)!important;}
+.ff-wall{
+  background:#0A1020!important;border-color:#2A4060!important;cursor:pointer;
+}
+.ff-wall:hover{border-color:#4A7090!important;}
 
 /* pair color swatches */
 .pair-row{display:flex;align-items:center;gap:8px;padding:5px 7px;margin:2px 0;cursor:pointer;border:1px solid transparent;}
@@ -194,7 +197,7 @@ input[type=text]:focus,textarea:focus{border-color:var(--cyan);}
 <body>
 
 <div class="hdr">
-  <div class="logo">SYNTH<em>:</em>V&amp;S <em>//</em> NETSPACE ARCHITECT</div>
+  <div class="logo">HIGHRIDERS <em>//</em> NETSPACE ARCHITECT</div>
   <div class="sp"></div>
   <div style="font-size:9px;color:var(--dim);letter-spacing:1px">DIFF:</div>
   <select id="diffSel" style="width:155px">
@@ -335,6 +338,7 @@ function defCfg(t){
         {col:PAIR_COLORS[1].col,name:'CYAN',  dots:[]},
         {col:PAIR_COLORS[2].col,name:'GREEN', dots:[]},
       ],
+      walls:[],
       activePair:0,
       tc:1
     };
@@ -615,6 +619,7 @@ function openModal(){
   if(cell.type!=='gate')return;
   if(!cell.gcfg) cell.gcfg=defCfg(cell.gtype);
   _cfg=JSON.parse(JSON.stringify(cell.gcfg));
+  ffTool='dot';
 
   document.getElementById('mdlc').innerHTML=`
     <div class="mtitle">GATE ${GS[cell.gtype]} — ${GN[cell.gtype]} <span onclick="closeModal()">✕ CLOSE</span></div>
@@ -651,90 +656,167 @@ function edAlpha(body,cfg){
       <input type="number" value="${cfg.tc||1}" min="0" max="5" style="width:60px" oninput="_cfg.tc=+this.value"></div>`;
 }
 
-// ── BETA — FLOW FREE ──────────────────────────────────
+// ── BETA — FLOW CONNECT ───────────────────────────────
+// ffTool: 'dot' | 'wall'  (module-level so event handlers can read it)
+let ffTool='dot';
+
 function edBeta(body,cfg){
   if(!cfg.pairs) cfg.pairs=[];
   if(!cfg.size)  cfg.size=6;
+  if(!cfg.walls) cfg.walls=[];   // array of [r,c] wall positions
   const sz=cfg.size;
   if(typeof cfg.activePair!=='number') cfg.activePair=0;
 
-  // Build grid dot map: key "r,c" -> pairIndex
-  const dotMap={};
+  // Build lookup sets for fast access
+  const dotMap={};  // "r,c" -> pairIndex
+  const wallSet=new Set((cfg.walls||[]).map(([wr,wc])=>`${wr},${wc}`));
   cfg.pairs.forEach((p,pi)=>(p.dots||[]).forEach(([dr,dc])=>{dotMap[`${dr},${dc}`]=pi;}));
 
-  // Grid HTML
+  // ── Grid HTML ──
   let ghtml=`<div class="fflow-grid" style="grid-template-columns:repeat(${sz},36px)" id="ff-grid">`;
   for(let r=0;r<sz;r++) for(let c=0;c<sz;c++){
-    const pi=dotMap[`${r},${c}`];
+    const key=`${r},${c}`;
+    const isWall=wallSet.has(key);
+    const pi=dotMap[key];
     const hasDot=pi!==undefined;
     const dotColor=hasDot?cfg.pairs[pi].col:'';
-    ghtml+=`<div class="ff-cell${hasDot&&pi===cfg.activePair?' ff-active-pair':''}" onclick="ffClick(${r},${c})">
-      ${hasDot?`<div class="ff-dot" style="background:${dotColor}"></div>`:''}
-    </div>`;
+    const isActive=hasDot&&pi===cfg.activePair;
+
+    if(isWall){
+      ghtml+=`<div class="ff-cell ff-wall" onclick="ffClick(${r},${c})" oncontextmenu="ffRightClick(event,${r},${c})">
+        <div style="width:70%;height:70%;background:#3A5570;clip-path:polygon(20% 0%,80% 0%,100% 20%,100% 80%,80% 100%,20% 100%,0% 80%,0% 20%)"></div>
+      </div>`;
+    } else {
+      ghtml+=`<div class="ff-cell${isActive?' ff-active-pair':''}" onclick="ffClick(${r},${c})" oncontextmenu="ffRightClick(event,${r},${c})">
+        ${hasDot?`<div class="ff-dot" style="background:${dotColor}"></div>`:''}
+      </div>`;
+    }
   }
   ghtml+='</div>';
 
-  // Pair list HTML
-  let phtml=cfg.pairs.map((p,pi)=>`
-    <div class="pair-row ${pi===cfg.activePair?'on':''}" onclick="_cfg.activePair=${pi};buildEd('beta')">
+  // ── Pair list HTML ──
+  const phtml=cfg.pairs.map((p,pi)=>`
+    <div class="pair-row ${pi===cfg.activePair&&ffTool==='dot'?'on':''}" onclick="ffTool='dot';_cfg.activePair=${pi};buildEd('beta')">
       <div class="pair-swatch" style="background:${p.col}"></div>
       <span style="font-size:11px">${p.name}</span>
-      <span style="font-size:9px;color:var(--dim);margin-left:auto">${(p.dots||[]).length}/2 dots</span>
+      <span style="font-size:9px;color:var(--dim);margin-left:auto">${(p.dots||[]).length} dot${(p.dots||[]).length!==1?'s':''}</span>
       <button style="margin-left:4px;background:transparent;border:none;color:var(--red);cursor:pointer;font-size:11px"
         onclick="event.stopPropagation();_cfg.pairs.splice(${pi},1);if(_cfg.activePair>=${pi}&&_cfg.activePair>0)_cfg.activePair--;buildEd('beta')">✕</button>
     </div>`).join('');
 
   body.innerHTML=`
-    <div style="display:flex;gap:14px;align-items:flex-start">
+    <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
       <div>
-        <div class="pst">Puzzle Grid (${sz}×${sz}) — click to place dots</div>
-        <div style="font-size:9px;color:var(--dim);margin-bottom:7px">Select a color pair below, then click two cells to place its start &amp; end dots. Right-click to remove.</div>
+        <div class="pst">Puzzle Grid (${sz}×${sz})</div>
+        <div style="font-size:9px;color:var(--dim);margin-bottom:7px">
+          Left-click places selected tool. Right-click removes anything.
+        </div>
+
+        <!-- Tool toggle -->
+        <div style="display:flex;gap:6px;margin-bottom:8px">
+          <button id="ff-tool-dot" class="btn ${ffTool==='dot'?'btn-c':'btn-p'}"
+            style="font-size:10px;padding:4px 10px"
+            onclick="ffTool='dot';document.getElementById('ff-tool-dot').className='btn btn-c';document.getElementById('ff-tool-wall').className='btn btn-p'">
+            ● DOT MODE</button>
+          <button id="ff-tool-wall" class="btn ${ffTool==='wall'?'btn-c':'btn-p'}"
+            style="font-size:10px;padding:4px 10px"
+            onclick="ffTool='wall';document.getElementById('ff-tool-wall').className='btn btn-c';document.getElementById('ff-tool-dot').className='btn btn-p'">
+            ■ WALL MODE</button>
+        </div>
+
         ${ghtml}
-        <div style="margin-top:8px">
-          <div class="pst">Grid Size</div>
-          <select onchange="_cfg.size=+this.value;_cfg.pairs.forEach(p=>p.dots=[]);buildEd('beta')">
-            ${[4,5,6,7,8,9,10].map(n=>`<option value="${n}" ${n===sz?'selected':''}>${n}×${n}</option>`).join('')}
-          </select>
+
+        <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+          <div>
+            <div class="pst" style="margin-bottom:3px">Grid Size</div>
+            <select onchange="_cfg.size=+this.value;_cfg.pairs.forEach(p=>p.dots=[]);_cfg.walls=[];buildEd('beta')" style="width:90px">
+              ${[4,5,6,7,8,9,10].map(n=>`<option value="${n}" ${n===sz?'selected':''}>${n}×${n}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <div class="pst" style="margin-bottom:3px">Clear</div>
+            <button class="btn btn-r" style="font-size:10px;padding:3px 9px"
+              onclick="_cfg.walls=[];_cfg.pairs.forEach(p=>p.dots=[]);buildEd('beta')">CLEAR ALL</button>
+          </div>
         </div>
       </div>
-      <div style="min-width:150px">
+
+      <div style="min-width:155px">
         <div class="pst">Color Pairs</div>
+        <div style="font-size:9px;color:var(--dim);margin-bottom:6px">Each pair can have any number of dots.</div>
         <div id="ff-pairs">${phtml}</div>
-        ${cfg.pairs.length<6?`<button class="btn btn-c" style="font-size:10px;padding:3px 9px;margin-top:6px;width:100%"
+        ${cfg.pairs.length<6?`<button class="btn btn-c" style="font-size:10px;padding:3px 9px;margin-top:5px;width:100%"
           onclick="addPair()">+ ADD PAIR</button>`:''}
-        <div style="margin-top:12px"><div class="pst">TC on wrong path</div>
-        <input type="number" value="${cfg.tc||1}" min="0" max="5" style="width:55px" oninput="_cfg.tc=+this.value"></div>
-        <div style="margin-top:10px;font-size:10px;color:var(--dim);line-height:1.7">
-          Players draw lines connecting same-colored dots.<br>
-          Lines can't cross.<br>
-          All cells must be filled.
+
+        <div style="margin-top:10px;border-top:1px solid var(--dim2);padding-top:8px">
+          <div class="pst">Walls</div>
+          <div style="font-size:9px;color:var(--dim);margin-bottom:4px">${wallSet.size} wall${wallSet.size!==1?'s':''} placed</div>
+          <button class="btn btn-r" style="font-size:10px;padding:3px 9px;width:100%"
+            onclick="_cfg.walls=[];buildEd('beta')">CLEAR WALLS</button>
+        </div>
+
+        <div style="margin-top:10px"><div class="pst">TC on wrong path</div>
+          <input type="number" value="${cfg.tc||1}" min="0" max="5" style="width:55px" oninput="_cfg.tc=+this.value">
+        </div>
+
+        <div style="margin-top:10px;font-size:9px;color:var(--dim);line-height:1.8;border:1px solid var(--dim2);padding:7px">
+          <b style="color:var(--cyan)">Rules:</b><br>
+          Connect same-colored dots with lines.<br>
+          Lines can't cross each other.<br>
+          Lines can't cross <b style="color:var(--orange)">■ walls</b>.<br>
+          Every empty cell must be filled.<br>
+          Right-click any cell to remove.
         </div>
       </div>
     </div>`;
 
-  // Grid click handler
+  // ── Click handlers ──
   window.ffClick=(r,c)=>{
-    if(!_cfg.pairs.length) return;
-    const pi=_cfg.activePair;
-    const p=_cfg.pairs[pi];
-    if(!p.dots) p.dots=[];
-    // Check if this cell already has a dot
-    let removed=false;
-    for(let i=0;i<_cfg.pairs.length;i++){
-      const idx=(_cfg.pairs[i].dots||[]).findIndex(([dr,dc])=>dr===r&&dc===c);
-      if(idx>=0){_cfg.pairs[i].dots.splice(idx,1);removed=true;break;}
-    }
-    if(!removed){
-      if(p.dots.length>=2) p.dots=[];
-      p.dots.push([r,c]);
+    const key=`${r},${c}`;
+    if(ffTool==='wall'){
+      // In wall mode: toggle wall (can't place wall where a dot is)
+      const hasDot=Object.prototype.hasOwnProperty.call(dotMap,key);
+      if(hasDot) return; // don't overwrite dots
+      const wi=(_cfg.walls||[]).findIndex(([wr,wc])=>wr===r&&wc===c);
+      if(wi>=0) _cfg.walls.splice(wi,1);
+      else { if(!_cfg.walls) _cfg.walls=[]; _cfg.walls.push([r,c]); }
+    } else {
+      // In dot mode: place dot for active pair
+      if(!_cfg.pairs.length) return;
+      // Can't place dot on a wall
+      const isWall=(_cfg.walls||[]).some(([wr,wc])=>wr===r&&wc===c);
+      if(isWall) return;
+      const pi=_cfg.activePair;
+      const p=_cfg.pairs[pi];
+      if(!p.dots) p.dots=[];
+      // If this cell has a dot from ANY pair, remove it first
+      let removed=false;
+      for(let i=0;i<_cfg.pairs.length;i++){
+        const idx=(_cfg.pairs[i].dots||[]).findIndex(([dr,dc])=>dr===r&&dc===c);
+        if(idx>=0){_cfg.pairs[i].dots.splice(idx,1);removed=true;break;}
+      }
+      // If we didn't remove (or we removed from a different pair), place new dot
+      if(!removed) p.dots.push([r,c]);
     }
     buildEd('beta');
+  };
+
+  window.ffRightClick=(e,r,c)=>{
+    e.preventDefault();
+    // Remove wall at this cell
+    const wi=(_cfg.walls||[]).findIndex(([wr,wc])=>wr===r&&wc===c);
+    if(wi>=0){ _cfg.walls.splice(wi,1); buildEd('beta'); return; }
+    // Remove dot at this cell from any pair
+    for(let i=0;i<_cfg.pairs.length;i++){
+      const idx=(_cfg.pairs[i].dots||[]).findIndex(([dr,dc])=>dr===r&&dc===c);
+      if(idx>=0){_cfg.pairs[i].dots.splice(idx,1);buildEd('beta');return;}
+    }
   };
 
   window.addPair=()=>{
     const used=_cfg.pairs.map(p=>p.col);
     const next=PAIR_COLORS.find(pc=>!used.includes(pc.col));
-    if(next){_cfg.pairs.push({col:next.col,name:next.name,dots:[]});_cfg.activePair=_cfg.pairs.length-1;buildEd('beta');}
+    if(next){_cfg.pairs.push({col:next.col,name:next.name,dots:[]});_cfg.activePair=_cfg.pairs.length-1;ffTool='dot';buildEd('beta');}
   };
 }
 
@@ -911,7 +993,7 @@ async function exportMap(){
 
   const el=document.createElement('div');
   el.className='xmap'; el.style.width=(COLS*cs+COLS*2+52+2)+'px';
-  el.innerHTML=`<div class="xmap-h">SYNTH:VEINS&SMOKE // NETSPACE MAP</div>
+  el.innerHTML=`<div class="xmap-h">HIGHRIDERS // NETSPACE MAP</div>
     <div class="xmap-s">[ GRID: ${COLS}×${ROWS} &nbsp;|&nbsp; TC/STEP: +${tc} &nbsp;|&nbsp; GATES: ${gcount} &nbsp;|&nbsp; ICE: ${icount} ]</div>
     <div style="display:grid;grid-template-columns:repeat(${COLS},${cs}px);gap:2px;width:fit-content">${cells}</div>
     <div class="xleg">
@@ -923,13 +1005,13 @@ async function exportMap(){
       <div class="xlegi"><div class="xlegico" style="background:#050C12;border-color:#0A1822"></div>WALL</div>
     </div>
     <div style="margin-top:9px;font-size:8px;color:#142030;display:flex;justify-content:space-between">
-      <span>SYNTH:VEINS&SMOKE — NETRUNNER CLASS — DM REFERENCE</span>
+      <span>HIGHRIDERS — NETRUNNER CLASS — DM REFERENCE</span>
       <span>EVERY MOVE +${tc}TC · ICE BLOCKS PATH · GATES REQUIRE PUZZLE SOLUTION</span>
     </div>`;
 
   const root=document.getElementById('xroot'); root.appendChild(el);
   await sl(80);
-  try{const cv=await html2canvas(el,{backgroundColor:'#04080C',scale:2,useCORS:true,logging:false});dl(cv,'SYNTH_Netspace_Map.png');toast('Map exported!');}
+  try{const cv=await html2canvas(el,{backgroundColor:'#04080C',scale:2,useCORS:true,logging:false});dl(cv,'Highriders_Netspace_Map.png');toast('Map exported!');}
   catch(e){toast('Error: '+e.message);}
   el.remove();
 }
@@ -961,15 +1043,15 @@ async function xCard(cell,r,c){
   el.innerHTML=`<div class="pchdr">
     <div class="pcbadge" style="border-color:${col};color:${col}">${sym}</div>
     <div>
-      <div style="font-size:8px;letter-spacing:3px;color:#3A5570;text-transform:uppercase;margin-bottom:2px">NODE GATE // SYNTH:VEINS&amp;SMOKE</div>
+      <div style="font-size:8px;letter-spacing:3px;color:#3A5570;text-transform:uppercase;margin-bottom:2px">NODE GATE // HIGHRIDERS</div>
       <div class="pctitle" style="color:${col}">${name}</div>
       <div class="pcnm">Cell [${c},${r}] — Dungeon Gate</div>
     </div>
   </div>${bodyHtml}
-  <div class="pcfoot"><span>SYNTH:VEINS&SMOKE // NETRUNNER CLASS</span><span>GATE ${sym} — ${name}</span></div>`;
+  <div class="pcfoot"><span>HIGHRIDERS // NETRUNNER CLASS</span><span>GATE ${sym} — ${name}</span></div>`;
   const root=document.getElementById('xroot'); root.appendChild(el);
   await sl(80);
-  try{const cv=await html2canvas(el,{backgroundColor:'#04080C',scale:2,useCORS:true,logging:false});dl(cv,`SYNTH_Gate_${sym}_${type}.png`);}
+  try{const cv=await html2canvas(el,{backgroundColor:'#04080C',scale:2,useCORS:true,logging:false});dl(cv,`Highriders_Gate_${sym}_${type}.png`);}
   catch(e){toast('Error: '+e.message);}
   el.remove();
 }
@@ -996,35 +1078,54 @@ function pAlpha(cfg){
 function pBeta(cfg){
   const sz=cfg.size||6;
   const pairs=cfg.pairs||[];
+  const wallSet=new Set((cfg.walls||[]).map(([wr,wc])=>`${wr},${wc}`));
   // Build dot map
   const dotMap={};
   pairs.forEach((p,pi)=>(p.dots||[]).forEach(([dr,dc])=>{dotMap[`${dr},${dc}`]=p.col;}));
-  const cs=Math.min(52,Math.max(28,Math.floor(380/sz)));
+  const cs=Math.min(52,Math.max(26,Math.floor(360/sz)));
+  const dotSz=Math.round(cs*0.56);
 
   let mazeHtml=`<div class="pcff" style="grid-template-columns:repeat(${sz},${cs}px)">`;
   for(let r=0;r<sz;r++) for(let c=0;c<sz;c++){
-    const dotColor=dotMap[`${r},${c}`]||'';
-    const dotSz=Math.round(cs*0.58);
-    mazeHtml+=`<div class="pcff-cell" style="width:${cs}px;height:${cs}px">
-      ${dotColor?`<div class="pcff-dot" style="width:${dotSz}px;height:${dotSz}px;background:${dotColor}"></div>`:''}
-    </div>`;
+    const key=`${r},${c}`;
+    const isWall=wallSet.has(key);
+    const dotColor=dotMap[key]||'';
+    if(isWall){
+      mazeHtml+=`<div class="pcff-cell" style="width:${cs}px;height:${cs}px;background:#0A1020;border-color:#2A4060">
+        <div style="width:65%;height:65%;background:#3A5570;clip-path:polygon(20% 0%,80% 0%,100% 20%,100% 80%,80% 100%,20% 100%,0% 80%,0% 20%)"></div>
+      </div>`;
+    } else {
+      mazeHtml+=`<div class="pcff-cell" style="width:${cs}px;height:${cs}px">
+        ${dotColor?`<div class="pcff-dot" style="width:${dotSz}px;height:${dotSz}px;background:${dotColor}"></div>`:''}
+      </div>`;
+    }
   }
   mazeHtml+='</div>';
 
-  const legend=pairs.map(p=>`<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#8899AA"><div style="width:12px;height:12px;border-radius:50%;background:${p.col};flex-shrink:0"></div>${p.name}</div>`).join('');
+  const legend=pairs.map(p=>`<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#8899AA">
+    <div style="width:12px;height:12px;border-radius:50%;background:${p.col};flex-shrink:0"></div>${p.name}
+    <span style="color:#3A5570;font-size:9px">(${(p.dots||[]).length} dot${(p.dots||[]).length!==1?'s':''})</span>
+  </div>`).join('');
+
+  const wallCount=wallSet.size;
 
   return `<div class="pcsect"><div class="pcst">Connect the Matching Dots</div>
     <div style="font-size:11px;color:#8899AA;margin-bottom:9px;line-height:1.6">
-      Draw a line connecting each pair of same-colored dots.<br>
-      Lines <b style="color:#FF3355">cannot cross</b>. Every empty cell must be filled by a line.<br>
+      Draw a line connecting each group of same-colored dots.<br>
+      Lines <b style="color:#FF3355">cannot cross</b> each other or <b style="color:#FF7A35">■ walls</b>.<br>
+      You must route around walls. Every empty cell must be filled.<br>
       Wrong connection costs <b style="color:#FF3355">TC +${cfg.tc||1}</b>.
     </div>
     <div style="display:flex;gap:16px;align-items:flex-start">
       ${mazeHtml}
       <div>
-        <div style="font-size:9px;color:#FF7A35;margin-bottom:7px">COLOR PAIRS</div>
-        <div style="display:flex;flex-direction:column;gap:5px">${legend}</div>
-        <div style="margin-top:12px;font-size:10px;color:#3A5570;line-height:1.7">Use a pencil to<br>trace your lines.<br>Erase and retry<br>if needed.</div>
+        <div style="font-size:9px;color:#FF7A35;margin-bottom:6px">COLOR PAIRS</div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">${legend}</div>
+        ${wallCount?`<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#8899AA">
+          <div style="width:12px;height:12px;background:#3A5570;clip-path:polygon(20% 0%,80% 0%,100% 20%,100% 80%,80% 100%,20% 100%,0% 80%,0% 20%);flex-shrink:0"></div>
+          Wall (${wallCount})
+        </div>`:''}
+        <div style="margin-top:10px;font-size:10px;color:#3A5570;line-height:1.7">Use a pencil to<br>trace your lines.<br>Erase and retry<br>if needed.</div>
       </div>
     </div></div>`;
 }
