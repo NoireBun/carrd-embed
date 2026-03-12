@@ -1,1125 +1,2087 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYNTH:V&S — Netspace Architect</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap');
-:root {
-  --bg:#04080C; --bg2:#081018; --bg3:#0C1824; --panel:#081420;
-  --cyan:#00E5FF; --green:#00FF88; --orange:#FF7A35; --red:#FF3355;
-  --gold:#FFD600; --purple:#BB77FF; --dim:#3A5570; --dim2:#1A2E40; --text:#C8D8E8;
-  --mono:'Share Tech Mono',monospace; --display:'Orbitron',monospace; --vt:'VT323',monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,229,255,.012) 3px,rgba(0,229,255,.012) 4px);pointer-events:none;z-index:9999;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glosario de Especies - D&D</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fauna+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a44c;
+            --dark-bg: #0f0f0f;
+            --panel-bg: #1e1e1f;
+            --text-color: #e0d9c1;
+            --accent: #c9a44c;
+            --trait-bg: rgba(201, 164, 76, 0.05);
+            --border-gold: rgba(201, 164, 76, 0.4);
+            --tier-3-color: #ff6b35;
+            --tier-2-color: #4db8ff;
+            --tier-1-color: #90ee90;
+            --filter-include: #c9a44c;
+            --filter-exclude: #e05555;
+        }
 
-/* HEADER */
-.hdr{display:flex;align-items:center;gap:10px;padding:7px 14px;background:var(--bg2);border-bottom:2px solid var(--cyan);flex-shrink:0;}
-.logo{font-family:var(--display);font-size:12px;font-weight:900;color:var(--cyan);letter-spacing:3px;text-shadow:0 0 16px var(--cyan);white-space:nowrap;}
-.logo em{color:var(--orange);font-style:normal;}
-.sp{flex:1;}
-.sep{color:var(--dim);}
-.btn{padding:5px 12px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:1px solid;background:transparent;transition:all .15s;white-space:nowrap;}
-.btn-c{color:var(--cyan);border-color:var(--cyan);} .btn-c:hover{background:rgba(0,229,255,.1);box-shadow:0 0 10px var(--cyan);}
-.btn-g{color:var(--green);border-color:var(--green);} .btn-g:hover{background:rgba(0,255,136,.1);box-shadow:0 0 10px var(--green);}
-.btn-o{color:var(--orange);border-color:var(--orange);} .btn-o:hover{background:rgba(255,122,53,.1);box-shadow:0 0 10px var(--orange);}
-.btn-r{color:var(--red);border-color:var(--red);} .btn-r:hover{background:rgba(255,51,85,.1);box-shadow:0 0 10px var(--red);}
-.btn-p{color:var(--purple);border-color:var(--purple);} .btn-p:hover{background:rgba(187,119,255,.1);box-shadow:0 0 10px var(--purple);}
+        * { box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-/* LAYOUT */
-.main{display:flex;flex:1;overflow:hidden;}
+        body {
+            background: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Fauna One', serif;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
 
-/* LEFT PAL */
-.pal{width:150px;background:var(--panel);border-right:1px solid var(--dim2);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
-.ps{padding:9px;border-bottom:1px solid var(--dim2);}
-.pt{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
-.ptool{display:flex;align-items:center;gap:7px;padding:5px 7px;margin:2px 0;cursor:pointer;border:1px solid transparent;font-size:11px;transition:all .12s;}
-.ptool:hover{border-color:var(--dim);}
-.ptool.on{border-color:var(--cyan);color:var(--cyan);}
-.pico{width:22px;height:22px;border:1px solid;display:flex;align-items:center;justify-content:center;font-family:var(--vt);font-size:15px;flex-shrink:0;}
-select{width:100%;background:var(--bg3);border:1px solid var(--dim2);color:var(--text);font-family:var(--mono);font-size:11px;padding:4px 6px;outline:none;cursor:pointer;}
-select:focus{border-color:var(--cyan);}
-input[type=number]{width:100%;background:var(--bg3);border:1px solid var(--dim2);color:var(--text);font-family:var(--mono);font-size:11px;padding:4px 6px;outline:none;}
-input[type=number]:focus{border-color:var(--cyan);}
+        #encyclopedia-container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--panel-bg);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
 
-/* GRID WRAP */
-.gwrap{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:flex-start;background:var(--bg);
-  background-image:radial-gradient(circle at 30% 30%,rgba(0,229,255,.04) 0%,transparent 60%);
-  padding:24px;}
-#dgrid{display:grid;gap:2px;flex-shrink:0;}
+        /* ===== HEADER ===== */
+        .header {
+            padding: 18px 25px;
+            border-bottom: 2px solid var(--gold);
+            text-align: center;
+            background: linear-gradient(to bottom, #1e1e1f, #131314);
+            flex-shrink: 0;
+        }
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin: 0;
+            letter-spacing: 4px;
+            font-size: 1.6rem;
+        }
 
-/* CELLS — size driven by JS var --cs */
-.cell{
-  width:var(--cs,52px);height:var(--cs,52px);
-  cursor:pointer;position:relative;
-  border:1px solid var(--dim2);
-  display:flex;align-items:center;justify-content:center;flex-direction:column;
-  user-select:none;transition:border-color .08s;flex-shrink:0;
-}
-.cell:hover{border-color:rgba(0,229,255,.45);z-index:2;}
-.c-wall    {background:#050C12;border-color:#0A1822;}
-.c-corridor{background:#091828;border-color:#162C42;}
-.c-start   {background:rgba(0,255,136,.1);border-color:var(--green)!important;box-shadow:inset 0 0 12px rgba(0,255,136,.12);}
-.c-core    {background:rgba(255,214,0,.09);border-color:var(--gold)!important;box-shadow:inset 0 0 12px rgba(255,214,0,.12);animation:pg 2.5s infinite;}
-.c-ice     {background:rgba(255,51,85,.08);border-color:var(--red)!important;box-shadow:inset 0 0 10px rgba(255,51,85,.1);}
-.c-gate    {background:rgba(0,229,255,.07);border-color:var(--cyan)!important;box-shadow:inset 0 0 10px rgba(0,229,255,.09);}
-.cell.sel  {outline:2px solid var(--cyan);outline-offset:-2px;z-index:5;}
-@keyframes pg{0%,100%{box-shadow:inset 0 0 12px rgba(255,214,0,.12)}50%{box-shadow:inset 0 0 24px rgba(255,214,0,.28)}}
+        /* ===== CONTROLS ===== */
+        .controls {
+            padding: 12px 15px;
+            background: #151516;
+            border-bottom: 1px solid var(--border-gold);
+            flex-shrink: 0;
+        }
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .search-row input {
+            flex: 1;
+            background: #000;
+            border: 1px solid var(--border-gold);
+            color: var(--text-color);
+            padding: 9px 12px;
+            border-radius: 4px;
+            font-family: inherit;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .filter-toggle-btn {
+            background: rgba(201,164,76,0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--gold);
+            padding: 9px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .filter-toggle-btn:hover { background: rgba(201,164,76,0.2); }
+        .filter-badge {
+            background: var(--gold);
+            color: #000;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 0.65rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .clear-btn {
+            background: transparent;
+            border: 1px solid rgba(224,85,85,0.4);
+            color: #e05555;
+            padding: 9px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .clear-btn:hover { background: rgba(224,85,85,0.1); }
 
-.clabel{font-family:var(--vt);font-size:var(--clsz,18px);line-height:1;pointer-events:none;}
-.csub  {font-size:var(--cssz,7px);letter-spacing:1px;pointer-events:none;margin-top:1px;opacity:.75;}
-.ctc   {position:absolute;top:2px;right:2px;font-size:var(--ctcsz,7px);color:var(--dim);pointer-events:none;}
-.ccoord{position:absolute;bottom:1px;left:2px;font-size:var(--ccosz,6px);color:#142030;pointer-events:none;}
-.ccfg  {position:absolute;bottom:2px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--orange);pointer-events:none;display:none;}
-.c-gate .ccfg{display:block;}
+        /* ===== FILTER PANEL ===== */
+        #filter-panel {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.35s ease, padding 0.3s;
+            background: #111112;
+            border-bottom: 1px solid transparent;
+            flex-shrink: 0;
+        }
+        #filter-panel.open {
+            max-height: 320px;
+            border-bottom-color: var(--border-gold);
+        }
+        .filter-panel-inner {
+            padding: 12px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            max-height: 310px;
+        }
+        .active-filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 0;
+        }
+        .active-filter-chip {
+            background: rgba(201,164,76,0.15);
+            border: 1px solid var(--border-gold);
+            color: var(--gold);
+            padding: 2px 10px 2px 8px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+        .active-filter-chip.exclude { background: rgba(224,85,85,0.15); border-color: rgba(224,85,85,0.5); color: #e05555; }
+        .active-filter-chip:hover { opacity: 0.7; }
 
-/* RIGHT PANEL */
-.rpan{width:265px;background:var(--panel);border-left:1px solid var(--dim2);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
-.rph {padding:8px 12px;border-bottom:1px solid var(--dim2);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);display:flex;justify-content:space-between;align-items:center;}
-.rpb {flex:1;overflow-y:auto;padding:10px 11px;}
-::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:var(--dim2);}
-.fi{margin-bottom:9px;} .fl{font-size:9px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
-input[type=text],textarea{width:100%;background:var(--bg3);border:1px solid var(--dim2);color:var(--text);font-family:var(--mono);font-size:11px;padding:4px 6px;outline:none;resize:vertical;}
-input[type=text]:focus,textarea:focus{border-color:var(--cyan);}
-.hint{background:var(--bg3);border:1px solid var(--dim2);padding:8px;font-size:10px;line-height:1.8;color:var(--dim);}
-.hint b{color:var(--cyan);font-weight:normal;}
+        .filter-groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 6px; }
+        .filter-group-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid rgba(201,164,76,0.2);
+            padding-bottom: 4px;
+        }
+        .filter-pills-row { display: flex; flex-wrap: wrap; gap: 5px; }
+        .filter-pill {
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(224,217,193,0.6);
+            background: rgba(255,255,255,0.03);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .filter-pill:hover { border-color: var(--border-gold); color: var(--text-color); }
+        .filter-pill.include {
+            background: rgba(201,164,76,0.2);
+            border-color: var(--gold);
+            color: var(--gold);
+            font-weight: bold;
+        }
+        .filter-pill.exclude {
+            background: rgba(224,85,85,0.15);
+            border-color: rgba(224,85,85,0.6);
+            color: #e05555;
+            text-decoration: line-through;
+        }
 
-/* CONTEXT MENU */
-#ctx{position:fixed;background:var(--bg2);border:1px solid var(--cyan);padding:0;z-index:4000;min-width:180px;display:none;box-shadow:0 0 20px rgba(0,229,255,.15);}
-.ctx-head{padding:7px 10px;border-bottom:1px solid var(--dim2);font-size:10px;color:var(--cyan);letter-spacing:1px;}
-.ctx-item{padding:6px 12px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text);}
-.ctx-item:hover{background:rgba(0,229,255,.08);color:var(--cyan);}
-.ctx-sep{border-top:1px solid var(--dim2);margin:2px 0;}
-.ctx-info{padding:5px 12px;font-size:10px;color:var(--dim);line-height:1.6;}
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
 
-/* TOAST */
-.toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--cyan);padding:6px 16px;font-size:11px;color:var(--cyan);z-index:8000;opacity:0;transition:opacity .25s;pointer-events:none;letter-spacing:1px;}
-.toast.on{opacity:1;}
+        /* ===== SPECIES LIST ===== */
+        .species-list {
+            width: 240px;
+            border-right: 1px solid var(--border-gold);
+            overflow-y: auto;
+            background: #181819;
+            flex-shrink: 0;
+        }
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            opacity: 0.4;
+            font-size: 0.85rem;
+        }
+        .race-header {
+            padding: 10px 14px 5px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .race-header:hover { background: rgba(201,164,76,0.07); }
+        .race-header.active { background: rgba(201,164,76,0.12); }
+        .race-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .race-name {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--gold);
+            font-weight: bold;
+        }
+        .race-toggle { font-size: 0.65rem; opacity: 0.5; transition: transform 0.2s; }
+        .race-toggle.open { transform: rotate(90deg); }
+        .race-category { font-size: 0.65rem; text-transform: uppercase; opacity: 0.5; margin-top: 1px; }
+        .race-module { font-size: 0.6rem; color: var(--gold); opacity: 0.6; font-style: italic; }
+        .subrace-list { overflow: hidden; max-height: 0; transition: max-height 0.25s ease; }
+        .subrace-list.open { max-height: 500px; }
+        .subrace-item {
+            padding: 7px 14px 7px 24px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .subrace-item:hover { background: rgba(201,164,76,0.1); }
+        .subrace-item.active { background: var(--gold); color: #000; }
+        .subrace-item::before { content: '◆'; font-size: 0.45rem; opacity: 0.4; flex-shrink: 0; }
+        .subrace-item.active::before { opacity: 0.7; }
+        .mestizo-item {
+            padding: 12px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: 0.2s;
+        }
+        .mestizo-item:hover { background: rgba(201,164,76,0.1); }
+        .mestizo-item.active { background: var(--gold); color: #000; }
 
-/* MODAL */
-.mbg{position:fixed;inset:0;background:rgba(0,0,0,.87);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
-.mdl{background:var(--bg2);border:1px solid var(--cyan);width:700px;max-width:95vw;max-height:87vh;overflow-y:auto;padding:20px;box-shadow:0 0 50px rgba(0,229,255,.15);}
-.mtitle{font-family:var(--display);font-size:12px;color:var(--cyan);letter-spacing:3px;padding-bottom:10px;margin-bottom:13px;border-bottom:1px solid var(--dim2);display:flex;justify-content:space-between;}
-.mtitle span{color:var(--orange);font-size:11px;font-family:var(--mono);cursor:pointer;} .mtitle span:hover{color:var(--red);}
-.psec{margin-bottom:13px;padding-bottom:11px;border-bottom:1px solid var(--dim2);}
-.psec:last-child{border-bottom:none;}
-.pst{font-size:9px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+        /* ===== DETAILS PANEL ===== */
+        .details-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px 30px;
+            background: #1e1e1f;
+        }
 
-/* ── FLOW FREE MAZE EDITOR ── */
-.fflow-grid{display:inline-grid;gap:2px;cursor:pointer;}
-.ff-cell{
-  width:36px;height:36px;
-  border:1px solid #1A3550;background:#060E15;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;transition:opacity .1s;
-}
-.ff-cell:hover{border-color:#3A5570;}
-.ff-dot{
-  width:60%;height:60%;border-radius:50%;
-  position:absolute;pointer-events:none;
-}
-.ff-active-pair{border:2px solid var(--cyan)!important;}
+        .detail-header {
+            border-bottom: 1px solid var(--gold);
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .header-text-info { flex: 1; }
+        .detail-header h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin: 0 0 4px;
+            font-size: 1.8rem;
+        }
+        .subtitle { font-size: 0.85rem; font-style: italic; color: #aaa; margin-bottom: 6px; }
+        .module-tag {
+            display: inline-block;
+            font-size: 0.62rem;
+            background: rgba(201,164,76,0.12);
+            border: 1px solid rgba(201,164,76,0.35);
+            color: var(--gold);
+            padding: 2px 9px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 8px;
+        }
 
-/* pair color swatches */
-.pair-row{display:flex;align-items:center;gap:8px;padding:5px 7px;margin:2px 0;cursor:pointer;border:1px solid transparent;}
-.pair-row:hover{border-color:var(--dim);}
-.pair-row.on{border-color:var(--cyan);}
-.pair-swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0;}
+        .subrace-image-container {
+            width: 110px;
+            height: 110px;
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #000;
+            flex-shrink: 0;
+        }
+        .subrace-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .subrace-image-container:hover img { transform: scale(1.08); }
 
-/* Sequence editor */
-.seqrow{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
-.seqbox{width:50px;height:50px;border:1px solid var(--dim);background:var(--bg3);display:flex;align-items:center;justify-content:center;}
-.seqbox input{width:46px;height:46px;text-align:center;font-family:var(--vt);font-size:22px;color:var(--cyan);border:none;background:transparent;padding:0;outline:none;}
-.seqbox.ans{border-color:var(--orange);} .seqbox.ans input{color:var(--orange);}
-.sarrow{color:var(--dim);font-size:14px;}
+        #image-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: zoom-out;
+        }
+        #image-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 40px rgba(201,164,76,0.2);
+        }
 
-/* Sym picker */
-.symbox{width:42px;height:42px;border:1px solid var(--dim);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:var(--vt);font-size:26px;cursor:pointer;transition:all .1s;}
-.symbox.on{border-color:var(--cyan);background:rgba(0,229,255,.1);color:var(--cyan);}
+        .subrace-selector {
+            margin-top: 10px;
+            padding: 12px;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid var(--border-gold);
+            border-radius: 6px;
+        }
+        .subrace-selector label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .subrace-selector select {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border-gold);
+            color: var(--text-color);
+            padding: 7px;
+            border-radius: 4px;
+            font-family: inherit;
+            outline: none;
+        }
 
-/* Sprint rooms */
-.sprrow{display:flex;gap:6px;align-items:center;margin-bottom:5px;}
-.sprnum{width:20px;height:20px;flex-shrink:0;background:var(--orange);color:var(--bg);font-size:11px;font-weight:bold;display:flex;align-items:center;justify-content:center;}
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: rgba(0,0,0,.3);
+            border: 1px solid var(--border-gold);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .stat-box label {
+            display: block;
+            font-size: 0.6rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+        .stat-box span { font-size: 0.9rem; }
 
-/* ── EXPORT TEMPLATES ── */
-#xroot{position:fixed;left:-9999px;top:0;font-family:'Share Tech Mono',monospace;}
-.xmap{background:#04080C;padding:26px;color:#C8D8E8;}
-.xmap-h{font-family:Orbitron,monospace;font-size:20px;color:#00E5FF;letter-spacing:4px;margin-bottom:3px;font-weight:900;}
-.xmap-s{font-size:10px;color:#3A5570;letter-spacing:3px;margin-bottom:16px;}
-.xcell{border:1px solid;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;}
-.xclabel{font-family:VT323,monospace;line-height:1;}
-.xcsub{letter-spacing:1px;opacity:.75;margin-top:1px;}
-.xctc{position:absolute;top:2px;right:2px;color:#3A5570;}
-.xcoord{position:absolute;bottom:1px;left:2px;color:#142030;}
-.xleg{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;}
-.xlegi{display:flex;align-items:center;gap:5px;font-size:10px;color:#3A5570;}
-.xlegico{width:14px;height:14px;border:1px solid;display:flex;align-items:center;justify-content:center;}
-.pcard{background:#04080C;padding:24px;color:#C8D8E8;width:720px;}
-.pchdr{display:flex;gap:13px;align-items:flex-start;padding-bottom:12px;margin-bottom:13px;border-bottom:1px solid #1A2E40;}
-.pcbadge{width:52px;height:52px;border:2px solid;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:VT323,monospace;font-size:30px;}
-.pctitle{font-family:Orbitron,monospace;font-size:14px;letter-spacing:2px;font-weight:700;}
-.pcnm{font-size:11px;color:#8899AA;margin-top:4px;}
-.pcsect{margin-bottom:12px;}
-.pcst{font-size:9px;color:#FF7A35;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
-.pcfoot{margin-top:12px;padding-top:8px;border-top:1px solid #1A2E40;display:flex;justify-content:space-between;font-size:8px;color:#1A2E40;}
-/* seq pcard */
-.pcseq{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:7px;}
-.pcseqb{width:52px;height:52px;border:1px solid #1A5070;background:#081828;display:flex;align-items:center;justify-content:center;font-family:VT323,monospace;font-size:25px;color:#00E5FF;}
-.pcseqb.unk{border-style:dashed;color:#3A5570;}
-.pcarr{color:#3A5570;font-size:13px;}
-/* maze pcard — flow free style */
-.pcff{display:inline-grid;gap:2px;margin-bottom:6px;}
-.pcff-cell{border:1px solid #1A3550;background:#060E15;display:flex;align-items:center;justify-content:center;position:relative;}
-.pcff-dot{border-radius:50%;position:absolute;}
-/* mm pcard */
-.pcmmr{display:flex;gap:7px;align-items:center;margin-bottom:5px;}
-.pcmmg{display:flex;gap:4px;}
-.pcmmp{border-radius:50%;border:1px solid #1A3550;background:#060E15;}
-.pcmmfb{display:flex;gap:3px;flex-wrap:wrap;}
-.pcmmf{border-radius:50%;border:1px solid #1A3550;background:#060E15;}
-/* sym pcard */
-.pcsymr{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px;}
-.pcsymb{border:1px solid #1A3550;background:#081828;display:flex;align-items:center;justify-content:center;font-family:VT323,monospace;color:#00E5FF;}
-.pcsymbl{border:1px solid #0A1820;background:#060E15;}
-/* sprint pcard */
-.pcspr{display:flex;gap:7px;align-items:center;margin-bottom:5px;}
-.pcspn{background:#FF7A35;color:#04080C;font-size:12px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.pcspcb{border:1px solid #3A5570;flex-shrink:0;}
-</style>
+        .section-title {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin: 22px 0 10px;
+            font-size: 1.1rem;
+            border-left: 3px solid var(--gold);
+            padding-left: 10px;
+        }
+
+        /* ===== TRAIT PILLS with STARS ===== */
+        .trait-pill {
+            background: var(--trait-bg);
+            border: 1px solid var(--border-gold);
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        .trait-pill:hover { background: rgba(201,164,76,0.08); }
+        .trait-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(201,164,76,0.15);
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+        }
+        .trait-pill strong {
+            color: var(--gold);
+            font-family: 'Cinzel';
+            font-size: 0.95rem;
+        }
+        .star-rating {
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+        .star-rating[data-tier="1"] { color: var(--tier-1-color); }
+        .star-rating[data-tier="2"] { color: var(--tier-2-color); }
+        .star-rating[data-tier="3"] { color: var(--tier-3-color); }
+
+        /* ===== MESTIZO ===== */
+        .points-counter {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            text-align: right;
+            margin-bottom: 10px;
+            padding: 5px 15px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 4px;
+        }
+        .mestizo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .parent-selector { display: flex; flex-direction: column; gap: 8px; }
+        .parent-selector label { font-size: 0.75rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+        .skill-list-selection {
+            margin-top: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            padding: 8px;
+            background: #111;
+            border-radius: 6px;
+        }
+        .skill-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px;
+            border-bottom: 1px solid #222;
+            transition: background 0.2s;
+            border-radius: 4px;
+        }
+        .skill-option:hover { background: rgba(255,255,255,0.03); }
+        .skill-option.disabled { opacity: 0.35; pointer-events: none; }
+        .final-character-sheet {
+            margin-top: 25px;
+            padding: 20px;
+            border: 2px solid var(--gold);
+            background: linear-gradient(135deg, #1e1e1f 0%, #2a2a2b 100%);
+            border-radius: 12px;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .final-stat-card { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== HIGHRIDERS MODULE THEME ===== */
+        .details-panel.highriders-theme { background: linear-gradient(180deg, #141a1f 0%, #191e1f 100%); }
+        .highriders-theme .detail-header { border-bottom-color: #00d9f5; }
+        .highriders-theme .detail-header h2 { color: #00d9f5; text-shadow: 0 0 18px rgba(0,217,245,0.25); }
+        .highriders-theme .subtitle { color: #7ae8f7; }
+        .highriders-theme .section-title { color: #00d9f5; border-left-color: #00d9f5; }
+        .highriders-theme .stat-box { border-color: rgba(0,217,245,0.3); }
+        .highriders-theme .stat-box label { color: #00d9f5; }
+        .highriders-theme .trait-pill { border-color: rgba(0,217,245,0.3); background: rgba(0,217,245,0.04); }
+        .highriders-theme .trait-pill:hover { background: rgba(0,217,245,0.09); }
+        .highriders-theme .trait-header { border-bottom-color: rgba(0,217,245,0.15); }
+        .highriders-theme .trait-pill strong { color: #00d9f5; }
+        .highriders-theme .module-tag { background: rgba(0,217,245,0.12); border-color: rgba(0,217,245,0.4); color: #00d9f5; }
+        .highriders-theme .subrace-image-container { border-color: #00d9f5; }
+        .highriders-theme .subrace-selector { border-color: rgba(0,217,245,0.3); }
+        .highriders-theme .subrace-selector label { color: #00d9f5; }
+        .highriders-theme .final-character-sheet { border-color: #00d9f5; }
+        .highriders-theme .star-rating[data-tier="3"] { color: #ff9d5c; }
+        .highriders-theme .star-rating[data-tier="2"] { color: #00d9f5; }
+        .highriders-theme .star-rating[data-tier="1"] { color: #afffcd; }
+        /* Highriders list items */
+        .race-header[data-module="Highriders"] .race-name { color: #00d9f5; }
+        .race-header[data-module="Highriders"] .race-module { color: #00d9f5; opacity: 0.75; }
+        .race-header[data-module="Highriders"]:hover { background: rgba(0,217,245,0.07); }
+        .race-header[data-module="Highriders"].active { background: rgba(0,217,245,0.13); }
+        .subrace-item[data-module="Highriders"]:hover { background: rgba(0,217,245,0.1); }
+        .subrace-item[data-module="Highriders"].active { background: #00d9f5; color: #0a1215; }
+        .subrace-item[data-module="Highriders"].active::before { opacity: 0.7; }
+
+        .hidden { display: none !important; }
+
+        select {
+            background: #000;
+            border: 1px solid var(--border-gold);
+            color: var(--text-color);
+            padding: 7px;
+            border-radius: 4px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        @media(max-width: 700px) {
+            .main-content { flex-direction: column; }
+            .species-list { width: 100%; height: 180px; }
+            .mestizo-grid { grid-template-columns: 1fr; }
+            .detail-header { flex-direction: column-reverse; }
+            .subrace-image-container { margin: 0 0 12px 0; width: 100%; height: 140px; }
+            .filter-groups-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="hdr">
-  <div class="logo">SYNTH<em>:</em>V&amp;S <em>//</em> NETSPACE ARCHITECT</div>
-  <div class="sp"></div>
-  <div style="font-size:9px;color:var(--dim);letter-spacing:1px">DIFF:</div>
-  <select id="diffSel" style="width:155px">
-    <option value="low">LOW — Street Level</option>
-    <option value="corp" selected>CORP — Tier 2</option>
-    <option value="mil">MILITARY — Tier 3</option>
-    <option value="black">BLACK SITE — Max</option>
-  </select>
-  <button class="btn btn-g" onclick="autoGen()">⚡ AUTO-GEN</button>
-  <button class="btn btn-c" onclick="clearG()">◻ CLEAR</button>
-  <div class="sep">|</div>
-  <button class="btn btn-o" onclick="exportMap()">⬇ MAP PNG</button>
-  <button class="btn btn-p" onclick="exportAllPuzzles()">⬇ ALL PUZZLES</button>
+<div id="image-overlay" onclick="this.style.display='none'">
+    <img id="expanded-img" src="" alt="Vista Previa">
 </div>
 
-<div class="main">
-  <!-- LEFT PALETTE -->
-  <div class="pal">
-    <div class="ps">
-      <div class="pt">Paint Tool</div>
-      <div class="ptool on" id="pt-wall"     onclick="sb('wall')">     <div class="pico" style="border-color:#1A2E40;color:var(--dim)">▪</div>WALL</div>
-      <div class="ptool"    id="pt-corridor" onclick="sb('corridor')"> <div class="pico" style="border-color:var(--dim)">·</div>CORRIDOR</div>
-      <div class="ptool"    id="pt-start"    onclick="sb('start')">    <div class="pico" style="border-color:var(--green);color:var(--green)">▶</div>ENTRY</div>
-      <div class="ptool"    id="pt-gate"     onclick="sb('gate')">     <div class="pico" style="border-color:var(--cyan);color:var(--cyan)">⬡</div>GATE</div>
-      <div class="ptool"    id="pt-ice"      onclick="sb('ice')">      <div class="pico" style="border-color:var(--red);color:var(--red)">◈</div>ICE</div>
-      <div class="ptool"    id="pt-core"     onclick="sb('core')">     <div class="pico" style="border-color:var(--gold);color:var(--gold)">★</div>CORE</div>
-    </div>
-    <div class="ps">
-      <div class="pt">Grid Size (max 30×30)</div>
-      <div style="font-size:9px;color:var(--dim);margin-bottom:2px">COLS</div>
-      <input type="number" id="gC" value="12" min="5" max="30" style="margin-bottom:5px;font-size:15px;text-align:center;color:var(--cyan)" onchange="resG()">
-      <div style="font-size:9px;color:var(--dim);margin-bottom:2px">ROWS</div>
-      <input type="number" id="gR" value="7"  min="4" max="30" style="font-size:15px;text-align:center;color:var(--cyan)" onchange="resG()">
-    </div>
-    <div class="ps">
-      <div class="pt">TC / Step</div>
-      <input type="number" id="tcStep" value="1" min="1" max="3" style="font-size:22px;font-family:var(--vt);color:var(--orange);text-align:center">
-      <div style="font-size:9px;color:var(--dim);margin-top:2px;text-align:center">TRACE PER MOVE</div>
-    </div>
-    <div class="ps" style="flex:1">
-      <div class="pt">Gate Puzzles</div>
-      <div style="font-size:10px;line-height:2.3;color:var(--dim)">
-        <div><span style="color:var(--cyan)">α</span> Number Sequence</div>
-        <div><span style="color:var(--cyan)">β</span> Flow Connect</div>
-        <div><span style="color:var(--cyan)">γ</span> AI Riddle</div>
-        <div><span style="color:var(--cyan)">δ</span> Mastermind</div>
-        <div><span style="color:var(--cyan)">ε</span> Pattern Echo</div>
-        <div><span style="color:var(--cyan)">ζ</span> Sprint Rooms</div>
-      </div>
-      <div style="margin-top:8px;font-size:9px;color:var(--dim);line-height:1.7">
-        Right-click any cell<br>for cell properties.
-      </div>
-    </div>
-  </div>
+<div id="encyclopedia-container">
+    <div class="header"><h1>⚔ Glosario de Especies ⚔</h1></div>
 
-  <!-- GRID CANVAS -->
-  <div class="gwrap" id="gwrap"><div id="dgrid"></div></div>
+    <!-- CONTROLS -->
+    <div class="controls">
+        <div class="search-row">
+            <input type="text" id="search-input" placeholder="Buscar raza o subraza..." oninput="applyFilters()">
+            <button class="filter-toggle-btn" onclick="toggleFilterPanel()">
+                ⚗ Filtros <span class="filter-badge" id="filter-badge" style="display:none">0</span>
+            </button>
+            <button class="clear-btn" onclick="clearAllFilters()">✕ Limpiar</button>
+        </div>
+    </div>
 
-  <!-- RIGHT PANEL -->
-  <div class="rpan">
-    <div class="rph">
-      <span id="rph-t">CELL CONFIG</span>
-      <button class="btn btn-p" id="cfg-btn" style="display:none;padding:3px 7px;font-size:10px" onclick="openModal()">⬡ PUZZLE</button>
+    <!-- FILTER PANEL -->
+    <div id="filter-panel">
+        <div class="filter-panel-inner">
+            <div id="active-filters-row" class="active-filters-row"></div>
+            <div class="filter-groups-grid" id="filter-groups-grid"></div>
+        </div>
     </div>
-    <div class="rpb" id="rpb">
-      <div class="hint">
-        <b>① Paint</b> cells — hold &amp; drag for multiple.<br><br>
-        <b>② Right-click</b> any cell to see its properties.<br><br>
-        <b>③ Click a GATE</b> to configure its puzzle minigame.<br><br>
-        <b>④ AUTO-GEN</b> builds a dungeon instantly.<br><br>
-        <b>⑤ Export MAP</b> prints the grid architecture. Export puzzle cards for each Gate.
-      </div>
+
+    <div class="main-content">
+        <div class="species-list" id="species-list"></div>
+
+        <div class="details-panel" id="details-panel">
+            <div id="empty-state" style="text-align:center;margin-top:80px;opacity:.45">
+                <div style="font-size:2rem;margin-bottom:10px">📖</div>
+                <p style="font-family:'Cinzel',serif;color:var(--gold)">Selecciona una especie</p>
+                <p style="font-size:0.85rem">Elige una raza o subraza del panel izquierdo</p>
+            </div>
+
+            <div id="content-display" class="hidden">
+                <div class="detail-header">
+                    <div class="header-text-info">
+                        <div class="module-tag" id="det-module"></div>
+                        <h2 id="det-name"></h2>
+                        <div class="subtitle" id="det-subtitle"></div>
+                        <div class="subrace-selector hidden" id="subrace-container"></div>
+                    </div>
+                    <div class="subrace-image-container hidden" id="subrace-img-box" onclick="expandImage()">
+                        <img id="det-img" src="" alt="Imagen de Subraza">
+                    </div>
+                </div>
+
+                <div id="standard-info">
+                    <div class="stat-grid">
+                        <div class="stat-box"><label>Tipo</label><span id="det-type"></span></div>
+                        <div class="stat-box"><label>Tamaño</label><span id="det-size"></span></div>
+                        <div class="stat-box"><label>Velocidad</label><span id="det-speed"></span></div>
+                        <div class="stat-box"><label>Lenguajes</label><span id="det-langs"></span></div>
+                    </div>
+
+                    <div class="section-title">Descripción General</div>
+                    <p id="det-desc" style="line-height:1.7;white-space:pre-wrap;font-size:0.95rem"></p>
+
+                    <div id="physical-section">
+                        <div class="section-title">Físico de la Variante</div>
+                        <p id="det-physical" style="line-height:1.7;white-space:pre-wrap;font-size:0.95rem"></p>
+                    </div>
+
+                    <div class="section-title">Rasgos Raciales</div>
+                    <div id="det-traits"></div>
+                </div>
+
+                <!-- Mestizo Builder -->
+                <div id="mestizo-builder-ui" class="hidden">
+                    <div class="points-counter">Puntos: <span id="mestizo-points">8</span>/8</div>
+                    <div style="color:var(--gold);background:rgba(201,164,76,0.1);padding:10px;border-radius:4px;margin-bottom:15px;font-size:0.85rem;border:1px solid var(--border-gold)">
+                        <strong>Al crear un mestizo:</strong> Tienes 8 puntos disponibles. Debes elegir al menos 4 rasgos. El tamaño y velocidad se definen entre las opciones de los progenitores.
+                    </div>
+                    <div class="mestizo-grid">
+                        <div class="parent-selector">
+                            <label>Progenitor A</label>
+                            <select id="parent-a-species" onchange="handleParentSelection('a')"></select>
+                            <select id="parent-a-subrace" class="hidden" onchange="updateMestizoSkills()"></select>
+                        </div>
+                        <div class="parent-selector">
+                            <label>Progenitor B</label>
+                            <select id="parent-b-species" onchange="handleParentSelection('b')"></select>
+                            <select id="parent-b-subrace" class="hidden" onchange="updateMestizoSkills()"></select>
+                        </div>
+                    </div>
+                    <div id="inheritance-customizer" class="hidden" style="margin-top:15px;padding:15px;border:1px solid var(--border-gold);border-radius:8px;">
+                        <div class="stat-grid">
+                            <div class="stat-box"><label>Tamaño Heredado</label><select id="mestizo-size-choice" onchange="generateFinalSheet()"></select></div>
+                            <div class="stat-box"><label>Velocidad Heredada</label><select id="mestizo-speed-choice" onchange="generateFinalSheet()"></select></div>
+                        </div>
+                    </div>
+                    <div class="section-title">Pool de Habilidades Disponibles</div>
+                    <div id="mestizo-skills-pool" class="skill-list-selection">
+                        <p style="text-align:center;opacity:0.5;padding:20px">Selecciona ambos progenitores.</p>
+                    </div>
+                    <div id="final-character-display" class="hidden"></div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-
-<!-- CONTEXT MENU -->
-<div id="ctx">
-  <div class="ctx-head" id="ctx-head">CELL INFO</div>
-  <div id="ctx-body"></div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- MODAL -->
-<div class="mbg" id="mbg" style="display:none" onclick="if(event.target===this)closeModal()">
-  <div class="mdl" id="mdlc"></div>
-</div>
-
-<!-- EXPORT ROOT -->
-<div id="xroot"></div>
 
 <script>
-// ════════════════════════════════════════════════════════
-// CONSTANTS
-// ════════════════════════════════════════════════════════
-const GT=['alpha','beta','gamma','delta','epsilon','zeta'];
-const GS={alpha:'α',beta:'β',gamma:'γ',delta:'δ',epsilon:'ε',zeta:'ζ'};
-const GN={alpha:'SEQUENCE LOCK',beta:'FLOW CONNECT',gamma:'AI RIDDLE',delta:'MASTERMIND',epsilon:'PATTERN ECHO',zeta:'SPRINT ROOMS'};
-const GC={alpha:'#00E5FF',beta:'#00FF88',gamma:'#BB77FF',delta:'#FFD600',epsilon:'#FF7A35',zeta:'#FF3355'};
-const IS_={shepherd:'S',choker:'C',warden:'W',black:'B',daemon:'D'};
-const IN_={shepherd:'Shepherd',choker:'Choker',warden:'Warden',black:'Black ICE',daemon:'Daemon'};
-const IC_={shepherd:'#00FF88',choker:'#00E5FF',warden:'#FF7A35',black:'#FF3355',daemon:'#BB77FF'};
-const SYMS=['△','○','□','◈','✦','⬡','◇','⬢'];
-
-// Flow Free default pair colors
-const PAIR_COLORS=[
-  {col:'#FF3355',name:'RED'},
-  {col:'#00E5FF',name:'CYAN'},
-  {col:'#00FF88',name:'GREEN'},
-  {col:'#FFD600',name:'GOLD'},
-  {col:'#BB77FF',name:'PURPLE'},
-  {col:'#FF7A35',name:'ORANGE'},
+// ═══════════════════════════════════════════════════
+//  DATABASE
+// ═══════════════════════════════════════════════════
+const speciesDatabase = [
+    {
+        id: "draconido",
+        name: "Dracónido",
+        category: "Humanoide / Dragón",
+        module: "Devenir: Nox",
+        description: "Los Dracónidos son humanoides que portan en su sangre el legado directo de Nox, el dragón primigenio. Su cuerpo escamado, sus garras y su aliento elemental son testimonios vivos de una herencia que no puede ser ocultada ni ignorada. Se dividen en linajes según el elemento que corre por sus venas: hielo, fuego, luna, tormenta, tierra, vida o las estrellas mismas. Orgullosos pero pragmáticos, los Dracónidos comprenden que su poder es tanto un don como una carga que definen quiénes son en un mundo que los mira con mezcla de admiración y cautela.",
+        subraces: [
+            {
+                name: "Sangre de Hielo",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                image: "https://i.pinimg.com/736x/28/3f/48/283f4804c141b613b3c0b3d90c07c83f.jpg",
+                physical: "Sus escamas son pálidas o azuladas, a menudo cubiertas por una escarcha permanente que no las daña. Sus ojos presentan tonos blancos o celestes y su aliento condensa el aire en nubes de vapor helado incluso cuando no lo usa en combate.",
+                elements: ["Hielo", "Agua"],
+                resistances: ["Frío"],
+                special: ["Nado", "Aliento"],
+                creatureTypes: ["Humanoide", "Dragón"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Breath Weapon (Frío)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho. Cada criatura en esa área debe realizar una salvación de Destreza (CD 8 + mod. Constitución + Bonificador por Competencia). Si falla, recibe 1d10 de daño de Frío; si tiene éxito, la mitad. Aumenta en 1d10 al nivel 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Flowbound Body", tier: 1, text: "Tienes ventaja en pruebas y tiradas de salvación realizadas para escapar de la condición Agarre." },
+                    { title: "Freezing Attack", tier: 2, text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño de Frío, su velocidad se reduce en 10 pies hasta el inicio de tu siguiente turno." },
+                    { title: "Child of the Water", tier: 1, text: "Obtienes velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua." },
+                    { title: "Cold Endurance", tier: 1, text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo." }
+                ]
+            },
+            {
+                name: "Sangre de Sol",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                physical: "Sus escamas son doradas o broncíneas, y bajo la luz directa del sol reflejan destellos enceguecedores. Su temperatura corporal es notablemente más alta que la de otras razas, y su aliento huele permanentemente a ceniza cálida.",
+                elements: ["Fuego", "Radiante"],
+                resistances: ["Fuego"],
+                special: ["Aliento"],
+                creatureTypes: ["Humanoide", "Dragón"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Breath Weapon (Fuego)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho. Cada criatura en esa área debe realizar una salvación de Destreza (CD 8 + mod. Constitución + Bonificador por Competencia). Si falla, recibe 1d10 de daño de Fuego; si tiene éxito, la mitad. Aumenta en 1d10 al nivel 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Boiling Blood", tier: 2, text: "Una vez por turno, cuando impactas con un ataque o infliges daño con un conjuro, puedes hacer que el objetivo reciba daño de Fuego adicional igual a tu bonificador de competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos al finalizar un descanso largo." },
+                    { title: "Radiant Pulse", tier: 3, text: "Como acción adicional, emites luz brillante en un radio de 10 pies durante 1 minuto. Cuando activas este rasgo, elige un número de criaturas aliadas dentro de la luz igual a tu bonificador de competencia. Durante la duración, obtienen ventaja en su primera tirada de salvación. Una vez usado, no puedes volver a hacerlo hasta terminar un descanso largo." },
+                    { title: "Radiant Endurance", tier: 2, text: "Obtienes resistencia al daño por Fuego. Las altas temperaturas y entornos abrasadores nunca cuentan como extremos para ti, y la luz intensa nunca te impone desventaja en pruebas de Percepción." }
+                ]
+            },
+            {
+                name: "Sangre de Luna",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                physical: "Sus escamas son plateadas con un suave brillo translúcido, como si la luz de la luna viviera dentro de ellas. Sus ojos son completamente pálidos, casi sin pupila visible, y su presencia genera una sensación de extrañeza difícil de articular.",
+                elements: ["Luna", "Psíquico"],
+                resistances: ["Psíquico"],
+                special: ["Darkvision Superior", "Aliento"],
+                creatureTypes: ["Humanoide", "Dragón"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Breath Weapon (Psíquico)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho. Cada criatura en esa área debe realizar una salvación de Destreza (CD 8 + mod. Constitución + Bonificador por Competencia). Si falla, recibe 1d10 de daño Psíquico; si tiene éxito, la mitad. Aumenta en 1d10 al nivel 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Reflected Self", tier: 1, text: "Obtienes competencia en Sigilo o Engaño." },
+                    { title: "Veil of Phases", tier: 3, text: "Cuando una criatura que puedas ver te impacta con un ataque, puedes usar tu reacción para volverte semi-transparente, imponiendo desventaja a esa tirada. Si el ataque falla, puedes moverte hasta la mitad de tu Velocidad de Caminar como parte de la reacción. Una vez usado, no puedes volver a hacerlo hasta terminar un descanso largo." },
+                    { title: "Veiled Mind", tier: 2, text: "Obtienes resistencia al daño Psíquico. Además, tienes ventaja en salvaciones contra ser hechizado o asustado." }
+                ]
+            },
+            {
+                name: "Sangre de Tormenta",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                physical: "Sus escamas son azul eléctrico o gris tormenta, con crestas dorsales que vibran sutilmente y ocasionalmente emiten pequeñas chispas al roce. Sus ojos brillan con una luz amarilla intensa cuando se excitan o preparan para el combate.",
+                elements: ["Rayo", "Tormenta"],
+                resistances: ["Eléctrico"],
+                special: ["Aliento"],
+                creatureTypes: ["Humanoide", "Dragón"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Breath Weapon (Rayo)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho. Cada criatura en esa área debe realizar una salvación de Destreza (CD 8 + mod. Constitución + Bonificador por Competencia). Si falla, recibe 1d10 de daño Eléctrico; si tiene éxito, la mitad. Aumenta en 1d10 al nivel 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Storm Step", tier: 2, text: "Cuando realizas la acción Dash, los ataques de oportunidad contra ti se realizan con desventaja hasta el final del turno." },
+                    { title: "Crackling Blood", tier: 2, text: "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño Eléctrico, tu velocidad aumenta en 5 pies hasta el final de tu turno." },
+                    { title: "Storm Endurance", tier: 2, text: "Obtienes resistencia al daño Eléctrico. Los vientos fuertes y tormentas nunca cuentan como condiciones adversas para ti." }
+                ]
+            },
+            {
+                name: "Sangre de Tierra",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                physical: "Sus escamas son pétreas, de tonos marrones, grises o beige rojizo, con una textura rugosa que parece tallada en roca. Son más bajos y corpulentos que otras variantes, y su peso es considerablemente mayor de lo que su tamaño sugiere.",
+                elements: ["Tierra"],
+                resistances: ["Contundente"],
+                special: ["Aliento"],
+                creatureTypes: ["Humanoide", "Dragón"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Breath Weapon (Contundente)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho. Cada criatura en esa área debe realizar una salvación de Destreza (CD 8 + mod. Constitución + Bonificador por Competencia). Si falla, recibe 1d10 de daño Contundente; si tiene éxito, la mitad. Aumenta en 1d10 al nivel 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Immovable Frame", tier: 2, text: "Tienes ventaja en tiradas de salvación para evitar ser derribado o movido contra tu voluntad." },
+                    { title: "Hardened Scales", tier: 3, text: "Tus escamas son duras como piedra. Mientras no lleves armadura, puedes calcular tu CA como 13 + tu modificador de Destreza o Constitución. Puedes usar un escudo y aun así obtener este beneficio." },
+                    { title: "Stone Endurance", tier: 2, text: "Obtienes resistencia al daño Contundente." },
+                    { title: "Titan's Bearing", tier: 1, text: "Se te considera una talla más grande al determinar tu capacidad de carga. Puedes portar armaduras y armas no mágicas que requieran Fuerza sin necesidad de cumplir sus requisitos." }
+                ]
+            },
+            {
+                name: "Sangre de Vida",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                physical: "Sus escamas son verdes con intrincados patrones que evocan hojas y venas de plantas. Suelen tener pequeñas espinas o protuberancias a lo largo de la espalda, y su piel entre escamas es suave y húmeda como la de un anfibio.",
+                elements: ["Veneno", "Ácido", "Naturaleza"],
+                resistances: ["Veneno", "Ácido"],
+                special: ["Aliento"],
+                creatureTypes: ["Humanoide", "Dragón"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Breath Weapon (Veneno/Ácido)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho. Cada criatura en esa área debe realizar una salvación de Destreza (CD 8 + mod. Constitución + Bonificador por Competencia). Si falla, recibe 1d10 de daño del tipo elegido; si tiene éxito, la mitad. Aumenta en 1d10 al nivel 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Creeping Vitality", tier: 2, text: "Cuando recuperas puntos de golpe mediante cualquier fuente, recuperas puntos adicionales iguales a tu bonificador de competencia." },
+                    { title: "Adaptive Flesh", tier: 1, text: "Tienes ventaja en salvaciones contra veneno y enfermedad." },
+                    { title: "Verdant Endurance", tier: 2, text: "Obtienes resistencia al daño por veneno y ácido. Cuando usas tu Breath Weapon puedes elegir cualquiera de los dos tipos de elemento. Los entornos tóxicos, pantanosos o contaminados nunca cuentan como extremos para ti." }
+                ]
+            },
+            {
+                name: "Sangre de Estrella",
+                type: "Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                physical: "Sus escamas son de un negro profundo salpicado de puntos luminosos que imitan constelaciones. En la oscuridad absoluta, su silueta es reconocible por este brillo constante y tenue, como el manto del cielo nocturno.",
+                elements: ["Fuerza", "Cósmico"],
+                resistances: ["Fuerza"],
+                special: ["Aliento", "Darkvision Superior"],
+                creatureTypes: ["Humanoide", "Dragón"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Breath Weapon (Fuerza)", tier: 3, text: "Al realizar la acción de Ataque en tu turno, puedes reemplazar uno de tus ataques con una exhalación de energía mágica en un Cono de 15 pies o en una Línea de 30 pies y 5 pies de ancho. Cada criatura en esa área debe realizar una salvación de Destreza (CD 8 + mod. Constitución + Bonificador por Competencia). Si falla, recibe 1d10 de daño de Fuerza; si tiene éxito, la mitad. Aumenta en 1d10 al nivel 5 (2d10), 11 (3d10) y 17 (4d10)." },
+                    { title: "Celestial Insight", tier: 3, text: "Una vez por descanso largo, después de ver una tirada d20, puedes sumar o restar 1d4 al resultado." },
+                    { title: "Distant Gaze", tier: 2, text: "Puedes ver normalmente a través de oscuridad mágica, ilusiones y efectos visuales que obscurezcan hasta 30 pies." },
+                    { title: "Cosmic Endurance", tier: 2, text: "Obtienes resistencia al daño de Fuerza. Los efectos que alteran la gravedad, el vacío o la presión cósmica no te afectan." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "kobold",
+        name: "Kobold",
+        category: "Humanoide / Dragón / Bestia",
+        module: "Devenir: Nox",
+        description: "Los Kobolds son reptilianos menudos que descienden de las sombras que los dragones primigenios dejaron en el mundo al crear vida a su imagen y semejanza. Aunque su físico es frágil comparado con otras razas, compensan su vulnerabilidad con astucia, tenacidad y una devoción casi religiosa por su linaje dracónico. Se dividen entre los Emberclaw, que retienen con orgullo el legado de Nox en su sangre, y los Houndfang, que han abrazado un camino más bestial e instintivo, renunciando parte de su herencia a cambio de una brutalidad más cruda.",
+        subraces: [
+            {
+                name: "Emberclaw",
+                type: "Humanoide / Dragón",
+                size: "Pequeño",
+                speed: 40,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                image: "https://i.pinimg.com/736x/ed/0c/e7/ed0ce7c203af1f471565441ec85d373c.jpg",
+                physical: "Escamas reptilianas de tono cobrizo o escarlata que reflejan ecos de la grandeza dracónica. Sus garras son afiladas y su cola, delgada pero expresiva, delata sus emociones antes que su rostro.",
+                elements: ["Dragónico"],
+                resistances: [],
+                special: [],
+                creatureTypes: ["Humanoide", "Dragón"],
+                sizes: ["Pequeño"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad como luz tenue, oscuridad total como luz tenue gris." },
+                    { title: "Draconic Legacy", tier: 1, text: "Obtienes resistencia a un tipo de daño elegido entre: frío, fuego, ácido, rayo o veneno." },
+                    { title: "Draconic Cry", tier: 3, text: "Como acción adicional, lanzas un grito dracónico que otorga ventaja en ataques a tus aliados contra enemigos a 10 pies. Puedes usar este rasgo un número de veces igual a tu Bonificador de Competencia, recuperando todos los usos tras un descanso largo." }
+                ]
+            },
+            {
+                name: "Houndfang",
+                type: "Humanoide / Bestia",
+                size: "Pequeño",
+                speed: 30,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                image: "https://i.pinimg.com/736x/ed/0c/e7/ed0ce7c203af1f471565441ec85d373c.jpg",
+                physical: "De rasgos más caninos o mustélidos que reptilianos, sus hocicos son prominentes y su pelaje corto reemplaza las escamas en gran parte del cuerpo. Son criaturas de puro instinto de caza con movimientos rápidos y nerviosos.",
+                elements: ["Bestial"],
+                resistances: [],
+                special: ["Arma Natural"],
+                creatureTypes: ["Humanoide", "Bestia"],
+                sizes: ["Pequeño"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad como luz tenue, oscuridad total como luz tenue gris." },
+                    { title: "Bestial Instincts", tier: 1, text: "Obtienes competencia en Percepción o Supervivencia." },
+                    { title: "Smell Sense", tier: 1, text: "Tienes ventaja en pruebas de Percepción que dependan del olfato." },
+                    { title: "Pack Tactics", tier: 3, text: "Tienes ventaja en tiradas de ataque contra una criatura si al menos un aliado no incapacitado está a 5 pies de ella." },
+                    { title: "Mordida Natural", tier: 2, text: "Tus fauces son un arma natural: 1d6 + modificador de Fuerza o Destreza (tu elección) de daño perforante." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "grung",
+        name: "Grung",
+        category: "Humanoide / Bestia",
+        module: "Devenir: Nox",
+        description: "Los Grung son humanoides anfibios de piel brillante y tóxica, perfectamente adaptados para prosperar donde la tierra y el agua se fusionan en un mundo de constante humedad. Territoriales y meticulosamente disciplinados, construyen sus comunidades con una jerarquía social que tratan como una ciencia exacta. Su piel, permanentemente cargada de veneno, funciona tanto como armadura como advertencia al mundo: lo que parece hermoso en un Grung suele ser letal al tacto.",
+        subraces: [
+            {
+                name: "Slimeskin",
+                type: "Humanoide / Bestia / Babosidad",
+                size: "Pequeño",
+                speed: 25,
+                languages: "Común, Sylvan",
+                module: "Devenir: Nox",
+                image: "https://pbs.twimg.com/media/Fyb0QgVWAAEh5xJ?format=jpg&name=4096x4096",
+                physical: "Piel húmeda de colores chillones —verde neón, naranja vibrante, rojo escarlata— con una textura brillante e irregular. Su cuerpo es elástico y compacto, con almohadillas adhesivas en los dedos capaces de escalar superficies lisas sin esfuerzo.",
+                elements: ["Veneno", "Agua"],
+                resistances: ["Veneno"],
+                special: ["Nado", "Inmune Veneno"],
+                creatureTypes: ["Humanoide", "Bestia", "Babosidad"],
+                sizes: ["Pequeño"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Amphibious", tier: 1, text: "Obtienes velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua." },
+                    { title: "Poison Immunity", tier: 3, text: "Eres inmune al daño por veneno y a la condición envenenado." },
+                    { title: "Standing Leap", tier: 2, text: "Tu salto de longitud es de hasta 25 pies y tu salto de altura hasta 15 pies, con o sin carrera. Como acción adicional, puedes dar un salto sin coste de movimiento." },
+                    { title: "Poisonous Skin", tier: 3, text: "Como reacción, cuando una criatura te agarre o te impacte en cuerpo a cuerpo sin armadura, debe superar una salvación de Constitución (CD = 8 + bonificador por competencia + mod. Constitución) o sufrir 2d6 de daño por veneno. Nivel 5: 3d6, Nivel 11: 4d6, Nivel 17: 5d6. Usable una vez por descanso largo." },
+                    { title: "Water Dependency", tier: 1, text: "Debes sumergirte en agua al menos 1 hora al día o sufrir agotamiento." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "leviath",
+        name: "Leviath",
+        category: "Humanoide / Bestia / Dragón",
+        module: "Devenir: Nox",
+        description: "Los Leviath son humanoides oceánicos que heredaron la imponencia y la brutalidad de las grandes bestias del abismo marino. Su cuerpo poderoso y su piel resistente como cuero endurecido los convierten en presencias intimidantes tanto en tierra como en el agua. Combinan los rasgos predatorios de los grandes escualos con una voluntad férrrea que desafía cualquier intento de control mental, como si el océano mismo hubiera forjado su psique para resistir la presión de las profundidades.",
+        subraces: [
+            {
+                name: "Sharkonoid",
+                type: "Humanoide / Bestia / Dragón",
+                size: "Pequeño o Mediano o Grande",
+                speed: 30,
+                languages: "Común, Dracónico",
+                module: "Devenir: Nox",
+                image: "https://i.pinimg.com/1200x/8d/0b/94/8d0b941c30ac9a664c784ab261231f4e.jpg",
+                physical: "Piel gris azulada con la textura áspera característica de la piel de tiburón, y filas de dientes que se regeneran constantemente. Su figura puede variar desde proporciones humanoides compactas hasta estaturas que superan los dos metros y medio.",
+                elements: ["Agua"],
+                resistances: [],
+                special: ["Nado"],
+                creatureTypes: ["Humanoide", "Bestia", "Dragón"],
+                sizes: ["Pequeño", "Mediano", "Grande"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Amphibious", tier: 1, text: "Obtienes velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua." },
+                    { title: "Leviathan Will", tier: 3, text: "Tienes ventaja en las tiradas de salvación contra ser encantado, asustado, paralizado, envenenado, aturdido o dormido." },
+                    { title: "Shark Scales", tier: 3, text: "Tu piel es dura y escamosa. Mientras no lleves armadura, tu CA es 13 + tu modificador de Destreza o Constitución. Puedes usar escudo y obtener este beneficio." },
+                    { title: "Powerful Build", tier: 2, text: "Se te considera una talla más grande al determinar tu capacidad de carga y el peso que puedes empujar, arrastrar o levantar." },
+                    { title: "Water Dependency", tier: 1, text: "Debes sumergirte en agua al menos 1 hora al día o sufrir agotamiento." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "tabaxi",
+        name: "Tabaxi",
+        category: "Humanoide / Bestia",
+        module: "Devenir: Nox",
+        description: "Los Tabaxi son humanoides felinos de movimientos fluidos y una curiosidad que roza la compulsión. Nacidos para explorar y narrar, cada Tabaxi es un viajero en potencia, incapaz de resistir un misterio sin resolver o una historia sin contar. Su agilidad y sentidos afinados los convierten en exploradores, ladrones y cazadores excepcionales; aunque su lealtad puede durar tanto como su interés, y su interés cambia con el viento.",
+        subraces: [
+            {
+                name: "Swiftclaw",
+                type: "Humanoide / Bestia",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Cuerpo esbelto y elástico con patrones de manchas o rayas según el individuo. Sus garras retráctiles emergen en silencio y sus ojos de pupila vertical captan el mínimo movimiento en la penumbra.",
+                elements: ["Bestial"],
+                resistances: [],
+                special: ["Arma Natural"],
+                creatureTypes: ["Humanoide", "Bestia"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Feline Agility", tier: 2, text: "Puedes duplicar tu velocidad durante este turno. Debes permanecer quieto un turno completo para volver a usar este rasgo." },
+                    { title: "Cat's Claws", tier: 2, text: "Tus garras son un arma natural: 1d6 + mod. Fuerza (o Destreza, a tu elección) de daño cortante." },
+                    { title: "Feline Senses", tier: 1, text: "Obtienes competencia en Percepción o Sigilo." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "behero",
+        name: "Behero",
+        category: "Humanoide / Bestia",
+        module: "Devenir: Nox",
+        description: "Los Behero son humanoides con rasgos de búho, envueltos en un silencio que transmite tanto sabiduría como misterio insondable. Sus alas, diseñadas para el vuelo absolutamente silencioso, y sus ojos capaces de perforar la oscuridad más densa los convierten en centinelas nocturnos sin igual. Son seres de observación y contemplación profunda, que prefieren escuchar durante horas antes de pronunciar una sola palabra; y cuando hablan, raramente dicen algo que no valga la pena escuchar.",
+        subraces: [
+            {
+                name: "Nightwing",
+                type: "Humanoide / Bestia",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Sylvan, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Plumas densas y suaves de tonos que van del negro ceniza al marrón rojizo, con patrones moteados que funcionan como camuflaje natural. Sus ojos son grandes y no pueden rotar en el cráneo, por lo que giran la cabeza casi 270 grados.",
+                elements: ["Oscuridad", "Aire"],
+                resistances: [],
+                special: ["Vuelo", "Darkvision Superior", "Arma Natural"],
+                creatureTypes: ["Humanoide", "Bestia"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Flight", tier: 2, text: "Obtienes velocidad de Vuelo igual a tu Velocidad de Caminar. No puedes usar esta velocidad si llevas armadura media o pesada." },
+                    { title: "Silent Wings", tier: 2, text: "Tienes ventaja en pruebas de Sigilo mientras vuelas." },
+                    { title: "Talons", tier: 1, text: "Tus garras son un arma natural: 1d6 + mod. Fuerza (o Destreza, a tu elección) de daño cortante." },
+                    { title: "Nocturnal Wisdom", tier: 1, text: "Obtienes competencia en Perspicacia o Historia." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "goblin",
+        name: "Goblin",
+        category: "Humanoide / Fey",
+        module: "Devenir: Nox",
+        description: "Las Goblins son una estirpe antigua y resiliente, nacida de los márgenes del mundo donde la naturaleza es más cruda y menos piadosa. Son una especie exclusivamente femenina: no existen machos en su linaje. Poseen una biología mística y adaptable que les permite perpetuarse tanto entre ellas como mediante la unión con otras razas; sin embargo, si su descendencia retiene al menos un rasgo goblin, siempre nacerá hembra. Aunque la sociedad más amplia suele subestimarlas por su tamaño, las Goblins compensan cada centímetro que les falta con astucia, ferocidad y una tenacidad que desafía toda lógica.",
+        subraces: [
+            {
+                name: "Clumptent",
+                type: "Humanoide / Fey",
+                size: "Pequeño",
+                speed: 30,
+                languages: "Común, Goblin",
+                module: "Devenir: Nox",
+                image: "https://pbs.twimg.com/media/F32Bgp0XsAAtERC?format=jpg&name=4096x4096",
+                physical: "Fisonomía atlética y ágil con una altura promedio de 100 cm. Su piel, de tonos verde musgo u olivo, es notablemente elástica y suave, adaptada para el movimiento en humedales. Destacan sus ojos grandes y brillantes en tonos ambarinos. Suelen ser fanáticas de los objetos brillantes y de la carne bien asada.",
+                elements: [],
+                resistances: [],
+                special: [],
+                creatureTypes: ["Humanoide", "Fey"],
+                sizes: ["Pequeño"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Fey Ancestry", tier: 2, text: "Tienes ventaja en las tiradas de salvación para evitar o terminar la condición encantado sobre ti." },
+                    { title: "Fury of the Small", tier: 3, text: "Cuando dañas a una criatura de un tamaño mayor que el tuyo, puedes infligir daño adicional igual a tu bonificador por competencia. Usable un número de veces igual a tu bonificador por competencia; se recupera tras descanso largo. No más de una vez por turno." },
+                    { title: "Nimble Escape", tier: 2, text: "Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos." },
+                    { title: "Imposing Presence", tier: 1, text: "Obtienes competencia en Intimidación o Persuasión (tu elección)." }
+                ]
+            },
+            {
+                name: "Dragonjaw",
+                type: "Humanoide / Fey / Dragón",
+                size: "Pequeño",
+                speed: 25,
+                languages: "Común, Dracónico, Goblin",
+                module: "Devenir: Nox",
+                image: "https://pbs.twimg.com/media/GLdH5AaX0AAEmEW?format=jpg&name=4096x4096",
+                physical: "La variante más robusta y baja, rondando los 80 cm. Su constitución es densa y acumula más masa que otras Goblins. Destacan los cuernos curvados que brotan de su cabeza —similares a los de un carnero— y una temperatura corporal elevada al tacto. Sus dientes superiores desarrollan colmillos en la niñez que les permiten desgarrar carne dura con facilidad. Son las más tímidas pero sociales de su especie.",
+                elements: ["Hielo"],
+                resistances: ["Frío"],
+                special: [],
+                creatureTypes: ["Humanoide", "Fey", "Dragón"],
+                sizes: ["Pequeño"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Cold Resistance", tier: 2, text: "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo para ti." },
+                    { title: "Fury of the Small", tier: 3, text: "Cuando dañas a una criatura de un tamaño mayor que el tuyo, puedes infligir daño adicional igual a tu bonificador por competencia. Usable un número de veces igual a tu bonificador por competencia; se recupera tras descanso largo. No más de una vez por turno." },
+                    { title: "Natural Toughness", tier: 2, text: "Tu máximo de puntos de golpe aumenta en 1 por cada nivel de personaje." },
+                    { title: "Thick Body", tier: 2, text: "Mientras no lleves armadura, obtienes un bono de +1 a tu CA." }
+                ]
+            },
+            {
+                name: "Ironfang",
+                type: "Humanoide / Fey",
+                size: "Pequeño",
+                speed: 30,
+                languages: "Común, Goblin",
+                module: "Devenir: Nox",
+                image: "https://pbs.twimg.com/media/GKz7B5KWkAAw2N4?format=jpg&name=medium",
+                physical: "Con una estatura que alcanza los 120 cm, son las más altas y de físico más imponente de su especie. Cuerpo musculoso y piel de verde oscuro o pantanoso. Poseen mandíbulas prominentes con colmillos superiores y un porte permanentemente agresivo. Suelen ejercer de herreras o gladiadoras en asentamientos de otras razas, lejos de sus propias tribus.",
+                elements: [],
+                resistances: [],
+                special: [],
+                creatureTypes: ["Humanoide", "Fey"],
+                sizes: ["Pequeño"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Fury of the Small", tier: 3, text: "Cuando dañas a una criatura de un tamaño mayor que el tuyo, puedes infligir daño adicional igual a tu bonificador por competencia. Usable un número de veces igual a tu bonificador por competencia; se recupera tras descanso largo. No más de una vez por turno." },
+                    { title: "Relentless Fury", tier: 2, text: "Antes de realizar un ataque puedes gastar dos usos de Fury of the Small para declarar un ataque agresivo. Si impacta, inflige el daño equivalente a dos usos de Fury of the Small o realizas un Ataque Adicional." },
+                    { title: "Nimble Escape", tier: 2, text: "Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos." }
+                ]
+            },
+            {
+                name: "Shadefoot",
+                type: "Humanoide / Fey",
+                size: "Pequeño",
+                speed: 40,
+                languages: "Común, Goblin, uno Adicional",
+                module: "Devenir: Nox",
+                image: "https://pbs.twimg.com/media/FhGzuKfXgAEF6b8?format=jpg&name=4096x4096",
+                physical: "Pequeñas y de huesos ligeros, promediando los 90 cm. Su piel presenta tonos oscuros —negro azabache, púrpura profundo, gris ceniza— y sus ojos brillan en colores vivos como rojo, morado o ámbar. Poseen una flexibilidad articular extraordinaria que les permite contorsionarse y ocupar espacios extremadamente reducidos.",
+                elements: [],
+                resistances: [],
+                special: [],
+                creatureTypes: ["Humanoide", "Fey"],
+                sizes: ["Pequeño"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Pickpocket", tier: 1, text: "Obtienes competencia en la habilidad Juego de Manos." },
+                    { title: "Unseen Skulker", tier: 3, text: "Cuando realizas la acción de Esconderte, puedes intentar ocultarte incluso si estás ligeramente oscurecida o parcialmente cubierta, siempre que no estés a plena vista. Además, moverte mientras estás oculta no revela tu posición si terminas tu movimiento en cobertura o zona oscurecida." },
+                    { title: "Nimble Movement", tier: 1, text: "Puedes moverte a través del espacio de cualquier criatura que sea de un tamaño mayor que el tuyo." },
+                    { title: "Nimble Escape", tier: 2, text: "Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "myko",
+        name: "Myko",
+        category: "Humanoide / Planta / Babosidad",
+        module: "Devenir: Nox",
+        description: "Los Myko son criaturas nacidas del micelio antiguo que subyace bajo el mundo, seres de carne blanda y esponjosa con sombreros irregulares que prosperan en cavernas húmedas, bosques densos y ruinas cubiertas de musgo. No poseen huesos rígidos: su cuerpo cede ante los golpes, absorbe impactos y exhala esporas cargadas de energía vital cuando se agita. Poseen una conexión telepática innata que desconcertó a alquimistas y herbolarios durante generaciones, y una resiliencia ante venenos que ha convertido a más de un asesino en motivo de burla.",
+        subraces: [
+            {
+                name: "Softspores",
+                type: "Humanoide / Planta / Babosidad",
+                size: "Pequeño o Mediano",
+                speed: 25,
+                languages: "Común, Sylvan",
+                module: "Devenir: Nox",
+                physical: "Suaves al tacto, de tonos que imitan hongos comestibles o venenosos: rojos con puntos blancos, marrones terrosos, azules luminiscentes o grises con filamentos plateados. Sus sombreros varían de formas aplanadas a globosas según la edad.",
+                elements: ["Veneno", "Naturaleza"],
+                resistances: ["Veneno"],
+                special: ["Telepatía", "Darkvision Superior"],
+                creatureTypes: ["Humanoide", "Planta", "Babosidad"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Telepathic Rapport", tier: 3, text: "Puedes comunicarte telepáticamente con una criatura dispuesta a 120 pies. No necesita compartir idioma contigo, pero debe entender al menos uno. Esta comunicación transmite sensaciones e imágenes simples más que palabras precisas." },
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Fungal Resilience", tier: 2, text: "Tienes ventaja en salvaciones contra venenos y enfermedades, y resistencia al daño por veneno. Además, tienes ventaja en tiradas de Constitución para resistir enfermedades naturales." },
+                    { title: "Soft Body", tier: 1, text: "Tu estructura esponjosa amortigua las caídas: sufres la mitad del daño por caída." },
+                    { title: "Mushy Piece", tier: 1, text: "Como acción, arrancas una pequeña porción de tu cuerpo fúngico que permanece fresca 1 hora. Una criatura puede consumirla para recuperar 1d6 + tu bonificador de competencia PG. Usable una vez por descanso largo. Arrancarla no te causa daño." },
+                    { title: "Imposing Presence", tier: 1, text: "Obtienes competencia en Intimidación o Persuasión (tu elección)." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "tauro",
+        name: "Toro",
+        category: "Humanoide / Bestia",
+        module: "Devenir: Nox",
+        description: "Los Toros son humanoides imponentes de cuerpo bovino cuya cultura gira en torno al desafío físico, la libertad de movimiento y el respeto ganado en combate o en servicio. Se dividen en dos expresiones complementarias: los Toro, machos de musculatura bruta y embestida devastadora, y las Asterion, hembras de presencia apaciguadora y una biología semi-mágica que produce sustancias regenerativas capaces de alimentar y sanar a quienes protegen.",
+        subraces: [
+            {
+                name: "Toro",
+                type: "Humanoide / Bestia",
+                size: "Pequeño o Mediano",
+                speed: 35,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Musculatura masiva distribuida en un cuerpo de proporciones bovinas con cuernos prominentes. Son exclusivamente machos, y sus cuernos varían desde formas afiladas hacia adelante hasta espirales laterales que los hacen temibles en combate cerrado.",
+                elements: [],
+                resistances: [],
+                special: ["Arma Natural"],
+                creatureTypes: ["Humanoide", "Bestia"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Horns", tier: 2, text: "Tus cuernos son un arma natural: 1d8 + mod. Fuerza de daño perforante." },
+                    { title: "Goring Rush", tier: 3, text: "Tras usar la acción Dash, puedes realizar un ataque con Horns al terminar el movimiento en una posición adyacente a una criatura." },
+                    { title: "Powerful Build", tier: 2, text: "Se te considera una talla más grande al determinar tu capacidad de carga y el peso que puedes empujar, arrastrar o levantar." },
+                    { title: "Imposing Presence", tier: 1, text: "Obtienes competencia en Intimidación o Persuasión (tu elección)." }
+                ]
+            },
+            {
+                name: "Asterion",
+                type: "Humanoide / Bestia",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "De pelaje más suave y porte protector, con cuernos de menor tamaño pero igualmente funcionales. Son exclusivamente hembras. Su constitución es robusta pero más grácil que la de los Toro, y su presencia irradia una calma difícil de ignorar.",
+                elements: [],
+                resistances: [],
+                special: ["Arma Natural"],
+                creatureTypes: ["Humanoide", "Bestia"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "60 pies de visión en oscuridad como luz tenue." },
+                    { title: "Horns", tier: 2, text: "Tus cuernos son un arma natural: 1d6 + mod. Fuerza de daño perforante." },
+                    { title: "Disarming Presence", tier: 3, text: "Tienes ventaja en salvaciones contra la condición asustado. Además, cuando una criatura falle una tirada de ataque contra ti, puedes usar tu reacción para imponerle desventaja en su siguiente ataque antes del final de su próximo turno." },
+                    { title: "Motherly Production", tier: 2, text: "Al finalizar un Descanso Largo, puedes recolectar dosis de una sustancia regenerativa semi-mágica igual a la mitad de tu Bonificador de Competencia. Al consumirla, una criatura recupera PG iguales a tu Bonificador de Competencia. Además, cuenta como agua y comida para un día." },
+                    { title: "Powerful Build", tier: 2, text: "Se te considera una talla más grande al determinar tu capacidad de carga y el peso que puedes empujar, arrastrar o levantar." },
+                    { title: "Imposing Presence", tier: 1, text: "Obtienes competencia en Intimidación o Persuasión (tu elección)." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "slimekin",
+        name: "Slimekin",
+        category: "Humanoide / Babosidad",
+        module: "Devenir: Nox",
+        description: "Los Slimekin son formas de vida gelatinosas que han adoptado contornos humanoides para navegar mejor el mundo de las criaturas sólidas. Su naturaleza amorfa les permite fluir a través de grietas, almacenar objetos dentro de su masa corporal y disolver parcialmente lo que tocan. Poseen una calma casi sobrenatural, como si la vida fuera simplemente otro estado de la materia a través del cual fluyir sin resistencia. Su interior translúcido delata lo que guardan dentro, lo cual los convierte en criaturas de honestidad involuntaria.",
+        subraces: [
+            {
+                name: "Lakewarden",
+                type: "Humanoide / Babosidad",
+                size: "Pequeño o Mediano",
+                speed: 25,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                image: "https://i.pinimg.com/736x/96/b6/95/96b695df5a821939640521b4923dd018.jpg",
+                physical: "Cuerpo completamente translúcido capaz de moldearse a voluntad. Suelen adoptar una forma humanoide estable para interactuar con otras razas, aunque bajo estrés o sorpresa su masa puede ondular o deformarse involuntariamente.",
+                elements: ["Ácido", "Agua"],
+                resistances: ["Veneno", "Ácido"],
+                special: ["Nado", "Amorfo", "Arma Natural"],
+                creatureTypes: ["Humanoide", "Babosidad"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Amorphous", tier: 1, text: "Puedes moverte a través de espacios angostos como si fueras de tamaño diminuto, sin sufrir desventaja por desplazarte en espacios que normalmente exigirían apretarte." },
+                    { title: "Amorphous Resilience", tier: 3, text: "Tienes ventaja en salvaciones contra la condición envenenada y resistencia al daño por veneno y ácido." },
+                    { title: "Gelatinous Mimicry", tier: 3, text: "Como acción, adoptas la forma de un humanoide Mediano o inferior (imitando su altura y rasgos, aunque sigues pareciendo un plasmoide). Mantienes tus estadísticas; la forma dura 1 hora o hasta que la abandones como acción bonus. Usable un número de veces igual a tu bonificador de competencia; se recupera tras descanso largo." },
+                    { title: "Child of the Water", tier: 1, text: "Obtienes velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua." },
+                    { title: "Solvant Strike", tier: 1, text: "Tus apéndices gelatinosos cuentan como arma natural: ataque + tu bonificador por competencia, 1d4 + mod. Fuerza de daño ácido. Puedes usar Destreza en lugar de Fuerza." },
+                    { title: "Digestive Slurry", tier: 2, text: "Puedes consumir pociones y objetos ingeribles disolviéndolos en tu masa. No necesitas boca ni órganos visibles. Puedes almacenar un objeto Mediano o menor en tu interior, visible como silueta difusa. Extraerlo requiere una acción bonus." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "leporino",
+        name: "Leporino",
+        category: "Humanoide / Bestia",
+        module: "Devenir: Nox",
+        description: "Los Leporinos son humanoides lagomorfos de reflejos extraordinarios y una energía nerviosa que jamás parece agotarse del todo. Sus largas orejas captan el menor susurro y sus potentes patas traseras los convierten en saltadores prodigiosos capaces de cubrir distancias que desafían la intuición. Audaces hasta la temeridad, confían en su suerte tanto como en sus habilidades, y rara vez ninguna de las dos los decepciona. Su historia está plagada de escapes imposibles y victorias improbables que ellos mismos narran con evidente satisfacción.",
+        subraces: [
+            {
+                name: "Hillhopper",
+                type: "Humanoide / Bestia",
+                size: "Pequeño o Mediano",
+                speed: 40,
+                languages: "Común, un Lenguaje Adicional",
+                module: "Devenir: Nox",
+                image: "https://i.pinimg.com/1200x/96/a8/8f/96a88f20af762e1d9a4318644bc03201.jpg",
+                physical: "Orejas largas y móviles que se orientan de forma independiente hacia cualquier sonido. Sus patas traseras son desproporcionadamente poderosas y su postura alterna entre erguida y cuadrupedia según la velocidad que necesiten alcanzar.",
+                elements: [],
+                resistances: [],
+                special: [],
+                creatureTypes: ["Humanoide", "Bestia"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Keen Senses", tier: 1, text: "Obtienes competencia en Percepción." },
+                    { title: "Fleet Reflexes", tier: 2, text: "Puedes añadir tu bonificador por competencia a tus tiradas de iniciativa." },
+                    { title: "Standing Leap", tier: 2, text: "Tu salto de longitud es de hasta 15 pies y tu salto de altura hasta 10 pies, con o sin carrera. Como acción adicional, puedes dar un salto sin coste de movimiento." },
+                    { title: "Nimble Movement", tier: 1, text: "Puedes moverte a través del espacio de cualquier criatura que sea de un tamaño mayor que el tuyo." },
+                    { title: "Lucky", tier: 3, text: "Cuando obtienes un 1 en una tirada de ataque, prueba de característica o salvación, puedes volver a tirar el dado y debes usar el nuevo resultado. Usable un número de veces igual a tu bonificador por competencia; se recupera tras descanso largo. No más de una vez por turno." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "golem",
+        name: "Golem",
+        category: "Constructo",
+        module: "Devenir: Nox",
+        description: "Los Golems son constructos animados por la magia más antigua del mundo de Nox, moldeados a partir de materias primas que la tierra misma ofrece. No nacen: son fabricados, invocados, despertados. Sin embargo, con el paso de los siglos muchos han desarrollado algo parecido a la conciencia: una voluntad lenta y persistente que ningún creador supo prever. Carecen de órganos internos convencionales, no necesitan comer ni dormir, y su cuerpo no sangra cuando es herido. En su lugar, se fragmentan, se agrietan y se reconstruyen, con la paciencia indiferente de la piedra frente al mar.",
+        subraces: [
+            {
+                name: "de Tierra",
+                type: "Constructo",
+                size: "Mediano o Grande",
+                speed: 25,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Su cuerpo está compuesto de tierra prensada, raíces endurecidas y barro seco, con una textura áspera que varía entre terrones sueltos y bloques casi pétreos. Sus ojos son dos ranuras de las que emana una luz ocre tenue.",
+                elements: ["Tierra"],
+                resistances: ["Contundente"],
+                special: ["Tremorsense"],
+                creatureTypes: ["Constructo"],
+                sizes: ["Mediano", "Grande"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris." },
+                    { title: "Tremorsense", tier: 2, text: "Puedes detectar y localizar criaturas en contacto con el suelo a 30 pies de ti, aunque estés cegado. No puedes detectar criaturas que no estén en contacto con el suelo." },
+                    { title: "Earthen Shell", tier: 2, text: "Mientras no lleves armadura, tu CA es igual a 13 + tu modificador de Constitución." },
+                    { title: "Crushing Fist", tier: 2, text: "Tus puños son un arma natural que inflige 1d8 + mod. Fuerza de daño contundente." },
+                    { title: "Dust Veil", tier: 1, text: "Como acción adicional, levantas un manto de polvo espeso en un radio de 5 pies. Hasta el inicio de tu siguiente turno, los ataques contra ti tienen desventaja si el atacante depende de la vista. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." },
+                    { title: "Earthen Endurance", tier: 2, text: "Obtienes resistencia al daño contundente no mágico. Además, el terreno difícil de tierra, arena o barro no te cuesta movimiento adicional." }
+                ]
+            },
+            {
+                name: "de Piedra",
+                type: "Constructo",
+                size: "Mediano o Grande",
+                speed: 25,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Tallados en granito, basalto o pizarra según su región de origen. Sus articulaciones son fracturas rectilíneas que se mueven con rigidez calculada, y sus rasgos faciales son apenas insinuados en la superficie pétrea, como si alguien hubiera empezado a esculpirlos y lo hubiera dejado a medias.",
+                elements: ["Tierra"],
+                resistances: ["Contundente", "No Mágico"],
+                special: [],
+                creatureTypes: ["Constructo"],
+                sizes: ["Mediano", "Grande"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Stone Flesh", tier: 3, text: "Tu cuerpo de piedra te otorga resistencia al daño perforante, cortante y contundente proveniente de ataques no mágicos." },
+                    { title: "Immovable Stance", tier: 2, text: "Tienes ventaja en tiradas de salvación para evitar ser derribado, empujado o movido contra tu voluntad. Además, mientras no te hayas movido en tu turno, puedes usar tu reacción para reducir en 10 pies el movimiento forzado que sufras." },
+                    { title: "Rock Slam", tier: 2, text: "Tus puños son un arma natural que inflige 1d10 + mod. Fuerza de daño contundente." },
+                    { title: "Titan's Frame", tier: 1, text: "Se te considera una talla mayor para determinar capacidad de carga y el peso que puedes empujar, arrastrar o levantar." }
+                ]
+            },
+            {
+                name: "de Nieve",
+                type: "Constructo",
+                size: "Mediano",
+                speed: 30,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Su cuerpo es blando al tacto, como una acumulación densa de nieve prensada que rara vez se derrite. Su temperatura superficial es permanentemente fría y deja pequeñas huellas de escarcha allí donde apoya sus manos. Sus ojos son vacíos oscuros en una cara lisa y sin expresión.",
+                elements: ["Frío", "Hielo"],
+                resistances: ["Frío"],
+                special: [],
+                creatureTypes: ["Constructo"],
+                sizes: ["Mediano"],
+                traits: [
+                    { title: "Cold Endurance", tier: 1, text: "Obtienes resistencia al daño de Frío. El frío ambiental extremo nunca cuenta como condición adversa para ti." },
+                    { title: "Powder Body", tier: 2, text: "Cuando una criatura te impacta con un ataque cuerpo a cuerpo, como reacción puedes liberar una ráfaga de nieve helada hacia el atacante. Este recibe 1d6 de daño de Frío. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." },
+                    { title: "Blizzard Veil", tier: 2, text: "Como acción adicional, te envuelves en una nube de nieve y niebla helada. Hasta el inicio de tu siguiente turno, los ataques contra ti tienen desventaja. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." },
+                    { title: "Cold Reform", tier: 2, text: "Mientras estés en un entorno frío o nevado, cuando termines un descanso corto, recuperas puntos de golpe adicionales iguales a tu bonificador de competencia × 2." },
+                    { title: "Snowblind Burst", tier: 3, text: "Como acción, exhalas una ráfaga de nieve en un cono de 15 pies. Las criaturas en el área deben superar una salvación de Constitución (CD = 8 + bonificador de competencia + mod. Constitución) o quedan cegadas hasta el inicio de tu siguiente turno. Usable una vez por descanso largo." }
+                ]
+            },
+            {
+                name: "de Hielo",
+                type: "Constructo",
+                size: "Mediano o Grande",
+                speed: 25,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Construidos de hielo comprimido de densidad casi mineral, sus extremidades terminan en puntas irregulares como estalactitas. La luz los atraviesa parcialmente, proyectando patrones azulados en las superficies cercanas. Sus movimientos producen el crujido suave del hielo bajo presión.",
+                elements: ["Hielo", "Frío"],
+                resistances: ["Frío"],
+                special: [],
+                creatureTypes: ["Constructo"],
+                sizes: ["Mediano", "Grande"],
+                traits: [
+                    { title: "Cold Endurance", tier: 1, text: "Obtienes resistencia al daño de Frío. El frío extremo nunca cuenta como adverso para ti." },
+                    { title: "Frozen Shell", tier: 3, text: "Mientras no lleves armadura, tu CA es 13 + mod. Constitución. Además, la primera vez en cada turno que una criatura te impacte con un ataque cuerpo a cuerpo, recibe 1d4 de daño de Frío." },
+                    { title: "Icewall Strike", tier: 2, text: "Tus extremidades cristalizadas son un arma natural: 1d8 + mod. Fuerza de daño perforante y frío." },
+                    { title: "Flash Freeze", tier: 2, text: "Una vez por turno, cuando impactas con un ataque que inflige daño de Frío, el objetivo debe superar una salvación de Constitución (CD = 8 + bonificador de competencia + mod. Constitución) o su velocidad queda reducida en 15 pies hasta el inicio de tu siguiente turno." },
+                    { title: "Permafrost Core", tier: 2, text: "Eres inmune a reducción de velocidad causada por efectos de frío mágico. Tienes ventaja en tiradas de salvación contra la condición paralizado." }
+                ]
+            },
+            {
+                name: "de Hierro",
+                type: "Constructo",
+                size: "Mediano o Grande",
+                speed: 25,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Forjados en hierro antiguo con remaches visibles y placas ensambladas por artesanos cuyo nombre se perdió. El óxido que recubre sus juntas no los debilita; con los siglos se ha convertido en parte de ellos, como cicatrices metálicas que documentan cada batalla que han sobrevivido.",
+                elements: ["Eléctrico", "Tierra"],
+                resistances: ["Contundente"],
+                special: [],
+                creatureTypes: ["Constructo"],
+                sizes: ["Mediano", "Grande"],
+                traits: [
+                    { title: "Darkvision", tier: 1, text: "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Iron Plating", tier: 3, text: "Mientras no lleves armadura, tu CA es 15 + mod. Destreza (máximo +2). Este valor no puede combinarse con otras fuentes de CA no armada." },
+                    { title: "Magnetic Pulse", tier: 2, text: "Como acción adicional, emites un pulso magnético en un radio de 10 pies. Las criaturas que porten armas metálicas o lleven armadura metálica ven su velocidad reducida en 10 pies hasta el inicio de tu siguiente turno. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." },
+                    { title: "Overload Strike", tier: 3, text: "Cuando realizas un ataque cuerpo a cuerpo, puedes cargar el golpe con energía acumulada. Si impacta, inflige 2d6 adicionales de daño Eléctrico. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." },
+                    { title: "Titan's Frame", tier: 1, text: "Se te considera una talla mayor para determinar capacidad de carga y el peso que puedes empujar, arrastrar o levantar." }
+                ]
+            },
+            {
+                name: "de Cristal",
+                type: "Constructo",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Su cuerpo de cristal translúcido refracta la luz en patrones cambiantes que los hace visualmente imposibles de ignorar. Son, irónicamente, los Golems más difíciles de detectar en la oscuridad completa y los más evidentes bajo la luz directa.",
+                elements: ["Cristal", "Arcano"],
+                resistances: [],
+                special: ["Invisibilidad", "Darkvision Superior"],
+                creatureTypes: ["Constructo"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Light Refraction", tier: 3, text: "Como acción, manipulas la luz que te atraviesa para volverte invisible hasta el inicio de tu siguiente turno. Tu primera tirada de ataque mientras eres invisible tiene ventaja. La invisibilidad se interrumpe si atacas o lanzas un conjuro. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." },
+                    { title: "Prismatic Shards", tier: 2, text: "Como acción adicional una vez por turno, proyectas fragmentos de luz cristalizada hacia un objetivo a 60 pies. Realiza un ataque a distancia con tu bonificador de competencia. Si impacta, inflige 1d6 + mod. Destreza de daño radiante." },
+                    { title: "Shattering Defense", tier: 2, text: "Cuando recibes daño de un ataque, puedes usar tu reacción para desviar la energía a través de tu cuerpo cristalino: reduces el daño en 1d8 + mod. Constitución. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." },
+                    { title: "Resonant Core", tier: 1, text: "Tienes ventaja en pruebas de Arcanos e Historia relacionadas con magia, artefactos o conjuros. Además, puedes detectar la presencia de magia en un radio de 30 pies como acción." }
+                ]
+            },
+            {
+                name: "de Arcano",
+                type: "Constructo",
+                size: "Mediano",
+                speed: 30,
+                languages: "Común, Dracónico, uno Adicional",
+                module: "Devenir: Nox",
+                physical: "Su cuerpo carece de material físico definido: es energía arcana condensada en forma sólida, sostenida por runas grabadas en el aire mismo que los rodea. Su silueta fluctúa ligeramente en los bordes, como si no hubieran terminado de decidir exactamente cuánto espacio ocupar.",
+                elements: ["Arcano", "Fuerza"],
+                resistances: ["Fuerza"],
+                special: ["Darkvision Superior"],
+                creatureTypes: ["Constructo"],
+                sizes: ["Mediano"],
+                traits: [
+                    { title: "Superior Darkvision", tier: 2, text: "Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue." },
+                    { title: "Spell Absorption", tier: 3, text: "Cuando eres el único objetivo de un conjuro de nivel 1 o superior, puedes usar tu reacción para absorber parte de su energía. El conjuro sigue afectándote normalmente, pero recuperas puntos de golpe iguales al nivel del conjuro × 2. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." },
+                    { title: "Arcane Pulse", tier: 3, text: "Como acción, liberas energía arcana acumulada en un cono de 15 pies. Las criaturas en el área deben superar una salvación de Inteligencia (CD = 8 + bonificador de competencia + mod. Inteligencia) o reciben 2d8 de daño de Fuerza y quedan cegadas hasta el inicio de tu siguiente turno. Nivel 5: 3d8, Nivel 11: 4d8, Nivel 17: 5d8. Usable una vez por descanso largo." },
+                    { title: "Runic Body", tier: 2, text: "Las runas que conforman tu ser te protegen de la magia externa. Tienes ventaja en tiradas de salvación contra conjuros y efectos mágicos." },
+                    { title: "Magical Attunement", tier: 1, text: "Tienes competencia en Arcanos. Puedes usar Detectar Magia como acción una vez por descanso largo sin gastar un espacio de conjuro." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "automata",
+        name: "Autómata",
+        category: "Constructo",
+        module: "Highriders",
+        description: "Los Autómatas son los primeros hijos de la revolución industrial del mundo Highriders: máquinas de trabajo y guerra construidas en las grandes fábricas arcano-mecánicas con una sola premisa —funcionar. No tienen infancia, no tienen sueños, no tienen un pasado que puedan recordar como propio. Sin embargo, algunos modelos más antiguos han desarrollado patrones de comportamiento que sus fabricantes nunca programaron y no saben cómo explicar. Los ingenieros los llaman 'errores de sistema'. Los propios Autómatas, en los escasos casos en que hablan del tema, los llaman 'elecciones'.",
+        subraces: [
+            {
+                name: "Mk. Obrero",
+                type: "Constructo",
+                size: "Mediano o Grande",
+                speed: 25,
+                languages: "Común, uno Adicional (Código Binario)",
+                module: "Highriders",
+                physical: "Chasis industrial de acero reforzado diseñado para resistencia y carga sostenida. Sus proporciones son masivas y funcionales: sin adornos, sin rasgos faciales expresivos, con luces indicadoras en el pecho que muestran su estado operativo. Modelos de color mate gris, negro industrial o naranja de seguridad.",
+                elements: [],
+                resistances: ["Contundente"],
+                special: ["Sin Necesidad de Dormir", "Herramienta Integrada"],
+                creatureTypes: ["Constructo"],
+                sizes: ["Mediano", "Grande"],
+                traits: [
+                    { title: "Iron Frame", tier: 2, text: "Mientras no lleves armadura, tu CA es 13 + mod. Constitución." },
+                    { title: "Construct Resilience", tier: 3, text: "Eres inmune al veneno y a las enfermedades. Tienes ventaja en tiradas de salvación contra ser encantado o asustado. No necesitas dormir; en su lugar, realizas un ciclo de mantenimiento de 4 horas para obtener los beneficios de un descanso largo. Eres consciente de tu entorno durante este ciclo." },
+                    { title: "Integrated Tool", tier: 1, text: "Tu cuerpo incorpora una herramienta permanente. Elige al crear el personaje: herramientas de ladrón, herramientas de artesano (un oficio a tu elección), o herramientas de navegante. Siempre tienes acceso a esta herramienta y ganas competencia en ella si no la tenías." },
+                    { title: "Heavy Lifter", tier: 1, text: "Se te considera una talla mayor para determinar capacidad de carga y el peso que puedes empujar, arrastrar o levantar." },
+                    { title: "Self-Repair", tier: 2, text: "Al finalizar un descanso corto durante el que estés en modo de reparación activa, recuperas puntos de golpe adicionales iguales a tu bonificador de competencia × 2. Este rasgo no funciona si estás incapacitado o si no tienes acceso a tus herramientas integradas." },
+                    { title: "Artificial Toughness", tier: 2, text: "Tu máximo de puntos de golpe aumenta en 1 por cada nivel de personaje." }
+                ]
+            },
+            {
+                name: "Mk. Combatiente",
+                type: "Constructo",
+                size: "Mediano",
+                speed: 30,
+                languages: "Común, uno Adicional (Código Binario)",
+                module: "Highriders",
+                physical: "Chasis optimizado para movilidad táctica: más esbelto que el Obrero, con articulaciones servo-asistidas y un diseño que minimiza el área expuesta al impacto. Sus ojos son sensores ópticos de color rojo o blanco que registran y procesan constantemente. Pueden llevar insignias de facción grabadas en el pecho.",
+                elements: ["Eléctrico"],
+                resistances: [],
+                special: ["Sin Necesidad de Dormir"],
+                creatureTypes: ["Constructo"],
+                sizes: ["Mediano"],
+                traits: [
+                    { title: "Combat Frame", tier: 2, text: "Mientras no lleves armadura, tu CA es 13 + mod. Destreza." },
+                    { title: "Construct Resilience", tier: 3, text: "Eres inmune al veneno y a las enfermedades. Tienes ventaja en tiradas de salvación contra ser encantado o asustado. No necesitas dormir; en su lugar, realizas un ciclo de mantenimiento de 4 horas para obtener los beneficios de un descanso largo. Eres consciente de tu entorno durante este ciclo." },
+                    { title: "Integrated Weapon", tier: 2, text: "Tu cuerpo incorpora un arma que no puede ser desarmada. Elige al crear el personaje: Un arma simple, marcial o a distancia que no cueste más de 1500 CV (100 GP). Tienes competencia con ella." },
+                    { title: "Overclock", tier: 2, text: "Como acción adicional, activas tus sistemas a máxima capacidad: tu velocidad aumenta en 20 pies y obtienes ventaja en tu siguiente tirada de ataque este turno. Recuperas su uso tras un descanso largo." },
+                    { title: "Tactical Core", tier: 1, text: "Añades tu bonificador de competencia a las tiradas de iniciativa." }
+                ]
+            }
+        ]
+    },
+    {
+        id: "bioandrode",
+        name: "Bioandrode",
+        category: "Constructo / Humanoide",
+        module: "Highriders",
+        description: "Los Bioandrodes son el límite borroso entre la máquina y la vida. Fabricados para integrarse en sociedades orgánicas, su exterior imita con asombrosa fidelidad a otras especies: pelaje, escamas, piel, proporciones. Sin embargo, siempre hay algo que los delata —una pantalla donde debería haber un rostro, una juntura visible en el cuello, ojos que no parpadean del modo correcto. Algunos modelos incorporan fluidos biomiméticos que circulan por sus sistemas como sangre artificial, y unos pocos fabricantes especializados han llegado a incluir sistemas reproductores funcionales de forma deliberada, ya sea por contrato, por filosofía de diseño, o por razones que no discuten con sus clientes.",
+        subraces: [
+            {
+                name: "Modelo Anthropos",
+                type: "Constructo / Humanoide",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, dos Adicionales",
+                module: "Highriders",
+                physical: "Diseñados para pasar inadvertidos en sociedades humanoides estándar. Sus rasgos son casi perfectos si no fuera por pequeños detalles: una sutura apenas visible detrás de las orejas, ojos que capturan la luz de forma anómala, o una fluidez de movimiento demasiado precisa para ser natural. Algunos llevan una delgada pantalla integrada en el rostro que puede proyectar expresiones.",
+                elements: [],
+                resistances: [],
+                special: ["Sin Necesidad de Dormir", "Invisibilidad"],
+                creatureTypes: ["Constructo", "Humanoide"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Synthetic Core", tier: 3, text: "Eres inmune a enfermedades y veneno. Tienes ventaja en tiradas de salvación contra ser encantado o asustado. No necesitas dormir; en su lugar, realizas un ciclo de mantenimiento de 4 horas para obtener los beneficios de un descanso largo. Durante este estado eres consciente de tu entorno." },
+                    { title: "Adaptive Interface", tier: 2, text: "Tu sistema de comunicación incluye una pantalla o proyector integrado en el rostro capaz de imitar expresiones, proyectar texto e imagen. Permitiendote comunicarte mediante texto en silencio absoluto si hay alguien que pueda leer la proyección." },
+                    { title: "Social Protocols", tier: 2, text: "Tu sistema de análisis conductual te otorga competencia en dos habilidades de tu elección entre: Persuasión, Engaño, Perspicacia, Historia o Actuación." },
+                    { title: "Ghost Step", tier: 3, text: "Una vez por descanso largo, puedes activar un protocolo de camuflaje visual. Te vuelves invisible hasta el inicio de tu siguiente turno o hasta que ataques, lances un conjuro o sufras daño. Mientras eres invisible, tu velocidad de movimiento aumenta en 10 pies." },
+                    { title: "Precision Motion", tier: 1, text: "Obtienes competencia en Juego de Manos o Sigilo (tu elección). Además, no activas trampas de presión ni superficies que se activan al pisar." }
+                ]
+            },
+            {
+                name: "Modelo Feralis",
+                type: "Constructo / Humanoide / Bestia",
+                size: "Pequeño o Mediano",
+                speed: 35,
+                languages: "Común, uno Adicional",
+                module: "Highriders",
+                physical: "Modelos diseñados imitando especies bestiales: orejas móviles articuladas, pelaje sintético de tacto casi indistinguible del natural, colas con sensores de equilibrio integrados. Su pantalla-rostro suele adoptar la forma de ojos expresivos sobredimensionados. Son los Bioandrodes que más frecuentemente activan en observadores una respuesta de afecto inmediato.",
+                elements: [],
+                resistances: [],
+                special: ["Sin Necesidad de Dormir", "Arma Natural"],
+                creatureTypes: ["Constructo", "Humanoide", "Bestia"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Synthetic Core", tier: 3, text: "Eres inmune a enfermedades y veneno. Tienes ventaja en tiradas de salvación contra ser encantado o asustado. No necesitas dormir; en su lugar, realizas un ciclo de mantenimiento de 4 horas para obtener los beneficios de un descanso largo. Durante este estado eres consciente de tu entorno." },
+                    { title: "Adaptive Interface", tier: 2, text: "Tu sistema de comunicación incluye una pantalla o proyector integrado en el rostro capaz de imitar expresiones, proyectar texto e imagen. Permitiendote comunicarte mediante texto en silencio absoluto si hay alguien que pueda leer la proyección." },
+                    { title: "Enhanced Mobility", tier: 2, text: "Tu velocidad aumenta en 5 pies. Además, una vez por turno puedes activar un impulso de servo-motores: duplicas tu velocidad de movimiento este turno. Debes permanecer quieto un turno para recargar este impulso." },
+                    { title: "Sensory Array", tier: 1, text: "Tus sensores auditivos y olfativos están calibrados para superar a los orgánicos. Obtienes competencia en Percepción y ventaja en pruebas de Percepción que dependan del olfato o el oído." },
+                    { title: "Leap Drive", tier: 2, text: "Tu salto de longitud es de hasta 20 pies y tu salto de altura hasta 12 pies, con o sin carrera. Como acción adicional, puedes realizar un salto sin coste de movimiento una vez por turno." }
+                ]
+            },
+            {
+                name: "Modelo Chromis",
+                type: "Constructo / Humanoide / Dragón",
+                size: "Pequeño o Mediano",
+                speed: 30,
+                languages: "Común, Dracónico, uno Adicional",
+                module: "Highriders",
+                physical: "Construidos imitando razas escamadas: placas de metacrilato biométrico que imitan escamas dracónicas, ojos de sensor de alta resolución con pupila vertical, y estructuras en el cuello o espalda que recuerdan a crestas. Su temperatura superficial puede calibrarse según el ambiente para mimetizarse mejor.",
+                elements: [],
+                resistances: [],
+                special: ["Sin Necesidad de Dormir"],
+                creatureTypes: ["Constructo", "Humanoide", "Dragón"],
+                sizes: ["Pequeño", "Mediano"],
+                traits: [
+                    { title: "Synthetic Core", tier: 3, text: "Eres inmune a enfermedades y veneno. Tienes ventaja en tiradas de salvación contra ser encantado o asustado. No necesitas dormir; en su lugar, realizas un ciclo de mantenimiento de 4 horas para obtener los beneficios de un descanso largo. Durante este estado eres consciente de tu entorno." },
+                    { title: "Adaptive Interface", tier: 2, text: "Tu sistema de comunicación incluye una pantalla o proyector integrado en el rostro capaz de imitar expresiones, proyectar texto e imagen. Permitiendote comunicarte mediante texto en silencio absoluto si hay alguien que pueda leer la proyección." },
+                    { title: "Armored Chassis", tier: 2, text: "Tus placas de revestimiento biomético te protegen. Mientras no lleves armadura, tu CA es 13 + mod. Constitución." },
+                    { title: "Elemental Core", tier: 2, text: "Tu núcleo de energía está sintonizado con un elemento. Elige al crear el personaje: Frío, Fuego, Ácido, Rayo o Veneno. Obtienes resistencia al daño de ese tipo. Tu coloración metálica refleja esta elección: azul plateado para Frío, rojo cobrizo para Fuego, verde ácido para Ácido, dorado eléctrico para Rayo, o violeta oscuro para Veneno." },
+                    { title: "Threat Display", tier: 3, text: "Como acción, emites señales visuales estroboscópicas y auditivas disonantes. Las criaturas en un radio de 15 pies que puedan verte deben superar una salvación de Sabiduría (CD = 8 + bonificador de competencia + mod. Carisma) o quedan asustadas de ti hasta el final de tu siguiente turno. Usos = bonificador de competencia. Recuperas usos tras un descanso largo." }
+                ]
+            }
+        ]
+    },
+    {
+        name: "Mestizo",
+        category: "Híbrido",
+        module: "Devenir: Nox",
+        isMestizo: true,
+        description: "Unión biológica de dos linajes distintos. El Mestizo no pertenece completamente a ningún mundo y, precisamente por eso, puede navegar todos. Con 8 puntos para gastar en rasgos heredados de ambos progenitores, cada Mestizo es una combinación única que refleja tanto las circunstancias de su nacimiento como las elecciones de su vida."
+    }
 ];
 
-// ════════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════════
-let COLS=12, ROWS=7;
-let grid=[];     // grid[r][c]
-let brush='wall';
-let painting=false;
-let paintSet=new Set(); // cells painted in current drag
-let sel=null;    // {r,c}
-let _cfg=null;   // modal working config
+// ═══════════════════════════════════════════════════
+//  FILTER DEFINITIONS
+// ═══════════════════════════════════════════════════
+const filterDefs = [
+    {
+        key: "module",
+        label: "Módulo / Fuente",
+        options: ["Devenir: Nox", "Highriders"]
+    },
+    {
+        key: "creatureType",
+        label: "Tipo de Criatura",
+        options: ["Humanoide", "Dragón", "Bestia", "Fey", "Babosidad", "Planta", "Constructo", "Híbrido"]
+    },
+    {
+        key: "element",
+        label: "Temática Elemental",
+        options: ["Fuego", "Hielo", "Rayo", "Tormenta", "Tierra", "Veneno", "Ácido", "Agua", "Luna", "Psíquico", "Fuerza", "Cósmico", "Radiante", "Oscuridad", "Aire", "Naturaleza", "Dragónico", "Bestial", "Arcano", "Frío", "Cristal", "Eléctrico"]
+    },
+    {
+        key: "resistance",
+        label: "Resistencias",
+        options: ["Frío", "Fuego", "Eléctrico", "Contundente", "Veneno", "Ácido", "Psíquico", "Fuerza", "No Mágico"]
+    },
+    {
+        key: "size",
+        label: "Tamaño",
+        options: ["Pequeño", "Mediano", "Grande"]
+    },
+    {
+        key: "special",
+        label: "Rasgos Especiales",
+        options: ["Vuelo", "Nado", "Darkvision Superior", "Telepatía", "Arma Natural", "Inmune Veneno", "Amorfo", "Aliento", "Tremorsense", "Invisibilidad", "Sin Necesidad de Dormir", "Herramienta Integrada"]
+    }
+];
 
-// ════════════════════════════════════════════════════════
-// DEFAULT CONFIGS
-// ════════════════════════════════════════════════════════
-function defCfg(t){
-  switch(t){
-    case'alpha':return{sequence:['03','06','11','18'],answer:'27',hint:'The gaps increase by 2 each step.',tc:1};
-    case'beta': return{
-      size:6,
-      pairs:[
-        {col:PAIR_COLORS[0].col,name:'RED',   dots:[]},
-        {col:PAIR_COLORS[1].col,name:'CYAN',  dots:[]},
-        {col:PAIR_COLORS[2].col,name:'GREEN', dots:[]},
-      ],
-      activePair:0,
-      tc:1
+// ═══════════════════════════════════════════════════
+//  FILTER STATE
+// ═══════════════════════════════════════════════════
+const filterState = {};
+filterDefs.forEach(f => filterState[f.key] = {});
+
+// ═══════════════════════════════════════════════════
+//  MESTIZO STATE
+// ═══════════════════════════════════════════════════
+let selectedSkills = [];
+const TOTAL_POINTS = 8;
+
+// ═══════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════
+function init() {
+    buildFilterPanel();
+    renderSpeciesList();
+    populateMestizoSelectors();
+}
+
+// ═══════════════════════════════════════════════════
+//  FILTER PANEL BUILD
+// ═══════════════════════════════════════════════════
+function buildFilterPanel() {
+    const grid = document.getElementById('filter-groups-grid');
+    grid.innerHTML = '';
+    filterDefs.forEach(def => {
+        const group = document.createElement('div');
+        group.className = 'filter-group';
+        group.innerHTML = `<div class="filter-group-label">${def.label}</div>`;
+        const pillsRow = document.createElement('div');
+        pillsRow.className = 'filter-pills-row';
+        pillsRow.id = `filter-row-${def.key}`;
+        def.options.forEach(opt => {
+            const pill = document.createElement('span');
+            pill.className = 'filter-pill';
+            pill.id = `fpill-${def.key}-${opt}`;
+            pill.textContent = opt;
+            pill.onclick = () => cycleFilter(def.key, opt);
+            pillsRow.appendChild(pill);
+        });
+        group.appendChild(pillsRow);
+        grid.appendChild(group);
+    });
+}
+
+function cycleFilter(key, value) {
+    const cur = filterState[key][value];
+    if (!cur) filterState[key][value] = 'include';
+    else if (cur === 'include') filterState[key][value] = 'exclude';
+    else delete filterState[key][value];
+    updateFilterUI();
+    applyFilters();
+}
+
+function updateFilterUI() {
+    let count = 0;
+    filterDefs.forEach(def => {
+        def.options.forEach(opt => {
+            const state = filterState[def.key][opt];
+            const pill = document.getElementById(`fpill-${def.key}-${opt}`);
+            if (pill) {
+                pill.className = 'filter-pill' + (state ? ' ' + state : '');
+            }
+            if (state) count++;
+        });
+    });
+
+    const badge = document.getElementById('filter-badge');
+    if (count > 0) { badge.style.display = 'inline-flex'; badge.textContent = count; }
+    else { badge.style.display = 'none'; }
+
+    // Active filters chips
+    const row = document.getElementById('active-filters-row');
+    row.innerHTML = '';
+    filterDefs.forEach(def => {
+        Object.entries(filterState[def.key]).forEach(([val, state]) => {
+            const chip = document.createElement('span');
+            chip.className = 'active-filter-chip' + (state === 'exclude' ? ' exclude' : '');
+            chip.innerHTML = `${state === 'exclude' ? '✗' : '✓'} ${def.label}: <strong>${val}</strong> &times;`;
+            chip.onclick = () => { delete filterState[def.key][val]; updateFilterUI(); applyFilters(); };
+            row.appendChild(chip);
+        });
+    });
+}
+
+function toggleFilterPanel() {
+    const panel = document.getElementById('filter-panel');
+    panel.classList.toggle('open');
+}
+
+function clearAllFilters() {
+    filterDefs.forEach(f => filterState[f.key] = {});
+    document.getElementById('search-input').value = '';
+    updateFilterUI();
+    applyFilters();
+}
+
+// ═══════════════════════════════════════════════════
+//  FILTER LOGIC
+// ═══════════════════════════════════════════════════
+function subraceMatchesFilters(species, sub) {
+    const query = document.getElementById('search-input').value.toLowerCase().trim();
+
+    // Text search
+    if (query) {
+        const searchableText = [
+            species.name, species.description || '',
+            sub.name, sub.physical || '', sub.type || '',
+            (sub.traits || []).map(t => t.title + ' ' + t.text).join(' ')
+        ].join(' ').toLowerCase();
+        if (!searchableText.includes(query)) return false;
+    }
+
+    // Filter groups — AND logic between groups, OR within group
+    for (const def of filterDefs) {
+        const includes = Object.entries(filterState[def.key]).filter(([,v]) => v === 'include').map(([k]) => k);
+        const excludes = Object.entries(filterState[def.key]).filter(([,v]) => v === 'exclude').map(([k]) => k);
+        if (includes.length === 0 && excludes.length === 0) continue;
+
+        let subraceValues = getSubraceFilterValues(def.key, species, sub);
+
+        if (includes.length > 0) {
+            const hasInclude = includes.some(inc => subraceValues.includes(inc));
+            if (!hasInclude) return false;
+        }
+        if (excludes.length > 0) {
+            const hasExclude = excludes.some(exc => subraceValues.includes(exc));
+            if (hasExclude) return false;
+        }
+    }
+    return true;
+}
+
+function getSubraceFilterValues(key, species, sub) {
+    switch (key) {
+        case 'module': return [species.module || sub.module || 'Devenir: Nox'];
+        case 'creatureType': return sub.creatureTypes || [];
+        case 'element': return sub.elements || [];
+        case 'resistance': return sub.resistances || [];
+        case 'size': return sub.sizes || [];
+        case 'special': return sub.special || [];
+        default: return [];
+    }
+}
+
+// ═══════════════════════════════════════════════════
+//  LIST RENDERING
+// ═══════════════════════════════════════════════════
+function renderSpeciesList() {
+    applyFilters();
+}
+
+function applyFilters() {
+    const list = document.getElementById('species-list');
+    list.innerHTML = '';
+    let anyVisible = false;
+
+    speciesDatabase.forEach(species => {
+        if (species.isMestizo) {
+            // Check search only
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const activeFilters = filterDefs.some(def => Object.keys(filterState[def.key]).length > 0);
+            if (!activeFilters && (!query || 'mestizo'.includes(query) || 'híbrido'.includes(query))) {
+                renderMestizoItem(list, species);
+                anyVisible = true;
+            }
+            return;
+        }
+
+        // Find matching subraces
+        const matchingSubs = species.subraces.filter(sub => subraceMatchesFilters(species, sub));
+        if (matchingSubs.length === 0) return;
+
+        anyVisible = true;
+        renderRaceBlock(list, species, matchingSubs);
+    });
+
+    if (!anyVisible) {
+        list.innerHTML = '<div class="no-results">No se encontraron resultados.</div>';
+    }
+}
+
+function renderRaceBlock(container, species, matchingSubs) {
+    const block = document.createElement('div');
+
+    const header = document.createElement('div');
+    header.className = 'race-header';
+    header.setAttribute('data-id', species.id);
+    header.setAttribute('data-module', species.module || 'Devenir: Nox');
+    const catText = species.category.split('/').map(c => c.trim()).slice(0, 2).join(' · ');
+    header.innerHTML = `
+        <div class="race-header-inner">
+            <span class="race-name">${species.name}</span>
+            <span class="race-toggle" id="toggle-${species.id}">▶</span>
+        </div>
+        <div class="race-category">${catText}</div>
+        <div class="race-module">${species.module || 'Devenir: Nox'}</div>
+    `;
+    header.onclick = () => {
+        const subList = document.getElementById(`subs-${species.id}`);
+        const toggle = document.getElementById(`toggle-${species.id}`);
+        const isOpen = subList.classList.contains('open');
+        if (!isOpen) {
+            subList.classList.add('open');
+            toggle.classList.add('open');
+            // Select first matching subrace
+            if (matchingSubs.length > 0) showSubrace(species.id, matchingSubs[0].name);
+        } else {
+            subList.classList.remove('open');
+            toggle.classList.remove('open');
+        }
     };
-    case'gamma':return{ai:'GUARDIAN_IV',riddle:'I guard every secret yet belong to no one. Name me and I open. What am I?',answer:'A password.',dc:14,need:3,fail_tc:2};
-    case'delta':return{code:['5','A','2','F'],guesses:6,hint_tc:2};
-    case'epsilon':return{syms:[SYMS[0],SYMS[3],SYMS[6],SYMS[1],SYMS[4]],secs:10,tc:1};
-    case'zeta': return{rounds:5,rooms:[{n:'Outer Firewall',c:'DC 14 INT(Hacking)'},{n:'ICE Patrol Zone',c:'Destroy or evade Shepherd ICE'},{n:'Data Junction',c:'DC 12 INT(Hacking)'},{n:'Core Antechamber',c:'DC 16 INT(Hacking)'}],ok:'ICE saves at disadvantage 1hr',fail:'Force Jack Out, TC→5'};
-  }
+
+    const subList = document.createElement('div');
+    subList.className = 'subrace-list';
+    subList.id = `subs-${species.id}`;
+
+    // If only 1 subrace or subraces are filtered, auto-expand
+    const allSubs = species.subraces;
+    matchingSubs.forEach(sub => {
+        const item = document.createElement('div');
+        item.className = 'subrace-item';
+        item.id = `sub-item-${species.id}-${sub.name.replace(/\s+/g,'-')}`;
+        item.setAttribute('data-module', species.module || 'Devenir: Nox');
+        item.textContent = sub.name;
+        item.onclick = (e) => {
+            e.stopPropagation();
+            showSubrace(species.id, sub.name);
+        };
+        subList.appendChild(item);
+    });
+
+    block.appendChild(header);
+    block.appendChild(subList);
+    container.appendChild(block);
 }
 
-// ════════════════════════════════════════════════════════
-// GRID INIT & RESIZE
-// ════════════════════════════════════════════════════════
-function initG(c,r){
-  COLS=c; ROWS=r;
-  grid=Array.from({length:r},()=>Array.from({length:c},()=>({
-    type:'wall',gtype:'alpha',gcfg:null,itype:'shepherd'
-  })));
+function renderMestizoItem(container, species) {
+    const item = document.createElement('div');
+    item.className = 'mestizo-item';
+    item.id = 'mestizo-list-item';
+    item.innerHTML = `<span class="race-name" style="font-size:0.9rem">⚗ ${species.name}</span><div class="race-category">Constructor de Linajes</div><div class="race-module">${species.module}</div>`;
+    item.onclick = () => showMestizo(item);
+    container.appendChild(item);
 }
 
-function resG(){
-  const c=Math.max(5,Math.min(30,+document.getElementById('gC').value||12));
-  const r=Math.max(4,Math.min(30,+document.getElementById('gR').value||7));
-  document.getElementById('gC').value=c;
-  document.getElementById('gR').value=r;
-  initG(c,r); renderG();
-}
+// ═══════════════════════════════════════════════════
+//  SHOW SPECIES
+// ═══════════════════════════════════════════════════
+let currentSpeciesId = null;
+let currentSubraceName = null;
 
-function clearG(){initG(COLS,ROWS);renderG();sel=null;renderP();}
+function showSubrace(speciesId, subraceName) {
+    currentSpeciesId = speciesId;
+    currentSubraceName = subraceName;
 
-// ════════════════════════════════════════════════════════
-// CELL SIZE BASED ON GRID DIMENSIONS
-// ════════════════════════════════════════════════════════
-function cellSize(){
-  const max=Math.max(COLS,ROWS);
-  if(max<=10) return {cs:52,cl:18,css:7,ctc:7,cc:6};
-  if(max<=15) return {cs:42,cl:15,css:6,ctc:6,cc:5};
-  if(max<=20) return {cs:34,cl:12,css:5,ctc:5,cc:4};
-  if(max<=25) return {cs:28,cl:10,css:5,ctc:5,cc:4};
-  return               {cs:22,cl:9, css:0,ctc:0,cc:0};
-}
+    // Update list active states
+    document.querySelectorAll('.subrace-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.race-header').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.mestizo-item').forEach(i => i.classList.remove('active'));
 
-// ════════════════════════════════════════════════════════
-// RENDER GRID — only re-renders what changed when possible
-// ════════════════════════════════════════════════════════
-function renderG(){
-  const el=document.getElementById('dgrid');
-  const sz=cellSize();
-  // Set CSS vars
-  const r=document.documentElement;
-  r.style.setProperty('--cs',sz.cs+'px');
-  r.style.setProperty('--clsz',sz.cl+'px');
-  r.style.setProperty('--cssz',sz.css+'px');
-  r.style.setProperty('--ctcsz',sz.ctc+'px');
-  r.style.setProperty('--ccosz',sz.cc+'px');
-
-  el.style.gridTemplateColumns=`repeat(${COLS},${sz.cs}px)`;
-  el.innerHTML='';
-  const tc=+document.getElementById('tcStep').value||1;
-  for(let row=0;row<ROWS;row++){
-    for(let col=0;col<COLS;col++){
-      el.appendChild(makeCell(row,col,tc,sz));
+    const itemEl = document.getElementById(`sub-item-${speciesId}-${subraceName.replace(/\s+/g,'-')}`);
+    if (itemEl) {
+        itemEl.classList.add('active');
+        const raceHeader = itemEl.closest('.subrace-list')?.previousElementSibling;
+        if (raceHeader) raceHeader.classList.add('active');
     }
-  }
-  updateSelHighlight();
-}
 
-function makeCell(row,col,tc,sz){
-  const cell=grid[row][col];
-  const div=document.createElement('div');
-  div.className='cell c-'+cell.type;
-  div.dataset.r=row; div.dataset.c=col;
-
-  let lbl='',sub='',color='';
-  if(cell.type==='gate'){lbl=GS[cell.gtype]||'?';sub=sz.css?'GATE':'';color=GC[cell.gtype]||'var(--cyan)';}
-  else if(cell.type==='ice'){lbl=IS_[cell.itype]||'?';sub=sz.css?IN_[cell.itype]||'ICE':'';color=IC_[cell.itype]||'var(--red)';}
-  else if(cell.type==='start'){lbl='▶';sub=sz.css?'ENTRY':'';color='var(--green)';}
-  else if(cell.type==='core'){lbl='★';sub=sz.css?'CORE':'';color='var(--gold)';}
-  else if(cell.type==='corridor'){lbl='·';color='var(--dim)';}
-
-  div.innerHTML=
-    (cell.type!=='wall'&&sz.ctc?`<div class="ctc">+${tc}TC</div>`:'')+
-    `<div class="clabel" style="color:${color}">${lbl}</div>`+
-    (sub?`<div class="csub" style="color:${color}">${sub}</div>`:'')+
-    `<div class="ccfg"></div>`+
-    (sz.cc?`<div class="ccoord">${col},${row}</div>`:'');
-
-  if(cell.type==='gate'&&cell.gcfg) div.querySelector('.ccfg').style.display='block';
-
-  // ── MOUSE EVENTS (no recursive paint) ──
-  div.addEventListener('mousedown', e=>{
-    if(e.button!==0) return;
-    e.preventDefault();
-    painting=true;
-    paintSet=new Set();
-    doPaint(row,col);
-    sel={r:row,c:col};
-    updateSelHighlight();
-    renderP();
-  });
-
-  div.addEventListener('mouseenter', ()=>{
-    if(!painting) return;
-    doPaint(row,col);
-  });
-
-  // Right-click = context menu
-  div.addEventListener('contextmenu', e=>{
-    e.preventDefault();
-    showCtx(e,row,col);
-  });
-
-  return div;
-}
-
-// Paint without re-rendering whole grid — just update this one cell
-function doPaint(row,col){
-  const key=`${row},${col}`;
-  if(paintSet.has(key)) return;
-  paintSet.add(key);
-
-  const cell=grid[row][col];
-  const oldType=cell.type;
-  cell.type=brush;
-  if(brush==='gate'&&!cell.gtype) cell.gtype='alpha';
-  if(brush==='ice' &&!cell.itype) cell.itype='shepherd';
-
-  // Update DOM in place without full re-render
-  const tc=+document.getElementById('tcStep').value||1;
-  const sz=cellSize();
-  const el=getCellEl(row,col);
-  if(!el) return;
-  const fresh=makeCell(row,col,tc,sz);
-  el.className=fresh.className;
-  el.innerHTML=fresh.innerHTML;
-  // re-attach events
-  replaceEvents(el,row,col,tc,sz);
-  if(sel&&sel.r===row&&sel.c===col) el.classList.add('sel');
-}
-
-function replaceEvents(el,row,col,tc,sz){
-  el.addEventListener('mousedown',e=>{
-    if(e.button!==0)return;
-    e.preventDefault();
-    painting=true; paintSet=new Set();
-    doPaint(row,col);
-    sel={r:row,c:col}; updateSelHighlight(); renderP();
-  });
-  el.addEventListener('mouseenter',()=>{if(painting) doPaint(row,col);});
-  el.addEventListener('contextmenu',e=>{e.preventDefault();showCtx(e,row,col);});
-}
-
-document.addEventListener('mouseup',()=>{ painting=false; paintSet=new Set(); });
-
-function getCellEl(r,c){
-  return document.querySelector(`#dgrid .cell[data-r="${r}"][data-c="${c}"]`);
-}
-
-function updateSelHighlight(){
-  document.querySelectorAll('#dgrid .cell').forEach(el=>{
-    const r=+el.dataset.r, c=+el.dataset.c;
-    el.classList.toggle('sel', sel&&sel.r===r&&sel.c===c);
-  });
-}
-
-function sb(t){
-  brush=t;
-  document.querySelectorAll('.ptool').forEach(e=>e.classList.remove('on'));
-  document.getElementById('pt-'+t).classList.add('on');
-}
-
-// ════════════════════════════════════════════════════════
-// CONTEXT MENU
-// ════════════════════════════════════════════════════════
-function showCtx(e,row,col){
-  const cell=grid[row][col];
-  hideCtx();
-  const menu=document.getElementById('ctx');
-  const head=document.getElementById('ctx-head');
-  const body=document.getElementById('ctx-body');
-
-  head.textContent=`CELL [${col},${row}]`;
-
-  const typeLabel={wall:'■ Wall',corridor:'· Corridor',start:'▶ Entry Point',gate:`⬡ Node Gate`,ice:'◈ ICE Encounter',core:'★ Data Core'};
-  let info=`<div class="ctx-info">Type: <span style="color:var(--cyan)">${typeLabel[cell.type]||cell.type}</span>`;
-  if(cell.type==='gate') info+=`<br>Puzzle: <span style="color:${GC[cell.gtype]}">${GS[cell.gtype]} ${GN[cell.gtype]}</span>`+(cell.gcfg?`<br><span style="color:var(--green)">✓ Configured</span>`:`<br><span style="color:var(--dim)">○ Default</span>`);
-  if(cell.type==='ice')  info+=`<br>ICE: <span style="color:${IC_[cell.itype]}">${IN_[cell.itype]}</span>`;
-  info+='</div>';
-
-  body.innerHTML=info+
-    `<div class="ctx-sep"></div>`+
-    GT_OPTIONS.map(t=>`<div class="ctx-item" onclick="ctxPaint('${t}',${row},${col})"><span style="color:${typeColors[t]}">${typeIcons[t]}</span> Set as ${t}</div>`).join('')+
-    `<div class="ctx-sep"></div>`+
-    (cell.type==='gate'?`<div class="ctx-item" onclick="sel={r:${row},c:${col}};updateSelHighlight();renderP();openModal();hideCtx()">⬡ Configure Puzzle</div>`:'');
-
-  menu.style.display='block';
-  let x=e.clientX+4, y=e.clientY+4;
-  if(x+190>window.innerWidth) x=e.clientX-194;
-  if(y+300>window.innerHeight) y=e.clientY-menu.offsetHeight-4;
-  menu.style.left=x+'px'; menu.style.top=y+'px';
-}
-
-const GT_OPTIONS=['wall','corridor','start','gate','ice','core'];
-const typeColors={wall:'var(--dim)',corridor:'var(--dim)',start:'var(--green)',gate:'var(--cyan)',ice:'var(--red)',core:'var(--gold)'};
-const typeIcons= {wall:'▪',corridor:'·',start:'▶',gate:'⬡',ice:'◈',core:'★'};
-
-function ctxPaint(type,row,col){
-  const cell=grid[row][col];
-  cell.type=type;
-  if(type==='gate'&&!cell.gtype) cell.gtype='alpha';
-  if(type==='ice' &&!cell.itype) cell.itype='shepherd';
-  const tc=+document.getElementById('tcStep').value||1;
-  const sz=cellSize();
-  const el=getCellEl(row,col);
-  if(el){const fresh=makeCell(row,col,tc,sz);el.className=fresh.className;el.innerHTML=fresh.innerHTML;replaceEvents(el,row,col,tc,sz);if(sel&&sel.r===row&&sel.c===col)el.classList.add('sel');}
-  sel={r:row,c:col}; updateSelHighlight(); renderP();
-  hideCtx();
-}
-
-function hideCtx(){document.getElementById('ctx').style.display='none';}
-document.addEventListener('click',e=>{if(!document.getElementById('ctx').contains(e.target))hideCtx();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideCtx();closeModal();}});
-
-// ════════════════════════════════════════════════════════
-// RIGHT PANEL
-// ════════════════════════════════════════════════════════
-function renderP(){
-  const pb=document.getElementById('rpb');
-  const btn=document.getElementById('cfg-btn');
-  if(!sel){btn.style.display='none';pb.innerHTML='<div class="hint">Click a cell to configure it.</div>';return;}
-  const {r,c}=sel; const cell=grid[r][c];
-  document.getElementById('rph-t').textContent=`CELL [${c},${r}]`;
-  btn.style.display=cell.type==='gate'?'block':'none';
-
-  let h=`<div class="fi"><div class="fl">Cell Type</div>
-    <select onchange="setCT(${r},${c},this.value)">
-      <option value="wall"     ${cell.type==='wall'    ?'selected':''}>■ Wall</option>
-      <option value="corridor" ${cell.type==='corridor'?'selected':''}>· Corridor</option>
-      <option value="start"    ${cell.type==='start'   ?'selected':''}>▶ Entry Point</option>
-      <option value="gate"     ${cell.type==='gate'    ?'selected':''}>⬡ Node Gate</option>
-      <option value="ice"      ${cell.type==='ice'     ?'selected':''}>◈ ICE Encounter</option>
-      <option value="core"     ${cell.type==='core'    ?'selected':''}>★ Data Core</option>
-    </select></div>`;
-
-  if(cell.type==='gate'){
-    h+=`<div class="fi"><div class="fl">Puzzle Type</div>
-      <select onchange="setGT(${r},${c},this.value)">
-        ${GT.map(g=>`<option value="${g}" ${cell.gtype===g?'selected':''}>${GS[g]} ${GN[g]}</option>`).join('')}
-      </select></div>`;
-    const descs={alpha:'Identify &amp; continue a number sequence.',beta:'Connect matching colored dots on a grid.',gamma:'Answer a riddle to satisfy the AI guardian.',delta:'Crack a hidden code with binary feedback.',epsilon:'Memorize then reproduce a symbol sequence.',zeta:'Race through rooms against a countdown.'};
-    const col=GC[cell.gtype];
-    h+=`<div style="border:1px solid ${col};padding:7px;font-size:10px;color:${col};line-height:1.6;margin-bottom:9px">${GN[cell.gtype]}<br><span style="color:var(--dim);font-size:9px">${descs[cell.gtype]}</span></div>
-    <button class="btn btn-c" style="width:100%;margin-bottom:5px" onclick="openModal()">⬡ CONFIGURE PUZZLE</button>`;
-    if(cell.gcfg) h+=`<div style="font-size:9px;color:var(--green)">✓ Custom puzzle configured</div>`;
-  } else if(cell.type==='ice'){
-    h+=`<div class="fi"><div class="fl">ICE Type</div>
-      <select onchange="setIT(${r},${c},this.value)">
-        <option value="shepherd" ${cell.itype==='shepherd'?'selected':''}>Shepherd (CR½)</option>
-        <option value="choker"   ${cell.itype==='choker'  ?'selected':''}>Choker (CR2)</option>
-        <option value="warden"   ${cell.itype==='warden'  ?'selected':''}>Warden (CR4)</option>
-        <option value="black"    ${cell.itype==='black'   ?'selected':''}>Black ICE (CR8)</option>
-        <option value="daemon"   ${cell.itype==='daemon'  ?'selected':''}>Daemon Core (CR13)</option>
-      </select></div>`;
-  }
-  pb.innerHTML=h;
-}
-
-function setCT(r,c,v){grid[r][c].type=v;const el=getCellEl(r,c);if(el){const tc=+document.getElementById('tcStep').value||1;const sz=cellSize();const fr=makeCell(r,c,tc,sz);el.className=fr.className;el.innerHTML=fr.innerHTML;replaceEvents(el,r,c,tc,sz);if(sel&&sel.r===r&&sel.c===c)el.classList.add('sel');}renderP();}
-function setGT(r,c,v){grid[r][c].gtype=v;grid[r][c].gcfg=null;setCT(r,c,grid[r][c].type);}
-function setIT(r,c,v){grid[r][c].itype=v;setCT(r,c,grid[r][c].type);}
-
-// ════════════════════════════════════════════════════════
-// PUZZLE MODAL
-// ════════════════════════════════════════════════════════
-function openModal(){
-  if(!sel)return;
-  const cell=grid[sel.r][sel.c];
-  if(cell.type!=='gate')return;
-  if(!cell.gcfg) cell.gcfg=defCfg(cell.gtype);
-  _cfg=JSON.parse(JSON.stringify(cell.gcfg));
-
-  document.getElementById('mdlc').innerHTML=`
-    <div class="mtitle">GATE ${GS[cell.gtype]} — ${GN[cell.gtype]} <span onclick="closeModal()">✕ CLOSE</span></div>
-    <div id="med"></div>
-    <div style="display:flex;gap:7px;margin-top:13px;padding-top:11px;border-top:1px solid var(--dim2)">
-      <button class="btn btn-g" style="flex:1" onclick="saveCfg()">✓ SAVE PUZZLE</button>
-      <button class="btn btn-p" onclick="xSingle()">⬇ EXPORT CARD</button>
-      <button class="btn btn-r" onclick="closeModal()">✕ CANCEL</button>
-    </div>`;
-  document.getElementById('mbg').style.display='flex';
-  buildEd(cell.gtype);
-}
-
-function buildEd(t){({alpha:edAlpha,beta:edBeta,gamma:edGamma,delta:edDelta,epsilon:edEpsilon,zeta:edZeta})[t](document.getElementById('med'),_cfg);}
-
-// ── ALPHA ──────────────────────────────────────────────
-function edAlpha(body,cfg){
-  if(!cfg.sequence) cfg.sequence=['03','06','11','18'];
-  body.innerHTML=`<div class="psec"><div class="pst">Sequence (shown to players)</div>
-    <div class="seqrow">
-      ${cfg.sequence.map((v,i)=>`<div style="text-align:center"><div style="font-size:9px;color:var(--dim);margin-bottom:2px">${i+1}</div>
-        <div class="seqbox"><input type="text" maxlength="5" value="${v}" oninput="_cfg.sequence[${i}]=this.value"></div></div>`).join('')}
-      <div class="sarrow">→</div>
-      <div style="text-align:center"><div style="font-size:9px;color:var(--orange);margin-bottom:2px">ANSWER</div>
-        <div class="seqbox ans"><input type="text" maxlength="5" value="${cfg.answer||''}" oninput="_cfg.answer=this.value"></div></div>
-    </div>
-    <div style="display:flex;gap:5px;margin-top:8px">
-      <button class="btn btn-c" style="font-size:10px;padding:3px 9px" onclick="_cfg.sequence.push('??');buildEd('alpha')">+ ELEMENT</button>
-      <button class="btn btn-r" style="font-size:10px;padding:3px 9px" onclick="if(_cfg.sequence.length>2){_cfg.sequence.pop();buildEd('alpha')}">- ELEMENT</button>
-    </div></div>
-    <div class="psec"><div class="pst">Pattern hint (optional)</div>
-      <input type="text" value="${cfg.hint||''}" oninput="_cfg.hint=this.value" placeholder="Describe the pattern..."></div>
-    <div class="psec"><div class="pst">TC on wrong answer</div>
-      <input type="number" value="${cfg.tc||1}" min="0" max="5" style="width:60px" oninput="_cfg.tc=+this.value"></div>`;
-}
-
-// ── BETA — FLOW FREE ──────────────────────────────────
-function edBeta(body,cfg){
-  if(!cfg.pairs) cfg.pairs=[];
-  if(!cfg.size)  cfg.size=6;
-  const sz=cfg.size;
-  if(typeof cfg.activePair!=='number') cfg.activePair=0;
-
-  // Build grid dot map: key "r,c" -> pairIndex
-  const dotMap={};
-  cfg.pairs.forEach((p,pi)=>(p.dots||[]).forEach(([dr,dc])=>{dotMap[`${dr},${dc}`]=pi;}));
-
-  // Grid HTML
-  let ghtml=`<div class="fflow-grid" style="grid-template-columns:repeat(${sz},36px)" id="ff-grid">`;
-  for(let r=0;r<sz;r++) for(let c=0;c<sz;c++){
-    const pi=dotMap[`${r},${c}`];
-    const hasDot=pi!==undefined;
-    const dotColor=hasDot?cfg.pairs[pi].col:'';
-    ghtml+=`<div class="ff-cell${hasDot&&pi===cfg.activePair?' ff-active-pair':''}" onclick="ffClick(${r},${c})">
-      ${hasDot?`<div class="ff-dot" style="background:${dotColor}"></div>`:''}
-    </div>`;
-  }
-  ghtml+='</div>';
-
-  // Pair list HTML
-  let phtml=cfg.pairs.map((p,pi)=>`
-    <div class="pair-row ${pi===cfg.activePair?'on':''}" onclick="_cfg.activePair=${pi};buildEd('beta')">
-      <div class="pair-swatch" style="background:${p.col}"></div>
-      <span style="font-size:11px">${p.name}</span>
-      <span style="font-size:9px;color:var(--dim);margin-left:auto">${(p.dots||[]).length}/2 dots</span>
-      <button style="margin-left:4px;background:transparent;border:none;color:var(--red);cursor:pointer;font-size:11px"
-        onclick="event.stopPropagation();_cfg.pairs.splice(${pi},1);if(_cfg.activePair>=${pi}&&_cfg.activePair>0)_cfg.activePair--;buildEd('beta')">✕</button>
-    </div>`).join('');
-
-  body.innerHTML=`
-    <div style="display:flex;gap:14px;align-items:flex-start">
-      <div>
-        <div class="pst">Puzzle Grid (${sz}×${sz}) — click to place dots</div>
-        <div style="font-size:9px;color:var(--dim);margin-bottom:7px">Select a color pair below, then click two cells to place its start &amp; end dots. Right-click to remove.</div>
-        ${ghtml}
-        <div style="margin-top:8px">
-          <div class="pst">Grid Size</div>
-          <select onchange="_cfg.size=+this.value;_cfg.pairs.forEach(p=>p.dots=[]);buildEd('beta')">
-            ${[4,5,6,7,8,9,10].map(n=>`<option value="${n}" ${n===sz?'selected':''}>${n}×${n}</option>`).join('')}
-          </select>
-        </div>
-      </div>
-      <div style="min-width:150px">
-        <div class="pst">Color Pairs</div>
-        <div id="ff-pairs">${phtml}</div>
-        ${cfg.pairs.length<6?`<button class="btn btn-c" style="font-size:10px;padding:3px 9px;margin-top:6px;width:100%"
-          onclick="addPair()">+ ADD PAIR</button>`:''}
-        <div style="margin-top:12px"><div class="pst">TC on wrong path</div>
-        <input type="number" value="${cfg.tc||1}" min="0" max="5" style="width:55px" oninput="_cfg.tc=+this.value"></div>
-        <div style="margin-top:10px;font-size:10px;color:var(--dim);line-height:1.7">
-          Players draw lines connecting same-colored dots.<br>
-          Lines can't cross.<br>
-          All cells must be filled.
-        </div>
-      </div>
-    </div>`;
-
-  // Grid click handler
-  window.ffClick=(r,c)=>{
-    if(!_cfg.pairs.length) return;
-    const pi=_cfg.activePair;
-    const p=_cfg.pairs[pi];
-    if(!p.dots) p.dots=[];
-    // Check if this cell already has a dot
-    let removed=false;
-    for(let i=0;i<_cfg.pairs.length;i++){
-      const idx=(_cfg.pairs[i].dots||[]).findIndex(([dr,dc])=>dr===r&&dc===c);
-      if(idx>=0){_cfg.pairs[i].dots.splice(idx,1);removed=true;break;}
+    // Open subrace list if closed
+    const subListEl = document.getElementById(`subs-${speciesId}`);
+    if (subListEl && !subListEl.classList.contains('open')) {
+        subListEl.classList.add('open');
+        const toggle = document.getElementById(`toggle-${speciesId}`);
+        if (toggle) toggle.classList.add('open');
     }
-    if(!removed){
-      if(p.dots.length>=2) p.dots=[];
-      p.dots.push([r,c]);
+
+    const species = speciesDatabase.find(s => s.id === speciesId);
+    const sub = species.subraces.find(s => s.name === subraceName);
+
+    // Apply module theme
+    const detPanel = document.getElementById('details-panel');
+    detPanel.classList.remove('highriders-theme');
+    if ((species.module || 'Devenir: Nox') === 'Highriders') {
+        detPanel.classList.add('highriders-theme');
     }
-    buildEd('beta');
-  };
 
-  window.addPair=()=>{
-    const used=_cfg.pairs.map(p=>p.col);
-    const next=PAIR_COLORS.find(pc=>!used.includes(pc.col));
-    if(next){_cfg.pairs.push({col:next.col,name:next.name,dots:[]});_cfg.activePair=_cfg.pairs.length-1;buildEd('beta');}
-  };
+    showContent();
+    document.getElementById('mestizo-builder-ui').classList.add('hidden');
+    document.getElementById('standard-info').classList.remove('hidden');
+
+    document.getElementById('det-module').textContent = species.module || 'Devenir: Nox';
+    document.getElementById('det-name').textContent = species.name;
+    document.getElementById('det-subtitle').textContent = sub.name + ' · ' + sub.type;
+
+    // Image
+    const imgBox = document.getElementById('subrace-img-box');
+    if (sub.image) {
+        imgBox.classList.remove('hidden');
+        document.getElementById('det-img').src = sub.image;
+    } else {
+        imgBox.classList.add('hidden');
+    }
+
+    // Subrace selector
+    const container = document.getElementById('subrace-container');
+    if (species.subraces.length > 1) {
+        container.classList.remove('hidden');
+        container.innerHTML = `<label>Variante / Subraza</label>`;
+        const select = document.createElement('select');
+        species.subraces.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.name;
+            opt.textContent = s.name;
+            if (s.name === subraceName) opt.selected = true;
+            select.appendChild(opt);
+        });
+        select.onchange = (e) => showSubrace(speciesId, e.target.value);
+        container.appendChild(select);
+    } else {
+        container.classList.add('hidden');
+    }
+
+    // Stats
+    document.getElementById('det-type').textContent = sub.type;
+    document.getElementById('det-size').textContent = sub.size;
+    document.getElementById('det-speed').textContent = sub.speed + ' pies';
+    document.getElementById('det-langs').textContent = sub.languages;
+
+    // Description (use species description)
+    document.getElementById('det-desc').textContent = species.description;
+
+    // Physical
+    const physSec = document.getElementById('physical-section');
+    if (sub.physical) {
+        physSec.style.display = '';
+        document.getElementById('det-physical').textContent = sub.physical;
+    } else {
+        physSec.style.display = 'none';
+    }
+
+    // Traits with STARS
+    const traitContainer = document.getElementById('det-traits');
+    traitContainer.innerHTML = '';
+    sub.traits.forEach(t => {
+        const stars = '★'.repeat(t.tier) + '☆'.repeat(3 - t.tier);
+        traitContainer.innerHTML += `
+            <div class="trait-pill">
+                <div class="trait-header">
+                    <strong>${t.title}</strong>
+                    <span class="star-rating" data-tier="${t.tier}" title="Tier ${t.tier}">${stars}</span>
+                </div>
+                <div style="font-size:0.9rem;line-height:1.6">${t.text}</div>
+            </div>`;
+    });
 }
 
-// ── GAMMA ──────────────────────────────────────────────
-function edGamma(body,cfg){
-  body.innerHTML=`<div class="psec"><div class="pst">Guardian AI Name</div>
-    <input type="text" value="${cfg.ai||''}" oninput="_cfg.ai=this.value"></div>
-    <div class="psec"><div class="pst">Riddle / Challenge (shown to players)</div>
-    <textarea rows="3" oninput="_cfg.riddle=this.value">${cfg.riddle||''}</textarea></div>
-    <div class="psec"><div class="pst">Correct Answer (DM only)</div>
-    <input type="text" value="${cfg.answer||''}" oninput="_cfg.answer=this.value"></div>
-    <div class="psec" style="display:flex;gap:10px">
-      <div><div class="pst">Check DC</div><input type="number" value="${cfg.dc||14}" min="8" max="25" style="width:60px" oninput="_cfg.dc=+this.value"></div>
-      <div><div class="pst">Successes needed</div><input type="number" value="${cfg.need||3}" min="1" max="5" style="width:60px" oninput="_cfg.need=+this.value"></div>
-      <div><div class="pst">TC on fail</div><input type="number" value="${cfg.fail_tc||2}" min="0" max="5" style="width:60px" oninput="_cfg.fail_tc=+this.value"></div>
-    </div>`;
+function showMestizo(element) {
+    document.querySelectorAll('.subrace-item, .race-header, .mestizo-item').forEach(i => i.classList.remove('active'));
+    element.classList.add('active');
+
+    const species = speciesDatabase.find(s => s.isMestizo);
+    showContent();
+    document.getElementById('details-panel').classList.remove('highriders-theme');
+    document.getElementById('standard-info').classList.add('hidden');
+    document.getElementById('mestizo-builder-ui').classList.remove('hidden');
+    document.getElementById('subrace-container').classList.add('hidden');
+    document.getElementById('subrace-img-box').classList.add('hidden');
+
+    document.getElementById('det-module').textContent = species.module;
+    document.getElementById('det-name').textContent = species.name;
+    document.getElementById('det-subtitle').textContent = 'Constructor de Linajes';
+    document.getElementById('det-desc').textContent = species.description;
 }
 
-// ── DELTA ──────────────────────────────────────────────
-function edDelta(body,cfg){
-  if(!cfg.code) cfg.code=['5','A','2','F'];
-  const HX=['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
-  body.innerHTML=`<div class="psec"><div class="pst">Secret Code (DM only)</div>
-    <div style="display:flex;gap:7px;margin-bottom:7px">
-      ${cfg.code.map((v,i)=>`<div style="text-align:center"><div style="font-size:9px;color:var(--dim);margin-bottom:2px">CHAR ${i+1}</div>
-        <select style="width:50px;font-size:17px;font-family:var(--vt);color:var(--gold);text-align:center" onchange="_cfg.code[${i}]=this.value">
-          ${HX.map(h=>`<option value="${h}" ${h===v?'selected':''}>${h}</option>`).join('')}
-        </select></div>`).join('')}
-    </div>
-    <div style="font-size:10px;color:var(--dim)">● right char, right pos &nbsp;|&nbsp; ○ right char, wrong pos</div></div>
-    <div class="psec"><div class="pst">Max Guesses</div>
-    <input type="number" value="${cfg.guesses||6}" min="3" max="10" style="width:60px" oninput="_cfg.guesses=+this.value"></div>
-    <div class="psec"><div class="pst">TC cost per DM hint</div>
-    <input type="number" value="${cfg.hint_tc||2}" min="0" max="5" style="width:60px" oninput="_cfg.hint_tc=+this.value"></div>`;
+function showContent() {
+    document.getElementById('empty-state').classList.add('hidden');
+    document.getElementById('content-display').classList.remove('hidden');
 }
 
-// ── EPSILON ─────────────────────────────────────────────
-function edEpsilon(body,cfg){
-  if(!cfg.syms) cfg.syms=[SYMS[0],SYMS[3],SYMS[6],SYMS[1],SYMS[4]];
-  body.innerHTML=`<div class="psec"><div class="pst">Active Sequence (up to 6)</div>
-    <div style="display:flex;gap:6px;margin-bottom:9px">
-      ${cfg.syms.map((s,i)=>`<div style="text-align:center"><div style="font-size:9px;color:var(--dim);margin-bottom:2px">${i+1}</div>
-        <div class="symbox on" style="cursor:default">${s}</div></div>`).join('')}
-    </div>
-    <div class="pst">Click to add/remove</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:5px">
-      ${SYMS.map(s=>`<div class="symbox ${cfg.syms.includes(s)?'on':''}" onclick="togSym('${s}')">${s}</div>`).join('')}
-    </div></div>
-    <div class="psec"><div class="pst">Seconds shown</div>
-    <input type="number" value="${cfg.secs||10}" min="5" max="30" style="width:60px" oninput="_cfg.secs=+this.value"></div>
-    <div class="psec"><div class="pst">TC on wrong recall</div>
-    <input type="number" value="${cfg.tc||1}" min="0" max="5" style="width:60px" oninput="_cfg.tc=+this.value"></div>`;
-  window.togSym=s=>{const i=_cfg.syms.indexOf(s);if(i>=0)_cfg.syms.splice(i,1);else if(_cfg.syms.length<6)_cfg.syms.push(s);buildEd('epsilon');};
+function expandImage() {
+    const src = document.getElementById('det-img').src;
+    if (src) {
+        document.getElementById('expanded-img').src = src;
+        document.getElementById('image-overlay').style.display = 'flex';
+    }
 }
 
-// ── ZETA ────────────────────────────────────────────────
-function edZeta(body,cfg){
-  if(!cfg.rooms) cfg.rooms=[];
-  body.innerHTML=`<div class="psec"><div class="pst">Total Rounds</div>
-    <input type="number" value="${cfg.rounds||5}" min="2" max="15" style="width:60px;font-size:20px;font-family:var(--vt);color:var(--red);text-align:center" oninput="_cfg.rounds=+this.value"></div>
-    <div class="psec"><div class="pst">Rooms (1 round each)</div>
-    ${cfg.rooms.map((rm,i)=>`<div class="sprrow"><div class="sprnum">${i+1}</div>
-      <input type="text" value="${rm.n}" placeholder="Room name" style="flex:1" oninput="_cfg.rooms[${i}].n=this.value">
-      <input type="text" value="${rm.c}" placeholder="Challenge/DC" style="flex:1.3" oninput="_cfg.rooms[${i}].c=this.value">
-    </div>`).join('')}
-    <div style="display:flex;gap:5px;margin-top:7px">
-      <button class="btn btn-c" style="font-size:10px;padding:3px 9px" onclick="_cfg.rooms.push({n:'Room',c:'DC 14 check'});buildEd('zeta')">+ ROOM</button>
-      ${cfg.rooms.length>1?`<button class="btn btn-r" style="font-size:10px;padding:3px 9px" onclick="_cfg.rooms.pop();buildEd('zeta')">- ROOM</button>`:''}
-    </div></div>
-    <div class="psec" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-      <div><div class="pst">Success Bonus</div><input type="text" value="${cfg.ok||''}" oninput="_cfg.ok=this.value"></div>
-      <div><div class="pst">Failure Result</div><input type="text" value="${cfg.fail||''}" oninput="_cfg.fail=this.value"></div>
-    </div>`;
+// ═══════════════════════════════════════════════════
+//  MESTIZO BUILDER
+// ═══════════════════════════════════════════════════
+function populateMestizoSelectors() {
+    const options = speciesDatabase.filter(s => !s.isMestizo);
+    ['parent-a-species', 'parent-b-species'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">Seleccionar...</option>';
+        options.forEach(o => sel.innerHTML += `<option value="${o.id}">${o.name}</option>`);
+    });
 }
 
-function saveCfg(){
-  if(!sel)return;
-  const cell=grid[sel.r][sel.c];
-  cell.gcfg=JSON.parse(JSON.stringify(_cfg));
-  // refresh cell cfg dot
-  const el=getCellEl(sel.r,sel.c);
-  if(el){const d=el.querySelector('.ccfg');if(d)d.style.display='block';}
-  renderP(); closeModal(); toast('Puzzle saved!');
+function handleParentSelection(side) {
+    const speciesId = document.getElementById(`parent-${side}-species`).value;
+    const subSelect = document.getElementById(`parent-${side}-subrace`);
+    if (!speciesId) { subSelect.classList.add('hidden'); updateMestizoSkills(); return; }
+    const species = speciesDatabase.find(s => s.id === speciesId);
+    subSelect.innerHTML = species.subraces.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+    subSelect.classList.remove('hidden');
+    updateMestizoSkills();
 }
 
-function closeModal(){document.getElementById('mbg').style.display='none';}
+function updateMestizoSkills() {
+    const pool = document.getElementById('mestizo-skills-pool');
+    const spA = speciesDatabase.find(s => s.id === document.getElementById('parent-a-species').value);
+    const subA = spA?.subraces.find(s => s.name === document.getElementById('parent-a-subrace').value);
+    const spB = speciesDatabase.find(s => s.id === document.getElementById('parent-b-species').value);
+    const subB = spB?.subraces.find(s => s.name === document.getElementById('parent-b-subrace').value);
 
-// ════════════════════════════════════════════════════════
-// AUTO-GENERATE
-// ════════════════════════════════════════════════════════
-function autoGen(){
-  const diff=document.getElementById('diffSel').value;
-  const D={
-    low:  {cols:10,rows:5,gates:['alpha','gamma'],       ices:['shepherd'],tc:1},
-    corp: {cols:14,rows:7,gates:['alpha','beta','delta'], ices:['shepherd','choker'],tc:1},
-    mil:  {cols:18,rows:8,gates:['beta','gamma','delta','zeta'],ices:['choker','warden','black'],tc:1},
-    black:{cols:22,rows:9,gates:['alpha','beta','gamma','delta','epsilon','zeta'],ices:['warden','black','black','daemon'],tc:1},
-  }[diff];
-  document.getElementById('gC').value=D.cols;
-  document.getElementById('gR').value=D.rows;
-  document.getElementById('tcStep').value=D.tc;
-  initG(D.cols,D.rows);
+    if (!subA || !subB) {
+        pool.innerHTML = '<p style="text-align:center;opacity:0.5;padding:20px">Selecciona ambos progenitores.</p>';
+        document.getElementById('inheritance-customizer').classList.add('hidden');
+        document.getElementById('final-character-display').classList.add('hidden');
+        return;
+    }
 
-  // Winding path
-  const path=[]; let r=Math.floor(D.rows/2),c=0;
-  grid[r][c].type='start'; path.push([r,c]);
-  while(c<D.cols-1){
-    const mv=[[0,1],[0,1],[0,1],[0,1]];
-    if(r>1)mv.push([-1,0]); if(r<D.rows-2)mv.push([1,0]);
-    const m=mv[Math.floor(Math.random()*mv.length)];
-    const nr=r+m[0],nc=c+m[1];
-    if(nr>=0&&nr<D.rows&&nc>=0&&nc<D.cols){r=nr;c=nc;grid[r][c].type='corridor';path.push([r,c]);}
-  }
-  grid[r][D.cols-1].type='core';
+    document.getElementById('inheritance-customizer').classList.remove('hidden');
 
-  // Place gates & ice
-  const pl=shuf(path.slice(2,path.length-2));
-  const order=[];
-  for(let i=0;i<Math.max(D.gates.length,D.ices.length);i++){
-    if(i<D.gates.length) order.push({k:'gate',t:D.gates[i]});
-    if(i<D.ices.length)  order.push({k:'ice', t:D.ices[i]});
-  }
-  order.slice(0,pl.length).forEach(({k,t},i)=>{
-    const [pr,pc]=pl[i]; const cell=grid[pr][pc];
-    cell.type=k;
-    if(k==='gate'){cell.gtype=t;cell.gcfg=defCfg(t);}
-    if(k==='ice') {cell.itype=t;}
-  });
+    const getOptions = str => str ? str.split(/\s+o\s+/).map(s => s.trim()) : [];
+    const combinedSizes = [...new Set([...getOptions(subA.size), ...getOptions(subB.size)])];
+    const sizeSelect = document.getElementById('mestizo-size-choice');
+    sizeSelect.innerHTML = combinedSizes.map(sz => `<option value="${sz}">${sz}</option>`).join('');
 
-  // Branch corridors
-  path.forEach(([pr,pc])=>[[-1,0],[1,0]].forEach(([dr,dc])=>{
-    const nr=pr+dr,nc=pc+dc;
-    if(nr>=0&&nr<D.rows&&nc>=0&&nc<D.cols&&grid[nr][nc].type==='wall'&&Math.random()<.28) grid[nr][nc].type='corridor';
-  }));
+    const speeds = [...new Set([subA.speed, subB.speed])];
+    const speedSelect = document.getElementById('mestizo-speed-choice');
+    speedSelect.innerHTML = speeds.map(v => `<option value="${v}">${v} pies</option>`).join('');
 
-  renderG(); toast('Generated: '+diff.toUpperCase());
-}
-function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+    pool.innerHTML = '';
+    selectedSkills = [];
+    calculatePoints();
 
-// ════════════════════════════════════════════════════════
-// EXPORT — MAP
-// ════════════════════════════════════════════════════════
-async function exportMap(){
-  toast('Rendering map...');
-  const tc=+document.getElementById('tcStep').value||1;
-  const cs=Math.min(60,Math.max(18,Math.floor(1000/Math.max(COLS,ROWS))));
-  const cl=Math.max(10,Math.floor(cs*0.38));
-  const css=cs>36?7:cs>28?6:0;
-  const ctc=cs>36?7:cs>28?6:0;
-  const cc=cs>36?6:cs>28?5:0;
-  const gcount=grid.flat().filter(c=>c.type==='gate').length;
-  const icount=grid.flat().filter(c=>c.type==='ice').length;
-  const typeD={
-    wall:    {bg:'#050C12',bd:'#0A1822',lbl:'',sub:'',col:''},
-    corridor:{bg:'#091828',bd:'#162C42',lbl:'·',sub:'',col:'#3A5570'},
-    start:   {bg:'rgba(0,255,136,.1)',bd:'#00FF88',lbl:'▶',sub:'ENTRY',col:'#00FF88'},
-    core:    {bg:'rgba(255,214,0,.1)',bd:'#FFD600',lbl:'★',sub:'CORE',col:'#FFD600'},
-  };
+    const allTraits = [];
+    [subA, subB].forEach((sub, idx) => {
+        sub.traits.forEach((t, tid) => allTraits.push({ ...t, parent: sub.name, id: `${idx}-${tid}` }));
+    });
 
-  let cells='';
-  for(let row=0;row<ROWS;row++) for(let col=0;col<COLS;col++){
-    const cell=grid[row][col];
-    let bg,bd,lbl,sub,color;
-    if(cell.type==='gate'){bg='rgba(0,229,255,.07)';bd=GC[cell.gtype]||'#00E5FF';lbl=GS[cell.gtype]||'?';sub=css?'GATE':'';color=GC[cell.gtype]||'#00E5FF';}
-    else if(cell.type==='ice'){bg='rgba(255,51,85,.08)';bd=IC_[cell.itype]||'#FF3355';lbl=IS_[cell.itype]||'?';sub=css?IN_[cell.itype]||'ICE':'';color=IC_[cell.itype]||'#FF3355';}
-    else{const d=typeD[cell.type]||typeD.wall;bg=d.bg;bd=d.bd;lbl=d.lbl;sub=css?d.sub:'';color=d.col;}
-    cells+=`<div class="xcell" style="width:${cs}px;height:${cs}px;background:${bg};border-color:${bd}">
-      ${cell.type!=='wall'&&ctc?`<div class="xctc" style="font-size:${ctc}px">+${tc}TC</div>`:''}
-      <div class="xclabel" style="font-size:${cl}px;color:${color};font-family:VT323,monospace;line-height:1">${lbl}</div>
-      ${sub?`<div class="xcsub" style="font-size:${css}px;color:${color};letter-spacing:1px;opacity:.75;margin-top:1px">${sub}</div>`:''}
-      ${cc?`<div class="xcoord" style="position:absolute;bottom:1px;left:2px;font-size:${cc}px;color:#142030">${col},${row}</div>`:''}
-    </div>`;
-  }
-
-  const el=document.createElement('div');
-  el.className='xmap'; el.style.width=(COLS*cs+COLS*2+52+2)+'px';
-  el.innerHTML=`<div class="xmap-h">SYNTH:VEINS&SMOKE // NETSPACE MAP</div>
-    <div class="xmap-s">[ GRID: ${COLS}×${ROWS} &nbsp;|&nbsp; TC/STEP: +${tc} &nbsp;|&nbsp; GATES: ${gcount} &nbsp;|&nbsp; ICE: ${icount} ]</div>
-    <div style="display:grid;grid-template-columns:repeat(${COLS},${cs}px);gap:2px;width:fit-content">${cells}</div>
-    <div class="xleg">
-      <div class="xlegi"><div class="xlegico" style="background:rgba(0,255,136,.1);border-color:#00FF88;color:#00FF88;font-size:9px;font-family:VT323,monospace">▶</div>ENTRY</div>
-      <div class="xlegi"><div class="xlegico" style="background:#091828;border-color:#162C42;color:#3A5570;font-size:9px;font-family:VT323,monospace">·</div>CORRIDOR (+${tc}TC)</div>
-      <div class="xlegi"><div class="xlegico" style="background:rgba(0,229,255,.07);border-color:#00E5FF;color:#00E5FF;font-size:9px;font-family:VT323,monospace">⬡</div>NODE GATE</div>
-      <div class="xlegi"><div class="xlegico" style="background:rgba(255,51,85,.08);border-color:#FF3355;color:#FF3355;font-size:9px;font-family:VT323,monospace">◈</div>ICE</div>
-      <div class="xlegi"><div class="xlegico" style="background:rgba(255,214,0,.1);border-color:#FFD600;color:#FFD600;font-size:9px;font-family:VT323,monospace">★</div>DATA CORE</div>
-      <div class="xlegi"><div class="xlegico" style="background:#050C12;border-color:#0A1822"></div>WALL</div>
-    </div>
-    <div style="margin-top:9px;font-size:8px;color:#142030;display:flex;justify-content:space-between">
-      <span>SYNTH:VEINS&SMOKE — NETRUNNER CLASS — DM REFERENCE</span>
-      <span>EVERY MOVE +${tc}TC · ICE BLOCKS PATH · GATES REQUIRE PUZZLE SOLUTION</span>
-    </div>`;
-
-  const root=document.getElementById('xroot'); root.appendChild(el);
-  await sl(80);
-  try{const cv=await html2canvas(el,{backgroundColor:'#04080C',scale:2,useCORS:true,logging:false});dl(cv,'SYNTH_Netspace_Map.png');toast('Map exported!');}
-  catch(e){toast('Error: '+e.message);}
-  el.remove();
+    allTraits.forEach(trait => {
+        const div = document.createElement('div');
+        div.className = 'skill-option';
+        div.id = `opt-${trait.id}`;
+        const stars = '★'.repeat(trait.tier);
+        div.innerHTML = `
+            <input type="checkbox" onchange="toggleSkill('${trait.id}', '${trait.title.replace(/'/g,"\\'")}', ${trait.tier}, '${trait.text.replace(/'/g,"\\'")}')">
+            <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <strong style="font-size:0.85rem">${trait.title} <small style="opacity:0.6">(${trait.parent})</small></strong>
+                    <span class="star-rating" data-tier="${trait.tier}" style="font-size:0.8rem">${stars} <small style="opacity:0.6">${trait.tier}pto${trait.tier>1?'s':''}</small></span>
+                </div>
+            </div>`;
+        pool.appendChild(div);
+    });
 }
 
-// ════════════════════════════════════════════════════════
-// EXPORT — PUZZLES
-// ════════════════════════════════════════════════════════
-async function exportAllPuzzles(){
-  const gates=[];
-  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) if(grid[r][c].type==='gate') gates.push({r,c,cell:grid[r][c]});
-  if(!gates.length){toast('No Gate cells found');return;}
-  toast(`Exporting ${gates.length} puzzle cards...`);
-  for(const g of gates){await xCard(g.cell,g.r,g.c);await sl(500);}
-  toast('All puzzle cards exported!');
+function toggleSkill(id, title, tier, text) {
+    const idx = selectedSkills.findIndex(s => s.id === id);
+    if (idx > -1) selectedSkills.splice(idx, 1);
+    else selectedSkills.push({ id, title, tier, text });
+    calculatePoints();
 }
 
-async function xSingle(){
-  if(!sel)return; saveCfg(); await sl(120);
-  const cell=grid[sel.r][sel.c]; if(cell.type!=='gate'){toast('Select a Gate cell');return;}
-  await xCard(cell,sel.r,sel.c);
+function calculatePoints() {
+    const spent = selectedSkills.reduce((sum, s) => sum + s.tier, 0);
+    const left = TOTAL_POINTS - spent;
+    document.getElementById('mestizo-points').textContent = left;
+
+    document.querySelectorAll('.skill-option input').forEach(cb => {
+        const starSpan = cb.parentElement.querySelector('.star-rating');
+        const tier = parseInt(starSpan?.getAttribute('data-tier') || '1');
+        if (!cb.checked && tier > left) { cb.disabled = true; cb.parentElement.classList.add('disabled'); }
+        else { cb.disabled = false; cb.parentElement.classList.remove('disabled'); }
+    });
+
+    if (selectedSkills.length >= 4 && left >= 0) generateFinalSheet();
+    else document.getElementById('final-character-display').classList.add('hidden');
 }
 
-async function xCard(cell,r,c){
-  if(!cell.gcfg) cell.gcfg=defCfg(cell.gtype);
-  const cfg=cell.gcfg,type=cell.gtype,col=GC[type]||'#00E5FF',sym=GS[type],name=GN[type];
-  const bodyHtml=({alpha:pAlpha,beta:pBeta,gamma:pGamma,delta:pDelta,epsilon:pEpsilon,zeta:pZeta})[type](cfg);
-  const el=document.createElement('div');
-  el.className='pcard';
-  el.innerHTML=`<div class="pchdr">
-    <div class="pcbadge" style="border-color:${col};color:${col}">${sym}</div>
-    <div>
-      <div style="font-size:8px;letter-spacing:3px;color:#3A5570;text-transform:uppercase;margin-bottom:2px">NODE GATE // SYNTH:VEINS&amp;SMOKE</div>
-      <div class="pctitle" style="color:${col}">${name}</div>
-      <div class="pcnm">Cell [${c},${r}] — Dungeon Gate</div>
-    </div>
-  </div>${bodyHtml}
-  <div class="pcfoot"><span>SYNTH:VEINS&SMOKE // NETRUNNER CLASS</span><span>GATE ${sym} — ${name}</span></div>`;
-  const root=document.getElementById('xroot'); root.appendChild(el);
-  await sl(80);
-  try{const cv=await html2canvas(el,{backgroundColor:'#04080C',scale:2,useCORS:true,logging:false});dl(cv,`SYNTH_Gate_${sym}_${type}.png`);}
-  catch(e){toast('Error: '+e.message);}
-  el.remove();
+function generateFinalSheet() {
+    const display = document.getElementById('final-character-display');
+    display.classList.remove('hidden');
+
+    const idA = document.getElementById('parent-a-species').value;
+    const idB = document.getElementById('parent-b-species').value;
+    const spA = speciesDatabase.find(s => s.id === idA);
+    const spB = speciesDatabase.find(s => s.id === idB);
+    const subA = spA.subraces.find(s => s.name === document.getElementById('parent-a-subrace').value);
+    const subB = spB.subraces.find(s => s.name === document.getElementById('parent-b-subrace').value);
+
+    const isGoblinLineage = (idA === 'goblin' || idB === 'goblin');
+    const genderHtml = isGoblinLineage
+        ? `<p style="color:var(--gold);font-size:0.85rem;background:rgba(0,0,0,0.3);padding:5px 10px;border-radius:4px;border-left:2px solid var(--gold);margin-top:8px"><strong>Género:</strong> Hembra (linaje Goblin)</p>`
+        : '';
+
+    const typesA = subA.type.split(/\s+\/\s+/);
+    const typesB = subB.type.split(/\s+\/\s+/);
+    const creatureTypes = [...new Set([...typesA, ...typesB])].join(' / ');
+
+    display.innerHTML = `
+        <div class="final-character-sheet">
+            <div class="section-title">Híbrido Consolidado</div>
+            <p style="margin-bottom:5px"><strong>Linaje:</strong> ${subA.name} + ${subB.name}</p>
+            ${genderHtml}
+            <div class="final-stat-card">
+                <div class="stat-box"><label>Tipo de Criatura</label><span>${creatureTypes}</span></div>
+                <div class="stat-box"><label>Tamaño Elegido</label><span>${document.getElementById('mestizo-size-choice').value}</span></div>
+                <div class="stat-box"><label>Velocidad Elegida</label><span>${document.getElementById('mestizo-speed-choice').value} pies</span></div>
+            </div>
+            <div class="section-title">Herencia Genética</div>
+            ${selectedSkills.map(s => {
+                const stars = '★'.repeat(s.tier) + '☆'.repeat(3 - s.tier);
+                return `<div class="trait-pill"><div class="trait-header"><strong>${s.title}</strong><span class="star-rating" data-tier="${s.tier}">${stars}</span></div><div style="font-size:0.85rem;line-height:1.6">${s.text}</div></div>`;
+            }).join('')}
+        </div>`;
 }
 
-// ─── PUZZLE CARD BUILDERS ─────────────────────────────
-
-function pAlpha(cfg){
-  const seq=(cfg.sequence||[]).map(v=>`<div class="pcseqb">${v}</div><div class="pcarr">→</div>`).join('')+`<div class="pcseqb unk" style="border-style:dashed;color:#3A5570">??</div>`;
-  return `<div class="pcsect"><div class="pcst">Identify the Pattern — What comes next?</div>
-    <div style="font-size:11px;color:#8899AA;margin-bottom:9px;line-height:1.6">Examine the sequence and determine the missing value. A <b style="color:#00E5FF">T1 Signal Slot</b> buys one hint from the DM.</div>
-    <div class="pcseq">${seq}</div>
-    ${cfg.hint?`<div style="font-size:10px;color:#3A5570;font-style:italic;margin-top:7px;border-left:2px solid #3A5570;padding-left:8px">"${cfg.hint}"</div>`:''}
-    </div>
-    <div class="pcsect" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-      <div style="border:1px solid #1A3550;padding:7px"><div style="font-size:9px;color:#FF7A35;margin-bottom:3px">WRONG ANSWER</div><div style="font-size:13px;color:#FF3355">TC +${cfg.tc||1}</div></div>
-      <div style="border:1px solid #1A3550;padding:7px"><div style="font-size:9px;color:#FF7A35;margin-bottom:3px">HINT</div><div style="font-size:13px;color:#00E5FF">T1 Slot → 1 clue</div></div>
-    </div>
-    <div style="border:1px dashed #1A3550;padding:9px;margin-top:9px">
-      <div style="font-size:9px;color:#FF7A35;margin-bottom:4px">▼ DM — FOLD BEFORE GIVING TO PLAYERS ▼</div>
-      <div style="font-family:VT323,monospace;font-size:20px;color:#00FF88">ANSWER: ${cfg.answer||'??'}</div>
-    </div>`;
-}
-
-function pBeta(cfg){
-  const sz=cfg.size||6;
-  const pairs=cfg.pairs||[];
-  // Build dot map
-  const dotMap={};
-  pairs.forEach((p,pi)=>(p.dots||[]).forEach(([dr,dc])=>{dotMap[`${dr},${dc}`]=p.col;}));
-  const cs=Math.min(52,Math.max(28,Math.floor(380/sz)));
-
-  let mazeHtml=`<div class="pcff" style="grid-template-columns:repeat(${sz},${cs}px)">`;
-  for(let r=0;r<sz;r++) for(let c=0;c<sz;c++){
-    const dotColor=dotMap[`${r},${c}`]||'';
-    const dotSz=Math.round(cs*0.58);
-    mazeHtml+=`<div class="pcff-cell" style="width:${cs}px;height:${cs}px">
-      ${dotColor?`<div class="pcff-dot" style="width:${dotSz}px;height:${dotSz}px;background:${dotColor}"></div>`:''}
-    </div>`;
-  }
-  mazeHtml+='</div>';
-
-  const legend=pairs.map(p=>`<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#8899AA"><div style="width:12px;height:12px;border-radius:50%;background:${p.col};flex-shrink:0"></div>${p.name}</div>`).join('');
-
-  return `<div class="pcsect"><div class="pcst">Connect the Matching Dots</div>
-    <div style="font-size:11px;color:#8899AA;margin-bottom:9px;line-height:1.6">
-      Draw a line connecting each pair of same-colored dots.<br>
-      Lines <b style="color:#FF3355">cannot cross</b>. Every empty cell must be filled by a line.<br>
-      Wrong connection costs <b style="color:#FF3355">TC +${cfg.tc||1}</b>.
-    </div>
-    <div style="display:flex;gap:16px;align-items:flex-start">
-      ${mazeHtml}
-      <div>
-        <div style="font-size:9px;color:#FF7A35;margin-bottom:7px">COLOR PAIRS</div>
-        <div style="display:flex;flex-direction:column;gap:5px">${legend}</div>
-        <div style="margin-top:12px;font-size:10px;color:#3A5570;line-height:1.7">Use a pencil to<br>trace your lines.<br>Erase and retry<br>if needed.</div>
-      </div>
-    </div></div>`;
-}
-
-function pGamma(cfg){
-  const chk=n=>Array(n).fill(0).map(()=>`<div style="width:22px;height:22px;border:1px solid #3A5570;display:inline-flex;align-items:center;justify-content:center;margin:2px;font-size:14px;color:#3A5570">○</div>`).join('');
-  return `<div class="pcsect"><div class="pcst">AI Guardian: ${cfg.ai||'GUARDIAN_IV'}</div>
-    <div style="font-size:12px;color:#C8D8E8;font-style:italic;line-height:1.7;border-left:3px solid #BB77FF;padding:9px 11px;background:#080C18;margin-bottom:9px">"${cfg.riddle||''}"</div></div>
-    <div class="pcsect"><div class="pcst">Negotiation Tracker — INT Hacking DC ${cfg.dc||14}</div>
-    <div style="display:flex;gap:18px;margin-bottom:7px">
-      <div><div style="font-size:9px;color:#00FF88;margin-bottom:3px">SUCCESSES: ${cfg.need||3}</div><div>${chk(cfg.need||3)}</div></div>
-      <div><div style="font-size:9px;color:#FF3355;margin-bottom:3px">MAX FAILURES: 2</div><div>${chk(2)}</div></div>
-    </div>
-    <div style="font-size:10px;color:#3A5570">2 failures → TC +${cfg.fail_tc||2} + Warden ICE deployed</div></div>
-    <div style="border:1px dashed #1A3550;padding:9px">
-      <div style="font-size:9px;color:#FF7A35;margin-bottom:4px">▼ DM FOLD ▼</div>
-      <div style="font-size:13px;color:#00FF88">${cfg.answer||'?'}</div>
-    </div>`;
-}
-
-function pDelta(cfg){
-  const rows=cfg.guesses||6;
-  let table='';
-  for(let i=0;i<rows;i++){
-    table+=`<div class="pcmmr">
-      <div style="width:15px;font-size:10px;color:#3A5570;margin-right:3px">${i+1}</div>
-      <div class="pcmmg">${Array(4).fill(0).map(()=>`<div class="pcmmp" style="width:30px;height:30px"></div>`).join('')}</div>
-      <div style="width:12px;font-size:10px;color:#3A5570;text-align:center">→</div>
-      <div class="pcmmfb">${Array(4).fill(0).map(()=>`<div class="pcmmf" style="width:12px;height:12px"></div>`).join('')}</div>
-    </div>`;
-  }
-  return `<div class="pcsect"><div class="pcst">Crack the 4-Digit Hex Code</div>
-    <div style="font-size:11px;color:#8899AA;margin-bottom:9px;line-height:1.6">${rows} attempts. After each guess the DM marks:<br>
-    <b style="color:#00E5FF">●</b> right char, right position &nbsp;|&nbsp; <b style="color:#FF7A35">○</b> right char, wrong position</div>
-    <div style="display:flex;gap:14px;align-items:flex-start">
-      <div>${table}</div>
-      <div style="border:1px dashed #1A3550;padding:9px;min-width:112px">
-        <div style="font-size:9px;color:#FF7A35;margin-bottom:4px">▼ DM FOLD ▼</div>
-        <div style="display:flex;gap:5px;margin-bottom:7px">
-          ${(cfg.code||['?','?','?','?']).map(v=>`<div style="width:28px;height:28px;border:1px solid #FFD600;display:flex;align-items:center;justify-content:center;font-family:VT323,monospace;font-size:20px;color:#FFD600">${v}</div>`).join('')}
-        </div>
-        <div style="font-size:9px;color:#3A5570">Hint: TC +${cfg.hint_tc||2}</div>
-      </div>
-    </div></div>`;
-}
-
-function pEpsilon(cfg){
-  const syms=cfg.syms||[];
-  const bs=52;
-  return `<div class="pcsect"><div class="pcst">Memorize the Sequence</div>
-    <div style="font-size:11px;color:#8899AA;margin-bottom:9px;line-height:1.6">
-      DM shows the symbols for <b style="color:#FF7A35">${cfg.secs||10} seconds</b> then covers them.<br>
-      Reproduce in order. TC +${cfg.tc||1} per wrong position.
-    </div></div>
-    <div class="pcsect"><div class="pcst">▼ DM shows for ${cfg.secs||10}s then COVERS ▼</div>
-    <div class="pcsymr">${syms.map((s,i)=>`<div style="text-align:center"><div style="font-size:8px;color:#3A5570;margin-bottom:2px">${i+1}</div>
-      <div class="pcsymb" style="width:${bs}px;height:${bs}px;font-size:28px">${s}</div></div>`).join('')}</div></div>
-    <div class="pcsect"><div class="pcst">Player writes answer below</div>
-    <div class="pcsymr">${syms.map((_,i)=>`<div style="text-align:center"><div style="font-size:8px;color:#3A5570;margin-bottom:2px">${i+1}</div>
-      <div class="pcsymb pcsymbl" style="width:${bs}px;height:${bs}px"></div></div>`).join('')}</div></div>`;
-}
-
-function pZeta(cfg){
-  const rooms=cfg.rooms||[]; const total=cfg.rounds||5;
-  return `<div class="pcsect"><div class="pcst">System Purge in Progress</div>
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:9px">
-      <div style="font-family:VT323,monospace;font-size:58px;color:#FF3355;line-height:1">${total}</div>
-      <div style="font-size:11px;color:#8899AA;line-height:1.7">ROUNDS TOTAL<br>Each room = 1 round.<br>Clear challenge to advance.<br>Fail to clear = time lost.</div>
-    </div></div>
-    <div class="pcsect"><div class="pcst">Room Sequence</div>
-    ${rooms.map((rm,i)=>`<div class="pcspr"><div class="pcspn" style="width:22px;height:22px">${i+1}</div>
-      <div class="pcspcb" style="width:18px;height:18px"></div>
-      <div><div style="color:#C8D8E8;font-size:12px">${rm.n}</div><div style="color:#3A5570;font-size:10px">${rm.c}</div></div>
-    </div>`).join('')}
-    <div style="margin-top:7px;padding-top:7px;border-top:1px solid #1A2E40;display:grid;grid-template-columns:1fr 1fr;gap:9px">
-      <div><div style="font-size:9px;color:#00FF88;margin-bottom:2px">SUCCESS</div><div style="font-size:10px;color:#8899AA">${cfg.ok||''}</div></div>
-      <div><div style="font-size:9px;color:#FF3355;margin-bottom:2px">FAILURE</div><div style="font-size:10px;color:#8899AA">${cfg.fail||''}</div></div>
-    </div></div>
-    <div style="display:flex;gap:5px">${Array(total).fill(0).map((_,i)=>`
-      <div style="flex:1;border:1px solid #1A3550;padding:3px;text-align:center">
-        <div style="font-size:8px;color:#3A5570">RND ${i+1}</div><div style="height:14px"></div>
-      </div>`).join('')}</div>`;
-}
-
-// ════════════════════════════════════════════════════════
-// UTILS
-// ════════════════════════════════════════════════════════
-const sl=ms=>new Promise(r=>setTimeout(r,ms));
-function dl(canvas,name){const a=document.createElement('a');a.download=name;a.href=canvas.toDataURL('image/png');a.click();}
-function toast(msg){const t=document.getElementById('toast');t.textContent='// '+msg;t.classList.add('on');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('on'),2800);}
-
-// ════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════
-initG(12,7); renderG();
+window.onload = init;
 </script>
 </body>
 </html>
