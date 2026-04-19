@@ -2,12 +2,12 @@
   "_meta": {
     "sources": [
       {
-        "json": "CustomDraconido",
-        "abbreviation": "CDR",
-        "full": "Razas Personalizadas - Dracónido",
+        "json": "CustomHomebrew",
+        "abbreviation": "CHB",
+        "full": "Razas Personalizadas - Módulo Completo",
         "authors": ["Homebrew"],
         "convertedBy": [],
-        "version": "1.0.0",
+        "version": "2.0.0",
         "url": "",
         "targetSchema": "1.2.0"
       }
@@ -18,7 +18,7 @@
   "race": [
     {
       "name": "Dracónido",
-      "source": "CustomDraconido",
+      "source": "CustomHomebrew",
       "page": 0,
       "size": ["S", "M", "L"],
       "speed": 30,
@@ -27,38 +27,44 @@
       "creatureTypeTags": ["dragon"],
       "entries": [
         {
+          "type": "inset",
+          "name": "⚠ Sublinaje Requerido",
+          "entries": ["Esta raza requiere que elijas un tipo de Sangre Dracónica. Sin él, la raza está incompleta. Elige entre: Sangre de Hielo, Sangre de Sol, Sangre de Luna, Sangre de Tormenta, Sangre de Tierra, Sangre de Vida o Sangre de Estrella."]
+        },
+        {
           "type": "entries",
           "name": "Creature Type",
-          "entries": [
-            "Eres un Humanoide. También eres considerado Dragón para cualquier prerrequisito o efecto que requiera tal categoría."
-          ]
+          "entries": ["Eres un Humanoide. También eres considerado Dragón para cualquier prerrequisito o efecto que requiera tal categoría."]
         },
         {
           "type": "entries",
           "name": "Size",
-          "entries": [
-            "Eres Pequeño, Mediano o Grande."
-          ]
+          "entries": ["Eres Pequeño, Mediano o Grande. Elige al crear el personaje."]
         },
         {
           "type": "entries",
           "name": "Speed",
           "entries": [
-            "Tu velocidad al caminar es de 30 pies, o 25 pies y 30 pies de vuelo."
+            "Elige una de las siguientes opciones al crear el personaje:",
+            {
+              "type": "list",
+              "items": [
+                "Velocidad al caminar de 30 pies.",
+                "Velocidad al caminar de 25 pies y velocidad de vuelo de 30 pies."
+              ]
+            }
           ]
         },
         {
           "type": "entries",
           "name": "Darkvision",
-          "entries": [
-            "Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."
-          ]
+          "entries": ["Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."]
         },
         {
           "type": "entries",
           "name": "Breath Weapon",
           "entries": [
-            "Puedes liberar el poder de tu linaje dracónico realizando el tipo de daño del elemento al que obtienes resistencia. Cuando realizas la acción de Ataque, puedes reemplazar uno de tus ataques con una exhalación elemental. La exhalación adopta una de las siguientes formas (elige al crear el personaje):",
+            "Puedes liberar el poder de tu linaje dracónico realizando el tipo de daño del elemento al que obtienes resistencia. Cuando realizas la acción de Ataque, puedes reemplazar uno de tus ataques con una exhalación elemental. Elige una forma al crear el personaje:",
             {
               "type": "list",
               "items": [
@@ -67,7 +73,6 @@
               ]
             },
             "Las criaturas en el área deben realizar una tirada de salvación de Destreza. CD = 8 + bonificador por competencia + modificador de Constitución. Daño = 1d10.",
-            "El daño aumenta al subir de nivel:",
             {
               "type": "table",
               "colLabels": ["Nivel", "Daño"],
@@ -80,13 +85,136 @@
             },
             "Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, recuperando todos los usos tras un descanso largo."
           ]
+        }
+      ]
+    },
+    {
+      "name": "Goblin",
+      "source": "CustomHomebrew",
+      "page": 0,
+      "size": ["S"],
+      "speed": 30,
+      "darkvision": 60,
+      "creatureTypes": ["humanoid"],
+      "creatureTypeTags": ["fey"],
+      "languageProficiencies": [{"goblin": true, "common": true}],
+      "entries": [
+        {
+          "type": "inset",
+          "name": "⚠ Variante Requerida",
+          "entries": ["Esta raza requiere que elijas una variante goblin al crear el personaje. Elige entre: Clumptent, Dragonjaw, Ironfang o Shadefoot."]
         },
         {
           "type": "entries",
-          "name": "Draconic Ancestry",
-          "entries": [
-            "Tu linaje dracónido está ligado al origen y creación de este mundo. Elige uno de los siguientes tipos de sangre: Sangre de Hielo, Sangre de Sol, Sangre de Luna, Sangre de Tormenta, Sangre de Tierra, Sangre de Vida, o Sangre de Estrella."
-          ]
+          "name": "Creature Type",
+          "entries": ["Eres un Humanoide. También eres considerada Fey para cualquier prerrequisito o efecto que requiera tal categoría."]
+        },
+        {
+          "type": "entries",
+          "name": "Size",
+          "entries": ["Eres Pequeña."]
+        },
+        {
+          "type": "entries",
+          "name": "Darkvision",
+          "entries": ["Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."]
+        },
+        {
+          "type": "entries",
+          "name": "Fury of the Small",
+          "entries": ["Cuando dañas a una criatura con un ataque o un conjuro, y la criatura es de un tamaño mayor que el tuyo, puedes hacer que el ataque o conjuro inflija daño adicional igual a tu bonificador por competencia. Puedes usar este rasgo un número de veces igual a tu bonificador por competencia, y recuperas todos los usos al finalizar un descanso largo. No puedes usar este rasgo más de una vez por turno."]
+        }
+      ]
+    },
+    {
+      "name": "Myko",
+      "source": "CustomHomebrew",
+      "page": 0,
+      "size": ["S", "M"],
+      "speed": 30,
+      "darkvision": 120,
+      "creatureTypes": ["humanoid"],
+      "creatureTypeTags": ["plant", "ooze"],
+      "languageProficiencies": [{"common": true, "sylvan": true, "anyStandard": 1}],
+      "entries": [
+        {
+          "type": "inset",
+          "name": "⚠ Variante Requerida",
+          "entries": ["Esta raza requiere que elijas una variante Myko al crear el personaje. Elige entre: Blandito o de Estrellas."]
+        },
+        {
+          "type": "entries",
+          "name": "Creature Type",
+          "entries": ["Eres un Humanoide. También eres considerado Planta y Ooze (Slime) para cualquier prerrequisito o efecto que requiera tal categoría."]
+        },
+        {
+          "type": "entries",
+          "name": "Size",
+          "entries": ["Eres Pequeño o Mediano. Elige al crear el personaje."]
+        },
+        {
+          "type": "entries",
+          "name": "Superior Darkvision",
+          "entries": ["Puedes ver en luz tenue dentro de 120 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue."]
+        }
+      ]
+    },
+    {
+      "name": "Slimekin",
+      "source": "CustomHomebrew",
+      "page": 0,
+      "size": ["S", "M"],
+      "speed": 25,
+      "darkvision": 60,
+      "creatureTypes": ["humanoid"],
+      "creatureTypeTags": ["ooze"],
+      "resist": ["poison", "acid"],
+      "languageProficiencies": [{"common": true, "anyStandard": 1}],
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Creature Type",
+          "entries": ["Eres un Humanoide. También eres considerado Ooze (Slime) para cualquier prerrequisito o efecto que requiera tal categoría."]
+        },
+        {
+          "type": "entries",
+          "name": "Size",
+          "entries": ["Eres Pequeño o Mediano. Elige al crear el personaje."]
+        },
+        {
+          "type": "entries",
+          "name": "Speed",
+          "entries": ["Tu velocidad al caminar es de 25 pies."]
+        },
+        {
+          "type": "entries",
+          "name": "Darkvision",
+          "entries": ["Puedes ver en luz tenue dentro de 60 pies como si fuera luz brillante, y en oscuridad como si fuera luz tenue. En la oscuridad, solo distingues los colores como tonos de gris."]
+        },
+        {
+          "type": "entries",
+          "name": "Amorphous",
+          "entries": ["Puedes moverte a través de espacios angostos como si fueras una criatura de tamaño Diminuto. No sufres desventaja por desplazarte en espacios que normalmente exigirían que te apretaras."]
+        },
+        {
+          "type": "entries",
+          "name": "Amorphous Resilience",
+          "entries": ["Tienes ventaja en tiradas de salvación contra la condición envenenada y resistencia al daño por veneno y ácido."]
+        },
+        {
+          "type": "entries",
+          "name": "Gelatinous Mimicry",
+          "entries": ["Como acción, puedes adoptar una forma humanoide que imite a una criatura humanoide de talla Mediana o inferior, imitando su altura y rasgos aunque sigues pareciendo un Plasmoide. Mantienes tus estadísticas. La forma dura hasta 1 hora o hasta que la abandones como acción bonus. Puedes usar este rasgo un número de veces igual a tu bonificador de competencia; recuperas los usos tras un descanso largo."]
+        },
+        {
+          "type": "entries",
+          "name": "Solvant Strike",
+          "entries": ["Tus apéndices gelatinosos o tu interior cuentan como un arma natural: ataque cuerpo a cuerpo con tu bonificador por competencia, daño 1d4 + modificador de Fuerza (ácido). Puedes usar Destreza en lugar de Fuerza para este ataque si lo prefieres."]
+        },
+        {
+          "type": "entries",
+          "name": "Digestive Slurry",
+          "entries": ["Puedes consumir pociones y objetos digeribles disolviéndolos en tu masa, sin necesidad de boca ni órganos visibles. Puedes almacenar un objeto Mediano o menor en tu interior, visible como silueta difusa. Extraerlo requiere una acción bonus."]
         }
       ]
     }
@@ -94,232 +222,374 @@
   "subrace": [
     {
       "name": "Sangre de Hielo",
-      "source": "CustomDraconido",
+      "source": "CustomHomebrew",
       "raceName": "Dracónido",
-      "raceSource": "CustomDraconido",
+      "raceSource": "CustomHomebrew",
       "page": 0,
       "resist": ["cold"],
       "entries": [
         {
           "type": "entries",
           "name": "Flowbound Body",
-          "entries": [
-            "Tienes ventaja en pruebas y tiradas de salvación realizadas para escapar de la condición Agarre."
-          ]
+          "entries": ["Tienes ventaja en pruebas y tiradas de salvación realizadas para escapar de la condición Agarre."]
         },
         {
           "type": "entries",
           "name": "Freezing Attack",
-          "entries": [
-            "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño de Frío, su velocidad se reduce en 10 pies hasta el inicio de tu siguiente turno."
-          ]
+          "entries": ["Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño de Frío, su velocidad se reduce en 10 pies hasta el inicio de tu siguiente turno."]
         },
         {
           "type": "entries",
           "name": "Child of the Water",
-          "entries": [
-            "Obtienes velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua."
-          ]
+          "entries": ["Obtienes velocidad de Nado igual a tu Velocidad de Caminar y puedes respirar aire y agua."]
         },
         {
           "type": "entries",
           "name": "Cold Resistance",
-          "entries": [
-            "Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo."
-          ]
+          "entries": ["Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo."]
         }
       ]
     },
     {
       "name": "Sangre de Sol",
-      "source": "CustomDraconido",
+      "source": "CustomHomebrew",
       "raceName": "Dracónido",
-      "raceSource": "CustomDraconido",
+      "raceSource": "CustomHomebrew",
       "page": 0,
       "resist": ["fire"],
       "entries": [
         {
           "type": "entries",
           "name": "Boiling Blood",
-          "entries": [
-            "Una vez por turno, cuando impactas con un ataque o infliges daño con un conjuro, puedes hacer que el objetivo reciba daño de Fuego adicional igual a tu bonificador de competencia. Puedes usar este rasgo un número de veces igual a tu bonificador de competencia, y recuperas todos los usos al finalizar un descanso largo."
-          ]
+          "entries": ["Una vez por turno, cuando impactas con un ataque o infliges daño con un conjuro, puedes hacer que el objetivo reciba daño de Fuego adicional igual a tu bonificador de competencia. Puedes usar este rasgo un número de veces igual a tu bonificador de competencia, y recuperas todos los usos al finalizar un descanso largo."]
         },
         {
           "type": "entries",
           "name": "Radiant Pulse",
-          "entries": [
-            "Como acción adicional, emites luz brillante en un radio de 10 pies durante 1 minuto. Cuando activas este rasgo, elige un número de criaturas aliadas dentro de la luz igual a tu bonificador de competencia. Durante la duración, obtienen ventaja en su primera tirada de salvación. Una vez usado, no puedes volver a hacerlo hasta terminar un descanso largo."
-          ]
+          "entries": ["Como acción adicional, emites luz brillante en un radio de 10 pies durante 1 minuto. Cuando activas este rasgo, elige un número de criaturas aliadas dentro de la luz igual a tu bonificador de competencia. Durante la duración, obtienen ventaja en su primera tirada de salvación. Una vez usado, no puedes volver a hacerlo hasta terminar un descanso largo."]
         },
         {
           "type": "entries",
           "name": "Fire Resistance",
-          "entries": [
-            "Obtienes resistencia al daño por Fuego. Las altas temperaturas y entornos abrasadores nunca cuentan como extremos para ti, y la luz intensa nunca te impone desventaja en pruebas de Percepción."
-          ]
+          "entries": ["Obtienes resistencia al daño por Fuego. Las altas temperaturas y entornos abrasadores nunca cuentan como extremos para ti, y la luz intensa nunca te impone desventaja en pruebas de Percepción."]
         }
       ]
     },
     {
       "name": "Sangre de Luna",
-      "source": "CustomDraconido",
+      "source": "CustomHomebrew",
       "raceName": "Dracónido",
-      "raceSource": "CustomDraconido",
+      "raceSource": "CustomHomebrew",
       "page": 0,
       "resist": ["psychic"],
       "entries": [
         {
           "type": "entries",
           "name": "Reflected Self",
-          "entries": [
-            "Obtienes competencia en Sigilo o Engaño."
-          ]
+          "entries": ["Obtienes competencia en Sigilo o Engaño (tu elección)."]
         },
         {
           "type": "entries",
           "name": "Veil of Phases",
-          "entries": [
-            "Cuando una criatura que puedas ver te impacta con un ataque, puedes usar tu reacción para imponer desventaja a esa tirada. Una vez que utilizas este rasgo, no puedes volver a hacerlo hasta terminar un descanso largo."
-          ]
+          "entries": ["Cuando una criatura que puedas ver te impacta con un ataque, puedes usar tu reacción para imponer desventaja a esa tirada. Una vez que utilizas este rasgo, no puedes volver a hacerlo hasta terminar un descanso largo."]
         },
         {
           "type": "entries",
           "name": "Veiled Mind",
-          "entries": [
-            "Obtienes resistencia al daño Psíquico. Además, tienes ventaja en salvaciones contra ser hechizado o asustado."
-          ]
+          "entries": ["Obtienes resistencia al daño Psíquico. Además, tienes ventaja en salvaciones contra ser hechizado o asustado."]
         }
       ]
     },
     {
       "name": "Sangre de Tormenta",
-      "source": "CustomDraconido",
+      "source": "CustomHomebrew",
       "raceName": "Dracónido",
-      "raceSource": "CustomDraconido",
+      "raceSource": "CustomHomebrew",
       "page": 0,
       "resist": ["lightning"],
       "entries": [
         {
           "type": "entries",
           "name": "Storm Step",
-          "entries": [
-            "Cuando realizas la acción Dash, los ataques de oportunidad contra ti se realizan con desventaja hasta el final del turno."
-          ]
+          "entries": ["Cuando realizas la acción Dash, los ataques de oportunidad contra ti se realizan con desventaja hasta el final del turno."]
         },
         {
           "type": "entries",
           "name": "Crackling Blood",
-          "entries": [
-            "Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño Eléctrico, tu velocidad aumenta en 5 pies hasta el final de tu turno."
-          ]
+          "entries": ["Una vez por turno, cuando una criatura recibe daño de tu Aliento o de alguno de tus ataques que realice daño Eléctrico, tu velocidad aumenta en 5 pies hasta el final de tu turno."]
         },
         {
           "type": "entries",
           "name": "Storm Resistance",
-          "entries": [
-            "Obtienes resistencia al daño Eléctrico. Los vientos fuertes y tormentas nunca cuentan como condiciones adversas para ti."
-          ]
+          "entries": ["Obtienes resistencia al daño Eléctrico. Los vientos fuertes y tormentas nunca cuentan como condiciones adversas para ti."]
         }
       ]
     },
     {
       "name": "Sangre de Tierra",
-      "source": "CustomDraconido",
+      "source": "CustomHomebrew",
       "raceName": "Dracónido",
-      "raceSource": "CustomDraconido",
+      "raceSource": "CustomHomebrew",
       "page": 0,
       "resist": ["bludgeoning"],
       "entries": [
         {
           "type": "entries",
           "name": "Immovable Frame",
-          "entries": [
-            "Tienes ventaja en tiradas de salvación para evitar ser derribado o movido contra tu voluntad."
-          ]
+          "entries": ["Tienes ventaja en tiradas de salvación para evitar ser derribado o movido contra tu voluntad."]
         },
         {
           "type": "entries",
           "name": "Hardened Scales",
-          "entries": [
-            "Tus escamas son duras como piedra. Mientras no lleves armadura, puedes calcular tu CA como 13 + tu modificador de Destreza o Constitución. Puedes usar un escudo y aun así obtener este beneficio."
-          ]
+          "entries": ["Tus escamas son duras como piedra. Mientras no lleves armadura, puedes calcular tu CA como 13 + tu modificador de Destreza o Constitución. Puedes usar un escudo y aun así obtener este beneficio."]
         },
         {
           "type": "entries",
           "name": "Titan's Bearing",
-          "entries": [
-            "Se te considera una talla más grande al determinar tu capacidad de carga. Puedes portar armaduras y armas no mágicas que requieran Fuerza sin necesidad de cumplir sus requisitos."
-          ]
+          "entries": ["Se te considera una talla más grande al determinar tu capacidad de carga. Puedes portar armaduras y armas no mágicas que requieran Fuerza sin necesidad de cumplir sus requisitos."]
         },
         {
           "type": "entries",
           "name": "Stone Resistance",
-          "entries": [
-            "Obtienes resistencia a todo tipo de daño Contundente incluido el Contundente Mágico."
-          ]
+          "entries": ["Obtienes resistencia a todo tipo de daño Contundente, incluido el Contundente Mágico."]
         }
       ]
     },
     {
       "name": "Sangre de Vida",
-      "source": "CustomDraconido",
+      "source": "CustomHomebrew",
       "raceName": "Dracónido",
-      "raceSource": "CustomDraconido",
+      "raceSource": "CustomHomebrew",
       "page": 0,
       "resist": ["poison", "acid"],
       "entries": [
         {
           "type": "entries",
           "name": "Creeping Vitality",
-          "entries": [
-            "Cuando recuperas puntos de golpe mediante cualquier fuente, recuperas puntos adicionales iguales a tu bonificador de competencia."
-          ]
+          "entries": ["Cuando recuperas puntos de golpe mediante cualquier fuente, recuperas puntos adicionales iguales a tu bonificador de competencia."]
         },
         {
           "type": "entries",
           "name": "Adaptive Flesh",
-          "entries": [
-            "Tienes ventaja en salvaciones contra veneno y enfermedad."
-          ]
+          "entries": ["Tienes ventaja en salvaciones contra veneno y enfermedad."]
         },
         {
           "type": "entries",
           "name": "Verdant Endurance",
-          "entries": [
-            "Obtienes resistencia al daño por veneno y ácido. Cuando usas tu Breath Weapon puedes elegir cualquiera de los dos tipos de elemento. Los entornos tóxicos, pantanosos o contaminados nunca cuentan como extremos para ti."
-          ]
+          "entries": ["Obtienes resistencia al daño por veneno y ácido. Cuando usas tu Breath Weapon puedes elegir cualquiera de los dos tipos de elemento. Los entornos tóxicos, pantanosos o contaminados nunca cuentan como extremos para ti."]
         }
       ]
     },
     {
       "name": "Sangre de Estrella",
-      "source": "CustomDraconido",
+      "source": "CustomHomebrew",
       "raceName": "Dracónido",
-      "raceSource": "CustomDraconido",
+      "raceSource": "CustomHomebrew",
       "page": 0,
       "resist": ["force"],
       "entries": [
         {
           "type": "entries",
           "name": "Celestial Insight",
-          "entries": [
-            "Una vez por descanso largo, después de ver una tirada d20, puedes sumar o restar 1d4 al resultado."
-          ]
+          "entries": ["Una vez por descanso largo, después de ver una tirada d20, puedes sumar o restar 1d4 al resultado."]
         },
         {
           "type": "entries",
           "name": "Distant Gaze",
-          "entries": [
-            "Puedes ver normalmente a través de oscuridad mágica, ilusiones y efectos visuales que obscurezcan hasta 30 pies."
-          ]
+          "entries": ["Puedes ver normalmente a través de oscuridad mágica, ilusiones y efectos visuales que obscurezcan hasta 30 pies."]
         },
         {
           "type": "entries",
           "name": "Cosmic Endurance",
-          "entries": [
-            "Obtienes resistencia al daño de Fuerza. Los efectos que alteran la gravedad, el vacío o la presión cósmica no te afectan."
-          ]
+          "entries": ["Obtienes resistencia al daño de Fuerza. Los efectos que alteran la gravedad, el vacío o la presión cósmica no te afectan."]
+        }
+      ]
+    },
+    {
+      "name": "Clumptent",
+      "source": "CustomHomebrew",
+      "raceName": "Goblin",
+      "raceSource": "CustomHomebrew",
+      "page": 0,
+      "speed": 30,
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Fey Ancestry",
+          "entries": ["Tienes ventaja en las tiradas de salvación que realices para evitar o terminar la condición encantada sobre ti."]
+        },
+        {
+          "type": "entries",
+          "name": "Nimble Escape",
+          "entries": ["Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos."]
+        },
+        {
+          "type": "entries",
+          "name": "Imposing Presence",
+          "entries": ["Obtienes competencia en Intimidación o Persuasión (tu elección)."]
+        }
+      ]
+    },
+    {
+      "name": "Dragonjaw",
+      "source": "CustomHomebrew",
+      "raceName": "Goblin",
+      "raceSource": "CustomHomebrew",
+      "page": 0,
+      "speed": 25,
+      "creatureTypeTags": ["dragon"],
+      "resist": ["cold"],
+      "languageProficiencies": [{"goblin": true, "common": true, "draconic": true}],
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Creature Type (Adicional)",
+          "entries": ["Además de Humanoide y Fey, eres considerada Dragón para cualquier prerrequisito o efecto que requiera tal categoría."]
+        },
+        {
+          "type": "entries",
+          "name": "Cold Resistance",
+          "entries": ["Obtienes resistencia al daño por Frío. El frío ambiental nunca cuenta como extremo para ti."]
+        },
+        {
+          "type": "entries",
+          "name": "Natural Toughness",
+          "entries": ["Tu máximo de puntos de vida aumenta en 1 y aumenta nuevamente en 1 cada vez que subes de nivel."]
+        },
+        {
+          "type": "entries",
+          "name": "Thick Body",
+          "entries": ["Mientras no lleves armadura, obtienes un bono de +1 a tu CA."]
+        }
+      ]
+    },
+    {
+      "name": "Ironfang",
+      "source": "CustomHomebrew",
+      "raceName": "Goblin",
+      "raceSource": "CustomHomebrew",
+      "page": 0,
+      "speed": 30,
+      "languageProficiencies": [{"common": true, "goblin": true, "anyStandard": 1}],
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Relentless Fury",
+          "entries": ["Antes de realizar un ataque puedes gastar dos usos de Fury of the Small para declarar un ataque agresivo. Si impacta, inflige el daño equivalente a dos usos de Fury of the Small o realizas un Ataque Adicional."]
+        },
+        {
+          "type": "entries",
+          "name": "Nimble Escape",
+          "entries": ["Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos."]
+        }
+      ]
+    },
+    {
+      "name": "Shadefoot",
+      "source": "CustomHomebrew",
+      "raceName": "Goblin",
+      "raceSource": "CustomHomebrew",
+      "page": 0,
+      "speed": 40,
+      "languageProficiencies": [{"common": true, "goblin": true, "anyStandard": 1}],
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Pickpocket",
+          "entries": ["Obtienes competencia en la habilidad Juego de Manos."]
+        },
+        {
+          "type": "entries",
+          "name": "Unseen Skulker",
+          "entries": ["Eres experta en desaparecer en el momento justo. Cuando realizas la acción de Esconderte, puedes intentar ocultarte incluso si estás ligeramente oscurecida o parcialmente cubierta, siempre que no estés a plena vista. Además, moverte mientras estás oculta no revela tu posición si terminas tu movimiento en cobertura o en una zona oscurecida."]
+        },
+        {
+          "type": "entries",
+          "name": "Nimble Movement",
+          "entries": ["Puedes moverte a través del espacio de cualquier criatura que sea de un tamaño mayor que el tuyo."]
+        },
+        {
+          "type": "entries",
+          "name": "Nimble Escape",
+          "entries": ["Puedes realizar la acción de Desengancharte o Esconderte como acción adicional en cada uno de tus turnos."]
+        }
+      ]
+    },
+    {
+      "name": "Blandito",
+      "source": "CustomHomebrew",
+      "raceName": "Myko",
+      "raceSource": "CustomHomebrew",
+      "page": 0,
+      "resist": ["poison"],
+      "languageProficiencies": [{"common": true, "sylvan": true, "anyStandard": 1}],
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Fungal Resilience",
+          "entries": ["Tienes ventaja en las tiradas de salvación contra venenos y enfermedades, y resistencia al daño por veneno. Además, tienes ventaja en las tiradas de Constitución para resistir enfermedades naturales (no sobrenaturales impuestas por artefactos o magia poderosa)."]
+        },
+        {
+          "type": "entries",
+          "name": "Soft Body",
+          "entries": ["Tu estructura esponjosa amortigua las caídas: sufres la mitad del daño por caída."]
+        },
+        {
+          "type": "entries",
+          "name": "Mushy Piece",
+          "entries": ["Como acción, arrancas una pequeña porción de tu cuerpo fúngico que permanece fresca 1 hora. Una criatura puede consumirla para recuperar 1d6 + tu bonificador de competencia PG. Usable una vez por descanso largo. Arrancarla no te causa daño."]
+        },
+        {
+          "type": "entries",
+          "name": "Telepathic Rapport",
+          "entries": ["Puedes comunicarte telepáticamente con una criatura dispuesta a 120 pies. No necesita compartir idioma contigo, pero debe entender al menos uno. Esta comunicación transmite sensaciones e imágenes simples más que palabras precisas."]
+        },
+        {
+          "type": "entries",
+          "name": "Imposing Presence",
+          "entries": ["Obtienes competencia en Intimidación o Persuasión (tu elección)."]
+        }
+      ]
+    },
+    {
+      "name": "de Estrellas",
+      "source": "CustomHomebrew",
+      "raceName": "Myko",
+      "raceSource": "CustomHomebrew",
+      "page": 0,
+      "creatureTypeTags": ["celestial"],
+      "resist": ["force"],
+      "languageProficiencies": [{"common": true, "celestial": true, "anyStandard": 1}],
+      "entries": [
+        {
+          "type": "entries",
+          "name": "Creature Type (Override)",
+          "entries": ["Para esta variante, sustituye Ooze por Celestial: eres Humanoide, Planta y Celestial para cualquier prerrequisito o efecto que requiera tal categoría."]
+        },
+        {
+          "type": "entries",
+          "name": "Astral Resilience",
+          "entries": ["Tienes resistencia al daño de Fuerza. Además, tienes ventaja en las tiradas de salvación contra efectos que te desplacen, trasladen forzosamente o alteren tu posición en el espacio (como Banishment, Telekinesis o similares)."]
+        },
+        {
+          "type": "entries",
+          "name": "Stellar Drift",
+          "entries": ["Tu cuerpo flota con una levedad cósmica sutil: sufres la mitad del daño por caída. Además, tienes ventaja en las tiradas de salvación o verificaciones para evitar la condición Prone."]
+        },
+        {
+          "type": "entries",
+          "name": "Starfall Fragment",
+          "entries": ["Como acción, separas una porción luminiscente de tu sombrero que permanece activa 1 hora. Una criatura puede consumirla para ganar 1d4 a una tirada de ataque o salvación (su elección). Usable una vez por descanso largo. Arrancarla no te causa daño."]
+        },
+        {
+          "type": "entries",
+          "name": "Astral Conduit",
+          "entries": ["Puedes comunicarte telepáticamente con una criatura dispuesta dentro de 300 pies. Esta comunicación atraviesa barreras físicas (no mágicas). No necesitas compartir idioma con el objetivo, ni que éste entienda ninguno; transmites directamente visiones, emociones y cartografías estelares a su mente."]
+        },
+        {
+          "type": "entries",
+          "name": "Cosmic Knowledge",
+          "entries": ["Obtienes competencia en Arcana o Historia (tu elección)."]
         }
       ]
     }
