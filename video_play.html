@@ -29,11 +29,14 @@ body {
   justify-content: center;
   background: transparent;
   font-family: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  padding: 0 16px;
 }
 
 /* ── Player shell — wide & short ── */
 .mp {
-  width: 680px;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid var(--mp-border);
@@ -386,7 +389,10 @@ body {
 ════════════════════════════════════════════ */
 const CONFIG = {
   soundcloudUrl: 'https://soundcloud.com/user-167974902/sets/ena-playlist?si=3f3d839996294f3ba61f344bdff139b0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
-  defaultVolume: 50,
+  defaultVolume: 20,
+  fadeInTarget: 20,
+  fadeInDelay: 3000,
+  fadeInDuration: 1800,
 };
 /* ════════════════════════════════════════════
    End of config
@@ -471,20 +477,55 @@ function initSoundCloud() {
   s.onload = () => {
     scWidget = SC.Widget(iframe);
     scWidget.bind(SC.Widget.Events.READY, () => {
-      /* Apply saved volume & mute state immediately */
-      const effectiveVol = isMuted ? 0 : volume;
-      scWidget.setVolume(effectiveVol);
-      setVolUI(volume);
-      if (isMuted) {
-        $('mp-mute-btn').classList.add('muted');
-        setVolIcon(0);
-      }
-      /* Attempt autoplay */
-      try {
-        scWidget.play();
-      } catch(_) {
-        showOverlay(true);
-        $('mp-live-text').textContent = 'Idle';
+      const isFirstVisit = localStorage.getItem('mp_volume') === null;
+
+      if (isFirstVisit) {
+        /* First visit: silent, then fade in after delay */
+        volume = CONFIG.fadeInTarget;
+        isMuted = false;
+        scWidget.setVolume(0);
+        setVolUI(0);
+        $('mp-live-text').textContent = 'Starting…';
+
+        setTimeout(() => {
+          try {
+            scWidget.play();
+            /* Fade volume from 0 to target over fadeInDuration */
+            const steps = 30;
+            const stepTime = CONFIG.fadeInDuration / steps;
+            const stepVol  = CONFIG.fadeInTarget / steps;
+            let current = 0;
+            const fade = setInterval(() => {
+              current = Math.min(current + stepVol, CONFIG.fadeInTarget);
+              scWidget.setVolume(Math.round(current));
+              setVolUI(Math.round(current));
+              if (current >= CONFIG.fadeInTarget) {
+                clearInterval(fade);
+                volume = CONFIG.fadeInTarget;
+                try { localStorage.setItem('mp_volume', volume); } catch(_) {}
+              }
+            }, stepTime);
+          } catch(_) {
+            showOverlay(true);
+            $('mp-live-text').textContent = 'Idle';
+          }
+        }, CONFIG.fadeInDelay);
+
+      } else {
+        /* Returning visitor: restore saved state and play immediately */
+        const effectiveVol = isMuted ? 0 : volume;
+        scWidget.setVolume(effectiveVol);
+        setVolUI(volume);
+        if (isMuted) {
+          $('mp-mute-btn').classList.add('muted');
+          setVolIcon(0);
+        }
+        try {
+          scWidget.play();
+        } catch(_) {
+          showOverlay(true);
+          $('mp-live-text').textContent = 'Idle';
+        }
       }
     });
 
