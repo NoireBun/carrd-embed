@@ -23,10 +23,6 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: transparent;
   font-family: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
   padding: 0 16px;
@@ -37,7 +33,7 @@ body {
   width: 100%;
   max-width: 680px;
   margin: 0 auto;
-  border-radius: 14px;
+  border-radius: 0;
   overflow: hidden;
   border: 1px solid var(--mp-border);
   box-shadow: 0 8px 32px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.18);
@@ -55,7 +51,7 @@ body {
   inset: 0;
   z-index: 100;
   background: rgba(38, 26, 62, 0.93);
-  border-radius: 14px;
+  border-radius: 0;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -72,7 +68,7 @@ body {
   background: var(--mp-accent);
   color: var(--mp-surf);
   border: none;
-  border-radius: 20px;
+  border-radius: 0;
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
@@ -194,7 +190,7 @@ body {
   height: 40px;
   border: 2px solid var(--mp-accent) !important;
   color: var(--mp-accent);
-  border-radius: 50% !important;
+  border-radius: 0 !important;
 }
 .mp-btn-play:hover {
   background: var(--mp-accent);
@@ -212,7 +208,7 @@ body {
 .mp-prog-track {
   height: 3px;
   background: rgba(255,255,255,.1);
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
   cursor: pointer;
 }
@@ -220,7 +216,7 @@ body {
   height: 100%;
   width: 0%;
   background: var(--mp-accent);
-  border-radius: 2px;
+  border-radius: 0;
   transition: width .9s linear;
 }
 .mp-prog-times {
@@ -258,7 +254,7 @@ body {
   flex: 1;
   height: 4px;
   position: relative;
-  border-radius: 2px;
+  border-radius: 0;
   background: rgba(255,255,255,.12);
   cursor: pointer;
 }
@@ -266,7 +262,7 @@ body {
   position: absolute;
   left: 0; top: 0; bottom: 0;
   background: var(--mp-accent);
-  border-radius: 2px;
+  border-radius: 0;
   pointer-events: none;
 }
 .mp-vol-thumb {
@@ -389,10 +385,7 @@ body {
 ════════════════════════════════════════════ */
 const CONFIG = {
   soundcloudUrl: 'https://soundcloud.com/user-167974902/sets/ena-playlist?si=3f3d839996294f3ba61f344bdff139b0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
-  defaultVolume: 20,
-  fadeInTarget: 20,
-  fadeInDelay: 3000,
-  fadeInDuration: 1800,
+  defaultVolume: 50,
 };
 /* ════════════════════════════════════════════
    End of config
@@ -468,7 +461,7 @@ function initSoundCloud() {
   const iframe = $('sc-iframe');
   iframe.src = 'https://w.soundcloud.com/player/?url=' +
     encodeURIComponent(CONFIG.soundcloudUrl) +
-    '&auto_play=true&buying=false&liking=false&download=false' +
+    '&auto_play=false&buying=false&liking=false&download=false' +
     '&sharing=false&show_artwork=false&show_comments=false' +
     '&show_playcount=false&show_user=false&hide_related=true';
 
@@ -477,56 +470,15 @@ function initSoundCloud() {
   s.onload = () => {
     scWidget = SC.Widget(iframe);
     scWidget.bind(SC.Widget.Events.READY, () => {
-      const isFirstVisit = localStorage.getItem('mp_volume') === null;
-
-      if (isFirstVisit) {
-        /* First visit: silent, then fade in after delay */
-        volume = CONFIG.fadeInTarget;
-        isMuted = false;
-        scWidget.setVolume(0);
-        setVolUI(0);
-        $('mp-live-text').textContent = 'Starting…';
-
-        setTimeout(() => {
-          try {
-            scWidget.play();
-            /* Fade volume from 0 to target over fadeInDuration */
-            const steps = 30;
-            const stepTime = CONFIG.fadeInDuration / steps;
-            const stepVol  = CONFIG.fadeInTarget / steps;
-            let current = 0;
-            const fade = setInterval(() => {
-              current = Math.min(current + stepVol, CONFIG.fadeInTarget);
-              scWidget.setVolume(Math.round(current));
-              setVolUI(Math.round(current));
-              if (current >= CONFIG.fadeInTarget) {
-                clearInterval(fade);
-                volume = CONFIG.fadeInTarget;
-                try { localStorage.setItem('mp_volume', volume); } catch(_) {}
-              }
-            }, stepTime);
-          } catch(_) {
-            showOverlay(true);
-            $('mp-live-text').textContent = 'Idle';
-          }
-        }, CONFIG.fadeInDelay);
-
-      } else {
-        /* Returning visitor: restore saved state and play immediately */
-        const effectiveVol = isMuted ? 0 : volume;
-        scWidget.setVolume(effectiveVol);
-        setVolUI(volume);
-        if (isMuted) {
-          $('mp-mute-btn').classList.add('muted');
-          setVolIcon(0);
-        }
-        try {
-          scWidget.play();
-        } catch(_) {
-          showOverlay(true);
-          $('mp-live-text').textContent = 'Idle';
-        }
+      /* Restore saved volume & mute — don't autoplay, wait for user */
+      const effectiveVol = isMuted ? 0 : volume;
+      scWidget.setVolume(effectiveVol);
+      setVolUI(volume);
+      if (isMuted) {
+        $('mp-mute-btn').classList.add('muted');
+        setVolIcon(0);
       }
+      $('mp-live-text').textContent = 'Ready';
     });
 
     scWidget.bind(SC.Widget.Events.PLAY, () => {
