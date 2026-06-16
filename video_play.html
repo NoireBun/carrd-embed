@@ -11,13 +11,12 @@
    CUSTOMIZE COLORS — edit only this section
 ════════════════════════════════════════════ */
 :root {
-  --mp-bg:       #3a2955;   /* navbar / outer bg          */
-  --mp-surf:     #261a3e;   /* controls panel             */
-  --mp-panel:    #f0f4e0;   /* song info area (light)     */
-  --mp-accent:   #5ce8c0;   /* teal highlight color       */
-  --mp-text:     #f0f4e0;   /* text on dark backgrounds   */
-  --mp-dark:     #2b1842;   /* text on the light panel    */
-  --mp-muted:    #8a7aaa;   /* muted / secondary text     */
+  --mp-surf:     #261a3e;
+  --mp-panel:    #f0f4e0;
+  --mp-accent:   #5ce8c0;
+  --mp-text:     #f0f4e0;
+  --mp-dark:     #2b1842;
+  --mp-muted:    #8a7aaa;
   --mp-border:   rgba(92, 232, 192, 0.13);
 }
 
@@ -28,20 +27,22 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--mp-bg);
+  background: transparent;
   font-family: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── Player shell ── */
+/* ── Player shell — wide & short ── */
 .mp {
-  width: 360px;
+  width: 680px;
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid var(--mp-border);
-  box-shadow: 0 0 0 1px rgba(92,232,192,.05),
-              0 24px 64px rgba(0,0,0,.5),
-              0 8px 24px rgba(0,0,0,.35);
+  box-shadow: 0 8px 32px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.18);
   position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
+  background: var(--mp-surf);
 }
 
 /* ── Autoplay blocked overlay ── */
@@ -78,31 +79,59 @@ body {
 }
 .mp-overlay-btn:hover { opacity: .82; }
 
-/* ── Top bar ── */
-.mp-top {
-  background: var(--mp-bg);
-  padding: 11px 18px;
+/* ── Song info panel ── */
+.mp-info {
+  background: var(--mp-panel);
+  grid-column: 1 / -1;
+  grid-row: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0;
+  padding: 8px 16px;
   border-bottom: 1px solid var(--mp-border);
+  min-width: 0;
 }
-.mp-source {
+.mp-info-text {
+  flex: 1;
+  min-width: 0;
+}
+.mp-sc-badge {
   display: flex;
   align-items: center;
-  gap: 7px;
-  color: var(--mp-accent);
-  font-size: 12.5px;
-  font-weight: 500;
-  letter-spacing: .3px;
+  gap: 6px;
+  color: #ff5500;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .4px;
+  flex-shrink: 0;
+  margin-right: 14px;
+  opacity: .85;
+}
+.mp-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--mp-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+.mp-artist {
+  font-size: 11px;
+  color: var(--mp-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .mp-live {
   display: flex;
   align-items: center;
   gap: 5px;
   font-family: 'Space Mono', monospace;
-  font-size: 10.5px;
+  font-size: 10px;
   color: var(--mp-muted);
+  flex-shrink: 0;
+  margin-left: 14px;
 }
 .mp-live-dot {
   display: inline-block;
@@ -111,6 +140,7 @@ body {
   border-radius: 50%;
   background: var(--mp-muted);
   transition: background .3s;
+  flex-shrink: 0;
 }
 .mp-live-dot.on {
   background: var(--mp-accent);
@@ -121,51 +151,67 @@ body {
   50%       { opacity: .2; }
 }
 
-/* ── Song info panel ── */
-.mp-info {
-  background: var(--mp-panel);
+/* ── Controls row ── */
+.mp-controls {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  background: var(--mp-surf);
+  padding: 10px 18px 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
-.mp-sparkle {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 10px;
-  letter-spacing: 5.5px;
-  color: rgba(92, 232, 192, 0.28);
-  padding: 6px 14px 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  user-select: none;
+
+/* ── Play/prev/next buttons ── */
+.mp-btns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
-.mp-sparkle.bottom { padding: 2px 14px 6px; }
-.mp-title {
-  padding: 3px 16px 1px;
-  font-size: 14.5px;
-  font-weight: 700;
-  color: var(--mp-dark);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.3;
+.mp-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--mp-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: color .18s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
 }
-.mp-artist {
-  padding: 1px 16px 3px;
-  font-size: 11.5px;
-  color: var(--mp-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.mp-btn:hover { color: var(--mp-accent); }
+.mp-btn:active { transform: scale(.88); }
+.mp-btn-skip { color: rgba(240,244,224,.45); }
+.mp-btn-skip:hover { color: var(--mp-accent); }
+.mp-btn-play {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--mp-accent) !important;
+  color: var(--mp-accent);
+  border-radius: 50% !important;
+}
+.mp-btn-play:hover {
+  background: var(--mp-accent);
+  color: var(--mp-surf);
 }
 
 /* ── Progress ── */
 .mp-progress {
-  background: var(--mp-surf);
-  padding: 10px 18px 8px;
-  border-top: 1px solid var(--mp-border);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .mp-prog-track {
   height: 3px;
   background: rgba(255,255,255,.1);
   border-radius: 2px;
   overflow: hidden;
+  cursor: pointer;
 }
 .mp-prog-fill {
   height: 100%;
@@ -177,65 +223,34 @@ body {
 .mp-prog-times {
   display: flex;
   justify-content: space-between;
-  margin-top: 5px;
   font-family: 'Space Mono', monospace;
-  font-size: 10.5px;
+  font-size: 9.5px;
   color: var(--mp-muted);
 }
-
-/* ── Controls panel ── */
-.mp-controls {
-  background: var(--mp-surf);
-  padding: 12px 18px 16px;
-}
-.mp-btns {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  margin-bottom: 14px;
-}
-.mp-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--mp-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 7px;
-  border-radius: 50%;
-  transition: color .18s, transform .1s;
-  -webkit-tap-highlight-color: transparent;
-}
-.mp-btn:hover { color: var(--mp-accent); }
-.mp-btn:active { transform: scale(.88); }
-.mp-btn-skip { color: rgba(240,244,224,.5); }
-.mp-btn-skip:hover { color: var(--mp-accent); }
-.mp-btn-play {
-  width: 50px;
-  height: 50px;
-  border: 2px solid var(--mp-accent) !important;
-  color: var(--mp-accent);
-}
-.mp-btn-play:hover {
-  background: var(--mp-accent);
-  color: var(--mp-surf);
-}
-.mp-btn-mute {
-  color: var(--mp-muted);
-  padding: 5px;
-  flex-shrink: 0;
-}
-.mp-btn-mute.muted { opacity: .35; }
-.mp-btn-mute:hover { color: var(--mp-accent); opacity: 1 !important; }
 
 /* ── Volume ── */
 .mp-vol-row {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 7px;
+  flex-shrink: 0;
+  width: 148px;
 }
+.mp-btn-mute {
+  color: var(--mp-muted);
+  padding: 4px;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: color .18s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mp-btn-mute.muted { opacity: .35; }
+.mp-btn-mute:hover { color: var(--mp-accent); opacity: 1 !important; }
 .mp-vol-track {
   flex: 1;
   height: 4px;
@@ -247,20 +262,19 @@ body {
 .mp-vol-fill {
   position: absolute;
   left: 0; top: 0; bottom: 0;
-  width: 50%;
   background: var(--mp-accent);
   border-radius: 2px;
   pointer-events: none;
 }
 .mp-vol-thumb {
   position: absolute;
-  top: 50%; left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
-  width: 12px; height: 12px;
+  width: 11px; height: 11px;
   border-radius: 50%;
   background: var(--mp-accent);
   pointer-events: none;
-  box-shadow: 0 0 7px rgba(92,232,192,.38);
+  box-shadow: 0 0 6px rgba(92,232,192,.38);
 }
 .mp-vol-input {
   position: absolute;
@@ -273,9 +287,9 @@ body {
 }
 .mp-vol-pct {
   font-family: 'Space Mono', monospace;
-  font-size: 10.5px;
+  font-size: 9.5px;
   color: var(--mp-muted);
-  width: 30px;
+  width: 28px;
   text-align: right;
   flex-shrink: 0;
 }
@@ -284,11 +298,8 @@ body {
 </head>
 <body>
 
-<!-- ─────────────────────────────────────────────
-     HIDDEN PLAYBACK CONTAINERS
-───────────────────────────────────────────── -->
+<!-- Hidden SoundCloud iframe -->
 <div aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none;">
-  <div id="yt-player"></div>
   <iframe id="sc-iframe" scrolling="no" frameborder="no" allow="autoplay" style="width:1px;height:1px;"></iframe>
 </div>
 
@@ -302,54 +313,49 @@ body {
     <button class="mp-overlay-btn" onclick="startPlayback()">▶ Start Playing</button>
   </div>
 
-  <!-- Top bar -->
-  <div class="mp-top">
-    <div class="mp-source" id="mp-source">
-      <svg id="mp-src-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"></svg>
-      <span id="mp-src-label"></span>
+  <!-- Song info row -->
+  <div class="mp-info">
+    <div class="mp-sc-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M1.175 12.225c-.017.15.025.3.136.4.11.1.256.15.4.13l.99-.14.163.99c.02.1.097.18.196.195.1.02.197-.04.247-.128l.503-.95.502.95c.05.09.147.148.246.128.1-.016.177-.095.197-.195l.162-.988.99.14c.145.02.29-.03.4-.13.112-.101.154-.253.137-.402L6.1 11.28c0-1.81-1.463-3.28-3.27-3.28C1.024 8 0 9.064 0 10.378c0 .82.409 1.551 1.027 2.003l.148-.156zM22 11.5c0-2.485-2.015-4.5-4.5-4.5a4.48 4.48 0 0 0-1.792.373C15.153 5.782 13.386 4.5 11.5 4.5A6.5 6.5 0 0 0 5.077 10.05c-.276-.064-.563-.098-.86-.098C2.346 9.95.92 11.376.92 13.149c0 1.773 1.426 3.21 3.196 3.21H21.5a.5.5 0 0 0 .5-.5V11.5z"/></svg>
+      SC
+    </div>
+    <div class="mp-info-text">
+      <div class="mp-title" id="mp-title">—</div>
+      <div class="mp-artist" id="mp-artist">—</div>
     </div>
     <div class="mp-live">
       <span class="mp-live-dot" id="mp-dot"></span>
-      <span id="mp-live-text">Idle</span>
+      <span id="mp-live-text">Loading…</span>
     </div>
   </div>
 
-  <!-- Song info -->
-  <div class="mp-info">
-    <div class="mp-sparkle">+ · ✦ ★ + · ✦ · ★ ✧ + ✦ + · ✧ · ★ ✦ + · ✧ ★ + · ✦</div>
-    <div class="mp-title" id="mp-title">—</div>
-    <div class="mp-artist" id="mp-artist">—</div>
-    <div class="mp-sparkle bottom">★ ✧ · + ✦ · ★ + · ✦ ★ ✧ + · ✦ · ★ + · ✧ ✦ ★ + ·</div>
-  </div>
-
-  <!-- Progress -->
-  <div class="mp-progress">
-    <div class="mp-prog-track">
-      <div class="mp-prog-fill" id="mp-prog-fill"></div>
-    </div>
-    <div class="mp-prog-times">
-      <span id="mp-time-cur">0:00</span>
-      <span id="mp-time-tot">0:00</span>
-    </div>
-  </div>
-
-  <!-- Controls -->
+  <!-- Controls row -->
   <div class="mp-controls">
     <div class="mp-btns">
       <button class="mp-btn mp-btn-skip" onclick="prevTrack()" aria-label="Previous track" title="Previous">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
       </button>
       <button class="mp-btn mp-btn-play" id="mp-play-btn" onclick="togglePlay()" aria-label="Play or pause" title="Play / Pause">
-        <svg id="mp-play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="mp-play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </button>
       <button class="mp-btn mp-btn-skip" onclick="nextTrack()" aria-label="Next track" title="Next">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm10-12v12h2V6h-2z"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm10-12v12h2V6h-2z"/></svg>
       </button>
     </div>
 
+    <div class="mp-progress">
+      <div class="mp-prog-track">
+        <div class="mp-prog-fill" id="mp-prog-fill"></div>
+      </div>
+      <div class="mp-prog-times">
+        <span id="mp-time-cur">0:00</span>
+        <span id="mp-time-tot">0:00</span>
+      </div>
+    </div>
+
     <div class="mp-vol-row">
-      <button class="mp-btn mp-btn-mute" id="mp-mute-btn" onclick="toggleMute()" aria-label="Mute / unmute" title="Mute">
-        <svg id="mp-vol-icon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+      <button class="mp-btn-mute" id="mp-mute-btn" onclick="toggleMute()" aria-label="Mute / unmute" title="Mute">
+        <svg id="mp-vol-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
           <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
         </svg>
       </button>
@@ -363,7 +369,7 @@ body {
     </div>
   </div>
 
-</div><!-- /.mp -->
+</div>
 
 <script>
 
@@ -372,83 +378,34 @@ body {
    ║             CONFIGURATION               ║
    ╠══════════════════════════════════════════╣
    ║                                         ║
-   ║  source         'youtube' | 'soundcloud'║
-   ║                                         ║
-   ║  youtubeId      From the playlist URL:  ║
-   ║                 ?list=<PASTE HERE>      ║
-   ║                                         ║
    ║  soundcloudUrl  Full SC playlist URL    ║
    ║                                         ║
    ║  defaultVolume  0–100  (default 50)     ║
-   ║                 Saved after first change║
-   ║                                         ║
-   ║  colors         Hex codes for the UI   ║
+   ║                 Saved after first visit ║
    ╚══════════════════════════════════════════╝
 ════════════════════════════════════════════ */
 const CONFIG = {
-
-  source: 'soundcloud',
-
-  youtubeId: '?list=PLSUXUNuJAIQHt9qnFsb9kqKrEAQNcyCE-&si=MSCwrMPsyn2AQLdj',
-
   soundcloudUrl: 'https://soundcloud.com/user-167974902/sets/ena-playlist?si=3f3d839996294f3ba61f344bdff139b0&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing',
-
   defaultVolume: 50,
-
-  colors: {
-    bg:      '#3a2955',
-    surf:    '#261a3e',
-    panel:   '#f0f4e0',
-    accent:  '#5ce8c0',
-    text:    '#f0f4e0',
-    dark:    '#2b1842',
-    muted:   '#8a7aaa',
-  }
-
 };
 /* ════════════════════════════════════════════
-   End of config — no need to edit below here
+   End of config
 ════════════════════════════════════════════ */
 
-let ytPlayer = null;
 let scWidget = null;
 let isPlaying = false;
 let isMuted   = false;
 let volume;
-let tickId    = null;
 
-/* Load saved volume, fall back to default */
+/* Load saved state */
 try {
   const sv = localStorage.getItem('mp_volume');
   volume = sv !== null ? parseInt(sv, 10) : CONFIG.defaultVolume;
+  const sm = localStorage.getItem('mp_muted');
+  isMuted = sm === 'true';
 } catch(_) {
   volume = CONFIG.defaultVolume;
 }
-
-/* Apply CONFIG.colors to CSS variables */
-(function applyColors() {
-  const c = CONFIG.colors, r = document.documentElement.style;
-  r.setProperty('--mp-bg',    c.bg);
-  r.setProperty('--mp-surf',  c.surf);
-  r.setProperty('--mp-panel', c.panel);
-  r.setProperty('--mp-accent',c.accent);
-  r.setProperty('--mp-text',  c.text);
-  r.setProperty('--mp-dark',  c.dark);
-  r.setProperty('--mp-muted', c.muted);
-})();
-
-/* Source badge */
-(function setupBadge() {
-  const lbl = document.getElementById('mp-src-label');
-  const ico = document.getElementById('mp-src-icon');
-  if (CONFIG.source === 'youtube') {
-    lbl.textContent = 'YouTube';
-    ico.innerHTML = '<path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/>';
-  } else {
-    lbl.textContent = 'SoundCloud';
-    ico.innerHTML = '<path d="M1.175 12.225c-.017.15.025.3.136.4.11.1.256.15.4.13l.99-.14.163.99c.02.1.097.18.196.195.1.02.197-.04.247-.128l.503-.95.502.95c.05.09.147.148.246.128.1-.016.177-.095.197-.195l.162-.988.99.14c.145.02.29-.03.4-.13.112-.101.154-.253.137-.402L6.1 11.28c0-1.81-1.463-3.28-3.27-3.28C1.024 8 0 9.064 0 10.378c0 .82.409 1.551 1.027 2.003l.148-.156zM22 11.5c0-2.485-2.015-4.5-4.5-4.5a4.48 4.48 0 0 0-1.792.373C15.153 5.782 13.386 4.5 11.5 4.5A6.5 6.5 0 0 0 5.077 10.05c-.276-.064-.563-.098-.86-.098C2.346 9.95.92 11.376.92 13.149c0 1.773 1.426 3.21 3.196 3.21H21.5a.5.5 0 0 0 .5-.5V11.5z"/>';
-  }
-})();
 
 /* ── Helpers ── */
 const $ = id => document.getElementById(id);
@@ -498,74 +455,8 @@ function showOverlay(show) {
   $('mp-overlay').classList.toggle('show', show);
 }
 
-function startTick() {
-  clearInterval(tickId);
-  tickId = setInterval(() => {
-    if (!ytPlayer) return;
-    try {
-      const cur = ytPlayer.getCurrentTime();
-      const dur = ytPlayer.getDuration();
-      if (dur > 0) {
-        $('mp-prog-fill').style.width = (cur / dur * 100) + '%';
-        $('mp-time-cur').textContent = fmt(cur);
-        $('mp-time-tot').textContent = fmt(dur);
-      }
-    } catch(_) {}
-  }, 1000);
-}
-
 /* ══════════════════════════════════════════
-   YOUTUBE
-══════════════════════════════════════════ */
-function initYouTube() {
-  const s = document.createElement('script');
-  s.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(s);
-}
-
-window.onYouTubeIframeAPIReady = function() {
-  ytPlayer = new YT.Player('yt-player', {
-    height: '1', width: '1',
-    playerVars: {
-      listType:        'playlist',
-      list:            CONFIG.youtubeId,
-      autoplay:        1,
-      controls:        0,
-      fs:              0,
-      iv_load_policy:  3,
-      rel:             0,
-      origin:          location.origin
-    },
-    events: {
-      onReady(e) {
-        e.target.setVolume(volume);
-        setVolUI(volume);
-        try { e.target.playVideo(); } catch(_) { showOverlay(true); }
-      },
-      onStateChange(e) {
-        const S = YT.PlayerState;
-        if (e.data === S.PLAYING) {
-          setPlaying(true);
-          showOverlay(false);
-          startTick();
-          setTimeout(() => {
-            const d = ytPlayer.getVideoData();
-            if (d) setSong(d.title, d.author);
-          }, 500);
-        } else if (e.data === S.PAUSED || e.data === S.ENDED) {
-          setPlaying(false);
-          clearInterval(tickId);
-        }
-      },
-      onError() {
-        setSong('Could not load playlist', 'Check youtubeId in CONFIG');
-      }
-    }
-  });
-};
-
-/* ══════════════════════════════════════════
-   SOUNDCLOUD
+   SOUNDCLOUD INIT
 ══════════════════════════════════════════ */
 function initSoundCloud() {
   const iframe = $('sc-iframe');
@@ -580,23 +471,46 @@ function initSoundCloud() {
   s.onload = () => {
     scWidget = SC.Widget(iframe);
     scWidget.bind(SC.Widget.Events.READY, () => {
-      scWidget.setVolume(volume);
+      /* Apply saved volume & mute state immediately */
+      const effectiveVol = isMuted ? 0 : volume;
+      scWidget.setVolume(effectiveVol);
       setVolUI(volume);
-      try { scWidget.play(); } catch(_) { showOverlay(true); }
+      if (isMuted) {
+        $('mp-mute-btn').classList.add('muted');
+        setVolIcon(0);
+      }
+      /* Attempt autoplay */
+      try {
+        scWidget.play();
+      } catch(_) {
+        showOverlay(true);
+        $('mp-live-text').textContent = 'Idle';
+      }
     });
+
     scWidget.bind(SC.Widget.Events.PLAY, () => {
-      setPlaying(true); showOverlay(false);
-      scWidget.getCurrentSound(s => { if (s) setSong(s.title, s.user && s.user.username); });
+      setPlaying(true);
+      showOverlay(false);
+      scWidget.getCurrentSound(s => {
+        if (s) setSong(s.title, s.user && s.user.username);
+      });
     });
+
     scWidget.bind(SC.Widget.Events.PAUSE,  () => setPlaying(false));
     scWidget.bind(SC.Widget.Events.FINISH, () => setPlaying(false));
+
     scWidget.bind(SC.Widget.Events.PLAY_PROGRESS, d => {
       const pos = d.currentPosition, dur = d.duration;
       if (dur > 0) {
         $('mp-prog-fill').style.width = (pos / dur * 100) + '%';
-        $('mp-time-cur').textContent = fmt(pos / 1000);
-        $('mp-time-tot').textContent = fmt(dur / 1000);
+        $('mp-time-cur').textContent  = fmt(pos / 1000);
+        $('mp-time-tot').textContent  = fmt(dur / 1000);
       }
+    });
+
+    scWidget.bind(SC.Widget.Events.ERROR, () => {
+      setSong('Could not load playlist', 'Check soundcloudUrl in CONFIG');
+      $('mp-live-text').textContent = 'Error';
     });
   };
   document.head.appendChild(s);
@@ -606,21 +520,16 @@ function initSoundCloud() {
    CONTROLS
 ══════════════════════════════════════════ */
 function togglePlay() {
-  if (CONFIG.source === 'youtube' && ytPlayer) {
-    isPlaying ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
-  } else if (CONFIG.source === 'soundcloud' && scWidget) {
-    scWidget.toggle();
-  }
+  if (!scWidget) return;
+  scWidget.toggle();
 }
 
 function nextTrack() {
-  if (CONFIG.source === 'youtube' && ytPlayer) ytPlayer.nextVideo();
-  else if (CONFIG.source === 'soundcloud' && scWidget) scWidget.next();
+  if (scWidget) scWidget.next();
 }
 
 function prevTrack() {
-  if (CONFIG.source === 'youtube' && ytPlayer) ytPlayer.previousVideo();
-  else if (CONFIG.source === 'soundcloud' && scWidget) scWidget.prev();
+  if (scWidget) scWidget.prev();
 }
 
 function onVolInput(val) {
@@ -628,13 +537,9 @@ function onVolInput(val) {
   if (isMuted && volume > 0) {
     isMuted = false;
     $('mp-mute-btn').classList.remove('muted');
+    try { localStorage.setItem('mp_muted', 'false'); } catch(_) {}
   }
-  if (CONFIG.source === 'youtube' && ytPlayer) {
-    ytPlayer.unMute();
-    ytPlayer.setVolume(volume);
-  } else if (CONFIG.source === 'soundcloud' && scWidget) {
-    scWidget.setVolume(volume);
-  }
+  if (scWidget) scWidget.setVolume(volume);
   setVolUI(volume);
   try { localStorage.setItem('mp_volume', volume); } catch(_) {}
 }
@@ -642,24 +547,19 @@ function onVolInput(val) {
 function toggleMute() {
   isMuted = !isMuted;
   $('mp-mute-btn').classList.toggle('muted', isMuted);
-  if (CONFIG.source === 'youtube' && ytPlayer) {
-    isMuted ? ytPlayer.mute() : ytPlayer.unMute();
-  } else if (CONFIG.source === 'soundcloud' && scWidget) {
-    scWidget.setVolume(isMuted ? 0 : volume);
-  }
+  if (scWidget) scWidget.setVolume(isMuted ? 0 : volume);
   setVolIcon(isMuted ? 0 : volume);
+  try { localStorage.setItem('mp_muted', isMuted); } catch(_) {}
 }
 
 function startPlayback() {
   showOverlay(false);
-  if (CONFIG.source === 'youtube' && ytPlayer) ytPlayer.playVideo();
-  else if (CONFIG.source === 'soundcloud' && scWidget) scWidget.play();
+  if (scWidget) scWidget.play();
 }
 
-/* ── Init ── */
+/* ── Boot ── */
 setVolUI(volume);
-if (CONFIG.source === 'youtube')      initYouTube();
-else if (CONFIG.source === 'soundcloud') initSoundCloud();
+initSoundCloud();
 
 </script>
 </body>
