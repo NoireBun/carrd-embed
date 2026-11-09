@@ -6,7 +6,7 @@
 <title>Draw me something</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --bw: 4px;
@@ -16,6 +16,7 @@
     --gray: #c9c7c7;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html, body { margin: 0; background: transparent; }
   body {
     font-family: "Nunito", ui-rounded, "Varela Round", system-ui, sans-serif;
@@ -49,10 +50,30 @@
   }
   .tbtn[aria-pressed="true"] { background: var(--blue); }
   .tbtn svg { width: 24px; height: 24px; }
+  .tbtn[data-multi="true"] { position: relative; }
+  .tbtn[data-multi="true"]::after {
+    content: ""; position: absolute; right: 2px; bottom: 2px; width: 0; height: 0;
+    border-style: solid; border-width: 0 0 7px 7px; border-color: transparent transparent #000 transparent;
+    pointer-events: none;
+  }
   svg .s { fill: none; stroke: #000; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
-  .layers { display: flex; flex-direction: column; width: calc(var(--btn) * 2 + 6px); }
-  .lrow { display: flex; }
+  .flyout {
+    position: absolute; z-index: 25; display: flex; gap: 6px; padding: 6px;
+    background: #fff; border: var(--bw) solid #000;
+  }
+
+  .layerbox { display: flex; flex-direction: column; gap: 6px; width: calc(var(--btn) * 2 + 6px); }
+  .addlayer {
+    height: 30px; padding: 0; border: var(--bw) solid #000; background: #fff; font-size: 14px;
+  }
+  .addlayer:disabled { opacity: 0.35; cursor: default; }
+  .layers {
+    display: flex; flex-direction: column; width: 100%;
+    max-height: calc(34px * 3 - var(--bw) * 2);
+    overflow-y: auto; overflow-x: hidden; scrollbar-width: thin;
+  }
+  .lrow { display: flex; flex: none; }
   .lrow + .lrow { margin-top: calc(var(--bw) * -1); }
   .eye {
     width: 38px; height: 34px; padding: 0; flex: none;
@@ -69,6 +90,28 @@
     font-size: 18px; line-height: 1;
   }
   .lbtn[aria-pressed="true"] { background: var(--blue); position: relative; }
+  .lbtn[data-movable="true"], .eye[data-movable="true"] { cursor: grab; }
+  .lrow.dragging { position: relative; z-index: 2; filter: drop-shadow(3px 3px 0 #000); }
+  .lbtn[data-clip="true"]::before { content: "\21B3"; font-size: 13px; margin-right: 2px; }
+
+  .lmenu {
+    position: absolute; z-index: 30; width: 236px; padding: 12px;
+    background: #fff; border: var(--bw) solid #000; display: grid; gap: 10px; font-size: 0.9rem;
+  }
+  .lm-title { font-size: 1.05rem; }
+  .lm-row { display: grid; grid-template-columns: 62px 1fr auto; gap: 8px; align-items: center; }
+  .lm-row input[type="range"] { width: 100%; min-width: 0; accent-color: #000; }
+  .lm-row select {
+    grid-column: 2 / 4; border: 3px solid #000; background: #fff; font: inherit; font-size: 0.9rem; padding: 4px 6px;
+  }
+  .lm-check { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+  .lm-check input { width: 18px; height: 18px; accent-color: #000; margin: 0; }
+  .lm-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .lm-btns button { border: 3px solid #000; background: #fff; padding: 6px 8px; font-size: 0.85rem; }
+  .lm-btns button:disabled { opacity: 0.35; cursor: default; }
+  .lm-btns .wide { grid-column: 1 / -1; }
+  #lm-sel { background: var(--blue); }
+  #lm-del.armed { background: var(--red); color: #fff; }
 
   .colors { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: calc(var(--btn) * 2 + 6px); }
   .swatch {
@@ -102,8 +145,22 @@
   .paper canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .paper canvas#overlay { pointer-events: auto; touch-action: none; cursor: crosshair; }
 
+  #textedit {
+    position: absolute; z-index: 4; min-width: 24px; min-height: 1.2em; margin: 0; padding: 0;
+    white-space: pre; outline: 2px dashed #3a56d4; outline-offset: 2px;
+    background: rgba(120, 120, 120, 0.12); font-weight: 400; cursor: text;
+  }
+
+  .textbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .textbar select, .textbar input {
+    border: 3px solid #000; background: #fff; font: inherit; font-size: 0.9rem; padding: 5px 8px; height: 36px;
+  }
+  .textbar input { width: 70px; }
+  .textbar button { border: 3px solid #000; background: #fff; padding: 0 12px; height: 36px; font-size: 0.9rem; }
+  .textbar button[aria-pressed="true"] { background: var(--blue); }
+  #tx-done { background: var(--blue); }
+
   .selbar { position: absolute; z-index: 6; display: flex; background: #fff; border: var(--bw) solid #000; }
-  .selbar[hidden] { display: none; }
   .sbtn { width: 38px; height: 38px; padding: 0; border: 0; background: #fff; display: grid; place-items: center; }
   .sbtn + .sbtn { border-left: 3px solid #000; }
   .sbtn[aria-pressed="true"] { background: var(--blue); }
@@ -115,14 +172,12 @@
   .recent-list { display: flex; gap: 8px; flex-wrap: wrap; }
   .recent .swatch { width: 28px; height: 28px; aspect-ratio: auto; flex: none; border-width: 3px; }
   .recent .hint { font-size: 0.85rem; color: #aaa; }
-  .recent .hint[hidden] { display: none; }
 
   .confirm {
     position: absolute; inset: 0; z-index: 5;
     display: grid; place-items: center; padding: 12px;
     background: rgba(255, 255, 255, 0.6);
   }
-  .confirm[hidden] { display: none; }
   .confirm-card {
     background: #fff; border: var(--bw) solid #000; padding: 16px 18px;
     max-width: 320px; text-align: center; display: grid; gap: 10px;
@@ -140,7 +195,6 @@
     background: #fff; border: var(--bw) solid #000; padding: 12px;
     display: grid; gap: 12px;
   }
-  .picker[hidden] { display: none; }
   .sv, .hue {
     position: relative; border: 3px solid #000; touch-action: none; cursor: crosshair; user-select: none;
   }
@@ -206,7 +260,9 @@
     .stage { grid-template-columns: minmax(0, 1fr) 40px; gap: 10px; }
     .panel { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px; }
     .tools { grid-template-columns: repeat(4, var(--btn)); }
-    .layers { flex-direction: row; width: auto; }
+    .layerbox { flex-direction: row; width: auto; align-items: center; max-width: 100%; }
+    .addlayer { width: 64px; height: 34px; flex: none; }
+    .layers { flex-direction: row; width: auto; max-width: 210px; max-height: none; overflow-x: auto; overflow-y: hidden; }
     .lrow + .lrow { margin-top: 0; margin-left: calc(var(--bw) * -1); }
     .lbtn { flex: none; width: 46px; }
     .colors { display: flex; flex-wrap: wrap; justify-content: center; width: auto; max-width: 320px; }
@@ -227,46 +283,20 @@
 
     <div class="panel" role="toolbar" aria-label="Drawing tools">
       <div class="tools">
-        <button class="tbtn" id="t-pencil" aria-pressed="true" aria-label="Pencil" title="Pencil (P)">
-          <svg viewBox="0 0 24 24"><path class="s" d="M4 20l1.2-4.8L16.5 3.9a1.6 1.6 0 0 1 2.3 0l1.3 1.3a1.6 1.6 0 0 1 0 2.3L8.8 18.8z"/><path class="s" d="M14.5 6l3.5 3.5"/></svg>
-        </button>
-        <button class="tbtn" id="t-eraser" aria-pressed="false" aria-label="Eraser" title="Eraser (E)">
-          <svg viewBox="0 0 24 24"><path class="s" d="M4.5 14.5l8-8a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8L12 18.9H8.2z"/><path class="s" d="M9.5 9.5l5 5M13 20h7"/></svg>
-        </button>
-        <button class="tbtn" id="t-bucket" aria-pressed="false" aria-label="Paint bucket" title="Paint bucket (B)">
-          <svg viewBox="0 0 24 24"><path class="s" d="M5 11l7-7 7 7-6.5 6.5a2 2 0 0 1-2.8 0z"/><path class="s" d="M5 11h14"/><path d="M20 14.5c1 1.6 1.6 2.5 1.6 3.3a1.6 1.6 0 0 1-3.2 0c0-.8.6-1.7 1.6-3.3z" fill="#000"/></svg>
-        </button>
-        <button class="tbtn" id="t-lasso" aria-pressed="false" aria-label="Lasso" title="Lasso (L)">
-          <svg viewBox="0 0 24 24"><path class="s" stroke-dasharray="3 2.5" d="M12 4c-4.5 0-8 2-8 5s3.5 5 8 5 8-2 8-5-3.5-5-8-5z"/><path class="s" d="M9.5 14c-.6 2 .1 3.8 2.1 4.6 1.2.5 2.3.2 2.8-.8"/></svg>
-        </button>
+        <button class="tbtn" id="t-pencil" aria-pressed="true" aria-label="Pencil" title="Pencil (P)"></button>
+        <button class="tbtn" id="t-eraser" aria-pressed="false" aria-label="Eraser" title="Eraser (E)"></button>
+        <button class="tbtn" id="t-bucket" aria-pressed="false" aria-label="Paint bucket" title="Paint bucket (B)"></button>
+        <button class="tbtn" id="t-lasso" aria-pressed="false" aria-label="Lasso" title="Lasso (L)"></button>
       </div>
 
-      <div class="layers" role="group" aria-label="Layers">
-        <div class="lrow">
-          <button class="eye" data-layer="2" aria-pressed="true" aria-label="Hide layer 2" title="Show / hide layer 2">
-            <svg viewBox="0 0 24 24"><path class="s" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle class="s" cx="12" cy="12" r="3"/><path class="s slash" d="M4 20L20 4"/></svg>
-          </button>
-          <button class="lbtn" data-layer="2" aria-pressed="false" aria-label="Layer 2">2</button>
-        </div>
-        <div class="lrow">
-          <button class="eye" data-layer="1" aria-pressed="true" aria-label="Hide layer 1" title="Show / hide layer 1">
-            <svg viewBox="0 0 24 24"><path class="s" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle class="s" cx="12" cy="12" r="3"/><path class="s slash" d="M4 20L20 4"/></svg>
-          </button>
-          <button class="lbtn" data-layer="1" aria-pressed="true" aria-label="Layer 1">1</button>
-        </div>
-        <div class="lrow">
-          <button class="eye" data-layer="0" aria-pressed="true" aria-label="Hide background layer" title="Show / hide background">
-            <svg viewBox="0 0 24 24"><path class="s" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle class="s" cx="12" cy="12" r="3"/><path class="s slash" d="M4 20L20 4"/></svg>
-          </button>
-          <button class="lbtn" data-layer="0" aria-pressed="false" aria-label="Background layer">BG</button>
-        </div>
+      <div class="layerbox">
+        <button class="addlayer" id="addlayer" title="Add a layer">+ Layer</button>
+        <div class="layers" id="layerlist" role="group" aria-label="Layers"></div>
       </div>
 
       <div class="colors" id="colors" role="group" aria-label="Colors">
         <button class="custom" id="custom" aria-label="Pick any color" aria-haspopup="dialog" title="Pick any color"></button>
-        <button class="tbtn" id="t-picker" aria-pressed="false" aria-label="Eyedropper" title="Eyedropper (I)">
-          <svg viewBox="0 0 24 24"><path class="s" d="M4 20l1-4 9-9 3 3-9 9z"/><path class="s" d="M13.5 6.5l2.3-2.3a1.8 1.8 0 0 1 2.5 0l1.5 1.5a1.8 1.8 0 0 1 0 2.5l-2.3 2.3"/></svg>
-        </button>
+        <button class="tbtn" id="t-picker" aria-pressed="false" aria-label="Eyedropper" title="Eyedropper (I)"></button>
       </div>
     </div>
 
@@ -287,15 +317,14 @@
 
       <div class="frame" id="frame">
         <div class="paper">
-          <canvas id="layer0" width="800" height="500"></canvas>
-          <canvas id="layer1" width="800" height="500"></canvas>
-          <canvas id="layer2" width="800" height="500"></canvas>
+          <canvas id="view" width="800" height="500"></canvas>
           <canvas id="overlay" width="800" height="500" aria-label="Drawing canvas"></canvas>
+          <div id="textedit" contenteditable="plaintext-only" spellcheck="false" role="textbox" aria-label="Text" hidden></div>
 
           <div class="confirm" id="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
             <div class="confirm-card">
               <p class="big" id="confirm-title">Clear the whole drawing?</p>
-              <p class="small">All three layers will be wiped.</p>
+              <p class="small">All layers will be wiped.</p>
               <div class="confirm-row">
                 <button id="confirm-yes">Clear it</button>
                 <button id="confirm-no">Keep drawing</button>
@@ -320,12 +349,21 @@
         </div>
       </div>
 
+      <div class="textbar" id="textbar" role="toolbar" aria-label="Text options" hidden>
+        <select id="tx-font" aria-label="Font"></select>
+        <input type="number" id="tx-size" min="8" max="200" value="32" aria-label="Text size">
+        <button id="tx-bold" aria-pressed="false" title="Bold"><b>B</b></button>
+        <button id="tx-done" title="Place the text (Ctrl+Enter or Esc)">Done</button>
+        <button id="tx-cancel" title="Discard the text">Cancel</button>
+      </div>
+
       <div class="recent" id="recent">
         <div class="recent-main">
           <span class="label">Recent:</span>
           <div class="recent-list" id="recent-list"></div>
           <span class="hint" id="recent-hint">none yet</span>
-        </div>      </div>
+        </div>
+      </div>
     </div>
 
     <div class="sizebar" id="sizebar">
@@ -355,6 +393,36 @@
     <span id="status" role="status" aria-live="polite"></span>
   </div>
 
+  <div class="flyout" id="flyout" role="group" aria-label="Tool variants" hidden></div>
+
+  <div class="lmenu" id="lmenu" role="dialog" aria-label="Layer settings" hidden>
+    <div class="lm-title" id="lm-title"></div>
+    <label class="lm-row">Opacity
+      <input type="range" id="lm-op" min="0" max="100" step="1">
+      <span id="lm-opv"></span>
+    </label>
+    <label class="lm-row" id="lm-blend-row">Mode
+      <select id="lm-blend">
+        <option value="normal">Normal</option>
+        <option value="multiply">Multiply</option>
+        <option value="screen">Screen</option>
+        <option value="add">Add (glow)</option>
+        <option value="overlay">Overlay</option>
+        <option value="softlight">Soft light</option>
+        <option value="darken">Darken</option>
+        <option value="lighten">Lighten</option>
+        <option value="dodge">Color dodge</option>
+      </select>
+    </label>
+    <label class="lm-check" id="lm-clip-row"><input type="checkbox" id="lm-clip"> Clip to layer below</label>
+    <div class="lm-btns">
+      <button id="lm-sel" class="wide">Add to selection</button>
+      <button id="lm-up">&#9650; Up</button>
+      <button id="lm-down">&#9660; Down</button>
+      <button id="lm-del" class="wide">Delete layer</button>
+    </div>
+  </div>
+
   <div class="picker" id="picker" role="dialog" aria-label="Color picker" hidden>
     <div class="sv" id="p-sv" tabindex="0" aria-label="Saturation and brightness">
       <div class="knob" id="p-sv-knob"></div>
@@ -376,7 +444,17 @@ const CONFIG = {
   TURNSTILE_SITEKEY: "0x4AAAAAAF5TO2XC6Tkzn2_m",
   COOLDOWN_SECONDS: 10,
   PALETTE: ["#3a56d4", "#2fb67c", "#e0457b", "#f59e0b", "#22223b", "#ffffff"],
-  DEFAULT_COLOR: "#22223b"
+  DEFAULT_COLOR: "#22223b",
+  MAX_LAYERS: 5,
+  SOUNDS: {
+    VOLUME: { success: 0.8, error: 0.8, typing: 0.15 },
+    FILES: {
+      success: "sounds/success.mp3",
+      error: "sounds/error.mp3",
+      typing: ["sounds/typing.mp3"]
+    },
+    TYPING_SPRITES: []
+  }
 };
 
 const W = 800, H = 500;
@@ -385,11 +463,24 @@ const $ = (id) => document.getElementById(id);
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const layers = [0, 1, 2].map((i) => {
-  const canvas = $("layer" + i);
-  return { canvas, ctx: canvas.getContext("2d", { willReadFrequently: true }) };
-});
-const visible = [true, true, true];
+const BLEND = {
+  normal: "source-over", multiply: "multiply", screen: "screen", add: "lighter",
+  overlay: "overlay", softlight: "soft-light", darken: "darken", lighten: "lighten", dodge: "color-dodge"
+};
+
+function makeLayer(label, bg) {
+  const canvas = document.createElement("canvas");
+  canvas.width = W; canvas.height = H;
+  return {
+    label, bg: !!bg, canvas, ctx: canvas.getContext("2d", { willReadFrequently: true }),
+    visible: true, opacity: 1, blend: "normal", clip: false
+  };
+}
+const layers = [makeLayer("BG", true), makeLayer("1"), makeLayer("2")];
+let activeLayers = [layers[1]];
+
+const view = $("view");
+const vctx = view.getContext("2d");
 const overlay = $("overlay");
 const octx = overlay.getContext("2d");
 
@@ -401,23 +492,59 @@ const merged = document.createElement("canvas");
 merged.width = W; merged.height = H;
 const mctx = merged.getContext("2d", { willReadFrequently: true });
 
-function paintBackground() {
-  const c = layers[0].ctx;
-  c.globalCompositeOperation = "source-over";
-  c.fillStyle = "#ffffff";
-  c.fillRect(0, 0, W, H);
+const clipTmp = document.createElement("canvas");
+clipTmp.width = W; clipTmp.height = H;
+const clipCtx = clipTmp.getContext("2d");
+
+let dirty = true;
+const touch = () => { dirty = true; };
+
+function compose(tc) {
+  tc.globalAlpha = 1;
+  tc.globalCompositeOperation = "source-over";
+  tc.clearRect(0, 0, W, H);
+  for (let k = 0; k < layers.length; k++) {
+    const L = layers[k];
+    if (!L.visible) continue;
+    let src = L.canvas;
+    if (L.clip && k > 0) {
+      const below = layers[k - 1];
+      if (!below.visible) continue;
+      clipCtx.globalCompositeOperation = "source-over";
+      clipCtx.clearRect(0, 0, W, H);
+      clipCtx.drawImage(L.canvas, 0, 0);
+      clipCtx.globalCompositeOperation = "destination-in";
+      clipCtx.drawImage(below.canvas, 0, 0);
+      clipCtx.globalCompositeOperation = "source-over";
+      src = clipTmp;
+    }
+    tc.globalAlpha = L.opacity;
+    tc.globalCompositeOperation = BLEND[L.blend] || "source-over";
+    tc.drawImage(src, 0, 0);
+  }
+  tc.globalAlpha = 1;
+  tc.globalCompositeOperation = "source-over";
 }
+function frame() {
+  if (dirty) { dirty = false; compose(vctx); }
+  requestAnimationFrame(frame);
+}
+["pointerdown", "pointermove", "pointerup", "keydown", "keyup", "input", "change", "click"].forEach((ev) =>
+  document.addEventListener(ev, touch, true)
+);
+
 function wipeAll() {
-  paintBackground();
-  layers[1].ctx.clearRect(0, 0, W, H);
-  layers[2].ctx.clearRect(0, 0, W, H);
+  layers.forEach((L) => {
+    L.ctx.globalCompositeOperation = "source-over";
+    L.ctx.clearRect(0, 0, W, H);
+    if (L.bg) { L.ctx.fillStyle = "#ffffff"; L.ctx.fillRect(0, 0, W, H); }
+  });
+  touch();
 }
 wipeAll();
 
-
 function drawMerged() {
-  mctx.clearRect(0, 0, W, H);
-  layers.forEach((l, i) => { if (visible[i]) mctx.drawImage(l.canvas, 0, 0); });
+  compose(mctx);
 }
 function mergedHasContent() {
   drawMerged();
@@ -427,19 +554,56 @@ function mergedHasContent() {
   }
   return false;
 }
+const topActive = () =>
+  activeLayers.slice().sort((a, b) => layers.indexOf(a) - layers.indexOf(b)).pop();
+
+const ICONS = {
+  pencil: '<path class="s" d="M4 20l1.2-4.8L16.5 3.9a1.6 1.6 0 0 1 2.3 0l1.3 1.3a1.6 1.6 0 0 1 0 2.3L8.8 18.8z"/><path class="s" d="M14.5 6l3.5 3.5"/>',
+  eraser: '<path class="s" d="M4.5 14.5l8-8a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8L12 18.9H8.2z"/><path class="s" d="M9.5 9.5l5 5M13 20h7"/>',
+  bucket: '<path class="s" d="M5 11l7-7 7 7-6.5 6.5a2 2 0 0 1-2.8 0z"/><path class="s" d="M5 11h14"/><path d="M20 14.5c1 1.6 1.6 2.5 1.6 3.3a1.6 1.6 0 0 1-3.2 0c0-.8.6-1.7 1.6-3.3z" fill="#000"/>',
+  bucketIgnore: '<path class="s" style="fill:#000" d="M5 11l7-7 7 7-6.5 6.5a2 2 0 0 1-2.8 0z"/><path class="s" style="stroke:#fff" d="M5 11h14"/><path d="M20 14.5c1 1.6 1.6 2.5 1.6 3.3a1.6 1.6 0 0 1-3.2 0c0-.8.6-1.7 1.6-3.3z" fill="#000"/>',
+  lasso: '<path class="s" stroke-dasharray="3 2.5" d="M12 4c-4.5 0-8 2-8 5s3.5 5 8 5 8-2 8-5-3.5-5-8-5z"/><path class="s" d="M9.5 14c-.6 2 .1 3.8 2.1 4.6 1.2.5 2.3.2 2.8-.8"/>',
+  rect: '<rect class="s" stroke-dasharray="3 2.5" x="4" y="6" width="16" height="12"/>',
+  poly: '<path class="s" stroke-dasharray="3 2.5" d="M5 8l7-4 7 5-3 10H8z"/>',
+  text: '<path class="s" d="M5 6.5V4.5h14v2M12 4.5v15M9 19.5h6"/>',
+  picker: '<path class="s" d="M4 20l1-4 9-9 3 3-9 9z"/><path class="s" d="M13.5 6.5l2.3-2.3a1.8 1.8 0 0 1 2.5 0l1.5 1.5a1.8 1.8 0 0 1 0 2.5l-2.3 2.3"/>'
+};
+const NAMES = {
+  pencil: "Pencil", eraser: "Eraser",
+  bucket: "Paint bucket", bucketIgnore: "Ignore Layers",
+  lasso: "Lasso", rect: "Rectangle select", poly: "Polyline lasso", text: "Text",
+  picker: "Eyedropper"
+};
+const SLOTS = {
+  pencil: ["pencil"],
+  eraser: ["eraser"],
+  bucket: ["bucket", "bucketIgnore"],
+  lasso: ["lasso", "rect", "poly", "text"],
+  picker: ["picker"]
+};
+const SIZED = ["pencil", "eraser"];
+const slotOf = (t) => Object.keys(SLOTS).find((k) => SLOTS[k].includes(t));
+const isSel = (t) => t === "lasso" || t === "rect" || t === "poly";
+const svgOf = (v) => '<svg viewBox="0 0 24 24">' + ICONS[v] + "</svg>";
+const EYE = '<svg viewBox="0 0 24 24"><path class="s" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle class="s" cx="12" cy="12" r="3"/><path class="s slash" d="M4 20L20 4"/></svg>';
 
 let tool = "pencil";
+const variant = { pencil: "pencil", eraser: "eraser", bucket: "bucket", lasso: "lasso", picker: "picker" };
 let color = CONFIG.DEFAULT_COLOR.toLowerCase();
 const sizes = { pencil: 6, eraser: 20 };
 let sizeTool = "pencil";
 const getSize = () => sizes[sizeTool];
-let active = 1;
 let hasInk = false;
 let selection = null;
 let stroke = null;
 let customColor = null;
 let prevTool = "pencil";
 let transform = null;
+let polyDraft = null;
+let suppressClick = false;
+let flySlot = null;
+let textEdit = null;
+const selTool = () => (isSel(variant.lasso) ? variant.lasso : "lasso");
 
 function hexToRgb(h) {
   const n = parseInt(h.slice(1), 16);
@@ -477,68 +641,67 @@ function getMask(pts) {
   for (let i = 0; i < m.length; i++) m[i] = d[i * 4 + 3] > 127 ? 1 : 0;
   return m;
 }
-function maskHasContent(mask) {
-  drawMerged();
-  const d = mctx.getImageData(0, 0, W, H).data;
-  let first = -1;
-  for (let k = 0; k < mask.length; k++) {
-    if (!mask[k]) continue;
-    const i = k * 4;
-    if (first < 0) { first = i; continue; }
-    if (
-      Math.abs(d[i] - d[first]) > 10 || Math.abs(d[i + 1] - d[first + 1]) > 10 ||
-      Math.abs(d[i + 2] - d[first + 2]) > 10 || Math.abs(d[i + 3] - d[first + 3]) > 10
-    ) return true;
-  }
-  return false;
+
+function setVisible(L, v) {
+  L.visible = v;
+  renderLayerList();
+}
+function reveal() {
+  let changed = false;
+  activeLayers.forEach((L) => { if (!L.visible) { L.visible = true; changed = true; } });
+  if (changed) renderLayerList();
 }
 
-const layerNames = ["background", "layer 1", "layer 2"];
-function setVisible(i, v) {
-  visible[i] = v;
-  layers[i].canvas.style.visibility = v ? "visible" : "hidden";
-  const b = document.querySelector('.eye[data-layer="' + i + '"]');
-  b.setAttribute("aria-pressed", v);
-  b.setAttribute("aria-label", (v ? "Hide " : "Show ") + layerNames[i]);
+function onLongPress(el, fn) {
+  let t = null;
+  el.addEventListener("pointerdown", (e) => {
+    suppressClick = false;
+    if (e.pointerType !== "touch") return;
+    t = setTimeout(() => { t = null; suppressClick = true; fn(e); }, 450);
+  });
+  const cancel = () => { if (t) { clearTimeout(t); t = null; } };
+  el.addEventListener("pointerup", cancel);
+  el.addEventListener("pointercancel", cancel);
+  el.addEventListener("pointerleave", cancel);
+  el.addEventListener("click", (e) => {
+    if (suppressClick) {
+      suppressClick = false;
+      e.stopImmediatePropagation();
+      e.preventDefault();
+    }
+  }, true);
 }
-function reveal() { if (!visible[active]) setVisible(active, true); }
-document.querySelectorAll(".eye").forEach((b) =>
-  b.addEventListener("click", () => {
-    const i = +b.dataset.layer;
-    setVisible(i, !visible[i]);
-  })
-);
 
 const undoStack = [], redoStack = [];
-function grab(indices) {
-  return indices.map((i) => ({ i, data: layers[i].ctx.getImageData(0, 0, W, H) }));
+function grab(list) {
+  return list.map((L) => ({ L, data: L.ctx.getImageData(0, 0, W, H) }));
 }
 function restore(entry) {
-  entry.layers.forEach((l) => layers[l.i].ctx.putImageData(l.data, 0, 0));
+  entry.layers.forEach(({ L, data }) => { if (layers.includes(L)) L.ctx.putImageData(data, 0, 0); });
   hasInk = entry.hasInk;
 }
 function refreshHistory() {
   $("undo").disabled = undoStack.length === 0;
   $("redo").disabled = redoStack.length === 0;
 }
-function pushUndo(indices) {
-  undoStack.push({ layers: grab(indices), hasInk });
+function pushUndo(list) {
+  undoStack.push({ layers: grab(list), hasInk });
   if (undoStack.length > MAX_HISTORY) undoStack.shift();
   redoStack.length = 0;
   refreshHistory();
 }
 function undo() {
-  if (stroke || !undoStack.length) return;
+  if (stroke || textEdit || !undoStack.length) return;
   const e = undoStack.pop();
-  redoStack.push({ layers: grab(e.layers.map((l) => l.i)), hasInk });
+  redoStack.push({ layers: grab(e.layers.map((l) => l.L).filter((L) => layers.includes(L))), hasInk });
   restore(e);
   setSelection(null);
   refreshHistory();
 }
 function redo() {
-  if (stroke || !redoStack.length) return;
+  if (stroke || textEdit || !redoStack.length) return;
   const e = redoStack.pop();
-  undoStack.push({ layers: grab(e.layers.map((l) => l.i)), hasInk });
+  undoStack.push({ layers: grab(e.layers.map((l) => l.L).filter((L) => layers.includes(L))), hasInk });
   restore(e);
   setSelection(null);
   refreshHistory();
@@ -546,26 +709,86 @@ function redo() {
 $("undo").addEventListener("click", undo);
 $("redo").addEventListener("click", redo);
 
-const TOOLS = ["pencil", "eraser", "bucket", "lasso", "picker"];
 const DROPPER_CURSOR = (() => {
   const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='white' stroke='black' stroke-width='1.6' stroke-linejoin='round'><path d='M3 21l1-4 9.5-9.5 3 3L7 20z'/><path d='M13.5 7.5l2.2-2.2a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8l-2.2 2.2'/></g></svg>";
   return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") 3 21, crosshair';
 })();
+
+function renderToolButtons() {
+  const cur = slotOf(tool);
+  Object.keys(SLOTS).forEach((slot) => {
+    const b = $("t-" + slot), v = variant[slot];
+    b.innerHTML = svgOf(v);
+    b.setAttribute("aria-label", NAMES[v]);
+    b.title = NAMES[v] + (SLOTS[slot].length > 1 ? " - right click for more" : "");
+    b.setAttribute("aria-pressed", slot === cur);
+    if (SLOTS[slot].length > 1) b.dataset.multi = "true";
+  });
+}
+
 function setTool(t) {
   if (stroke) return;
-  if (t === "picker" && tool === "picker") t = prevTool; 
+  if (t === "picker" && tool === "picker") t = prevTool;
   if (t === "picker") prevTool = tool;
-  if (transform && t !== "lasso") exitTransform();
+  if (transform && !isSel(t)) exitTransform();
+  if (polyDraft && t !== "poly") cancelPoly();
+  if (textEdit && t !== "text") commitText();
   tool = t;
-  if (t === "pencil" || t === "eraser") sizeTool = t;
-  TOOLS.forEach((n) => $("t-" + n).setAttribute("aria-pressed", n === t));
-  $("sizebar").classList.toggle("dim", t === "bucket" || t === "lasso" || t === "picker");
+  variant[slotOf(t)] = t;
+  if (SIZED.includes(t)) sizeTool = t;
+  renderToolButtons();
+  $("sizebar").classList.toggle("dim", !SIZED.includes(t));
   overlay.style.cursor = t === "picker" ? DROPPER_CURSOR : "";
   renderSlider();
 }
-TOOLS.forEach((n) =>
-  $("t-" + n).addEventListener("click", () => setTool(n))
-);
+
+const flyout = $("flyout");
+function closeFlyout() {
+  flyout.hidden = true;
+  flySlot = null;
+}
+function placeBeside(el, anchor) {
+  const a = $("app").getBoundingClientRect();
+  const b = anchor.getBoundingClientRect();
+  const p = document.querySelector(".panel").getBoundingClientRect();
+  const fw = el.offsetWidth, fh = el.offsetHeight;
+  let left, top;
+  if (window.matchMedia("(max-width: 540px)").matches) {
+    left = b.left - a.left; top = b.bottom - a.top + 6;
+  } else {
+    left = p.right - a.left + 6; top = b.top - a.top - 6;
+  }
+  left = Math.max(0, Math.min(left, a.width - fw));
+  top = Math.max(0, Math.min(top, a.height - fh));
+  el.style.left = left + "px";
+  el.style.top = top + "px";
+}
+function openFlyout(slot) {
+  if (SLOTS[slot].length < 2) return;
+  flySlot = slot;
+  flyout.textContent = "";
+  SLOTS[slot].forEach((v) => {
+    const b = document.createElement("button");
+    b.className = "tbtn";
+    b.innerHTML = svgOf(v);
+    b.title = NAMES[v];
+    b.setAttribute("aria-label", NAMES[v]);
+    b.setAttribute("aria-pressed", variant[slot] === v);
+    b.addEventListener("click", () => { closeFlyout(); setTool(v); });
+    flyout.appendChild(b);
+  });
+  flyout.hidden = false;
+  placeBeside(flyout, $("t-" + slot));
+}
+Object.keys(SLOTS).forEach((slot) => {
+  const b = $("t-" + slot);
+  b.addEventListener("click", () => setTool(variant[slot]));
+  b.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    if (SLOTS[slot].length > 1) openFlyout(slot);
+  });
+  if (SLOTS[slot].length > 1) onLongPress(b, () => openFlyout(slot));
+});
 
 function pickColor(p) {
   const x = Math.floor(p.x), y = Math.floor(p.y);
@@ -580,14 +803,196 @@ function pickColor(p) {
   return true;
 }
 
-document.querySelectorAll(".lbtn").forEach((b) =>
-  b.addEventListener("click", () => {
-    active = +b.dataset.layer;
-    document.querySelectorAll(".lbtn").forEach((x) =>
-      x.setAttribute("aria-pressed", x === b)
-    );
-  })
-);
+function renderLayerList() {
+  const list = $("layerlist");
+  const prevScroll = list.scrollTop;
+  list.textContent = "";
+  for (let k = layers.length - 1; k >= 0; k--) {
+    const L = layers[k];
+    const row = document.createElement("div");
+    row.className = "lrow";
+
+    const eye = document.createElement("button");
+    eye.className = "eye";
+    eye.innerHTML = EYE;
+    eye.setAttribute("aria-pressed", L.visible);
+    const nm = L.bg ? "background" : "layer " + L.label;
+    eye.setAttribute("aria-label", (L.visible ? "Hide " : "Show ") + nm);
+    eye.title = "Show / hide " + nm;
+    eye.addEventListener("click", () => setVisible(L, !L.visible));
+
+    const b = document.createElement("button");
+    b.className = "lbtn";
+    b.textContent = L.bg ? "BG" : L.label;
+    b.dataset.clip = L.clip && !L.bg;
+    const on = activeLayers.includes(L);
+    b.setAttribute("aria-pressed", on);
+    b.setAttribute("aria-label", L.bg ? "Background layer" : "Layer " + L.label);
+    b.title = "Click to select, Shift+click to add more, right click for settings";
+    b.addEventListener("click", (e) => layerClick(L, e.shiftKey || e.ctrlKey || e.metaKey));
+    b.addEventListener("contextmenu", (e) => { e.preventDefault(); openLayerMenu(L, b); });
+    onLongPress(b, () => openLayerMenu(L, b));
+    row._layer = L;
+    if (!L.bg) {
+      b.dataset.movable = "true";
+      eye.dataset.movable = "true";
+      row.addEventListener("pointerdown", (ev) => startLayerDrag(ev, row));
+    }
+
+    row.appendChild(eye);
+    row.appendChild(b);
+    list.appendChild(row);
+  }
+  list.scrollTop = prevScroll;
+  $("addlayer").disabled = layers.length - 1 >= CONFIG.MAX_LAYERS;
+}
+function startLayerDrag(e, row) {
+  if (e.button !== 0 || e.pointerType === "touch") return;
+  if (window.matchMedia("(max-width: 540px)").matches) return;
+  const list = $("layerlist");
+  const y0 = e.clientY;
+  let dragging = false;
+  const move = (ev) => {
+    if (!dragging) {
+      if (Math.abs(ev.clientY - y0) < 6) return;
+      dragging = true;
+      row.classList.add("dragging");
+      document.body.style.cursor = "grabbing";
+    }
+    const lr = list.getBoundingClientRect();
+    if (ev.clientY < lr.top + 14) list.scrollTop -= 8;
+    else if (ev.clientY > lr.bottom - 14) list.scrollTop += 8;
+    const rows = [...list.children];
+    const bgRow = rows[rows.length - 1];
+    let before = bgRow;
+    for (const r of rows) {
+      if (r === row || r === bgRow) continue;
+      const b = r.getBoundingClientRect();
+      if (ev.clientY < b.top + b.height / 2) { before = r; break; }
+    }
+    if (row.nextSibling !== before) list.insertBefore(row, before);
+  };
+  const up = () => {
+    document.removeEventListener("pointermove", move);
+    document.removeEventListener("pointerup", up);
+    document.removeEventListener("pointercancel", up);
+    document.body.style.cursor = "";
+    if (!dragging) return;
+    const order = [...list.children].map((r) => r._layer).reverse();
+    layers.splice(0, layers.length, ...order);
+    activeLayers.sort((a, b) => layers.indexOf(a) - layers.indexOf(b));
+    renderLayerList();
+    if (menuLayer) syncMenu();
+  };
+  document.addEventListener("pointermove", move);
+  document.addEventListener("pointerup", up);
+  document.addEventListener("pointercancel", up);
+}
+function layerClick(L, multi) {
+  if (multi) {
+    const k = activeLayers.indexOf(L);
+    if (k >= 0) { if (activeLayers.length > 1) activeLayers.splice(k, 1); }
+    else activeLayers.push(L);
+  } else {
+    activeLayers = [L];
+  }
+  activeLayers.sort((a, b) => layers.indexOf(a) - layers.indexOf(b));
+  renderLayerList();
+  if (menuLayer) syncMenu();
+}
+$("addlayer").addEventListener("click", () => {
+  if (layers.length - 1 >= CONFIG.MAX_LAYERS) return;
+  const used = new Set(layers.map((l) => l.label));
+  let n = 1;
+  while (used.has(String(n))) n++;
+  const L = makeLayer(String(n));
+  const at = Math.max(...activeLayers.map((l) => layers.indexOf(l))) + 1;
+  layers.splice(at, 0, L);
+  activeLayers = [L];
+  renderLayerList();
+  const list = $("layerlist");
+  list.scrollTop = 0;
+  const idx = layers.length - 1 - layers.indexOf(L);
+  const row = list.children[idx];
+  if (row) {
+    const top = row.offsetTop, bottom = top + row.offsetHeight;
+    if (top < list.scrollTop) list.scrollTop = top;
+    else if (bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight;
+  }
+});
+
+const lmenu = $("lmenu");
+let menuLayer = null, delArmed = false;
+function syncMenu() {
+  const L = menuLayer;
+  if (!L) return;
+  const k = layers.indexOf(L);
+  $("lm-title").textContent = L.bg ? "Background" : "Layer " + L.label;
+  $("lm-op").value = Math.round(L.opacity * 100);
+  $("lm-opv").textContent = Math.round(L.opacity * 100) + "%";
+  $("lm-blend").value = L.blend;
+  $("lm-clip").checked = L.clip;
+  ["lm-blend-row", "lm-clip-row", "lm-up", "lm-down", "lm-del"].forEach((id) => { $(id).hidden = L.bg; });
+  $("lm-up").disabled = k >= layers.length - 1;
+  $("lm-down").disabled = k <= 1;
+  $("lm-sel").textContent = activeLayers.includes(L) ? "Remove from selection" : "Add to selection";
+  $("lm-del").textContent = delArmed ? "Click again to delete" : "Delete layer";
+  $("lm-del").classList.toggle("armed", delArmed);
+}
+function openLayerMenu(L, anchor) {
+  menuLayer = L;
+  delArmed = false;
+  lmenu.hidden = false;
+  syncMenu();
+  placeBeside(lmenu, anchor);
+}
+function closeLayerMenu() {
+  lmenu.hidden = true;
+  menuLayer = null;
+  delArmed = false;
+}
+$("lm-op").addEventListener("input", () => {
+  if (!menuLayer) return;
+  menuLayer.opacity = +$("lm-op").value / 100;
+  $("lm-opv").textContent = $("lm-op").value + "%";
+});
+$("lm-blend").addEventListener("change", () => {
+  if (!menuLayer) return;
+  menuLayer.blend = $("lm-blend").value;
+  $("lm-blend").blur();
+});
+$("lm-clip").addEventListener("change", () => {
+  if (!menuLayer) return;
+  menuLayer.clip = $("lm-clip").checked;
+  renderLayerList();
+});
+$("lm-sel").addEventListener("click", () => {
+  if (menuLayer) layerClick(menuLayer, true);
+});
+function moveLayer(dir) {
+  const L = menuLayer;
+  if (!L || L.bg) return;
+  const k = layers.indexOf(L), n = k + dir;
+  if (n < 1 || n > layers.length - 1) return;
+  layers.splice(k, 1);
+  layers.splice(n, 0, L);
+  activeLayers.sort((a, b) => layers.indexOf(a) - layers.indexOf(b));
+  renderLayerList();
+  syncMenu();
+}
+$("lm-up").addEventListener("click", () => moveLayer(1));
+$("lm-down").addEventListener("click", () => moveLayer(-1));
+$("lm-del").addEventListener("click", () => {
+  const L = menuLayer;
+  if (!L || L.bg) return;
+  if (!delArmed) { delArmed = true; syncMenu(); return; }
+  const k = layers.indexOf(L);
+  layers.splice(k, 1);
+  activeLayers = activeLayers.filter((x) => x !== L);
+  if (!activeLayers.length) activeLayers = [layers[Math.min(Math.max(k - 1, 1), layers.length - 1)] || layers[0]];
+  closeLayerMenu();
+  renderLayerList();
+});
 
 let recent = [];
 const recentBox = $("recent-list"), recentHint = $("recent-hint");
@@ -601,7 +1006,7 @@ function renderRecent() {
     b.title = c;
     b.setAttribute("aria-label", "Recent color " + c);
     b.setAttribute("aria-pressed", c === color);
-    b.addEventListener("click", () => setColor(c));
+    b.addEventListener("click", () => applyCustom(c));
     recentBox.appendChild(b);
   });
   recentHint.hidden = recent.length > 0;
@@ -615,7 +1020,7 @@ function noteColor(c) {
 
 function setColor(c) {
   color = c.toLowerCase();
-  if (tool === "eraser") setTool("pencil");
+  if (tool === "eraser") setTool(variant.pencil);
   document.querySelectorAll("#colors .swatch").forEach((s) => {
     const on = s.dataset.color === color;
     s.setAttribute("aria-pressed", on);
@@ -627,6 +1032,7 @@ function setColor(c) {
   if (customColor) custom.style.setProperty("--ring", ringFor(customColor));
   renderRecent();
   renderSlider();
+  if (textEdit) applyTextStyle();
 }
 
 const colorsBox = $("colors");
@@ -716,9 +1122,16 @@ function closePicker() {
 }
 $("custom").addEventListener("click", () => (pickerOpen ? closePicker() : openPicker()));
 $("p-done").addEventListener("click", closePicker);
-window.addEventListener("resize", () => { if (pickerOpen) placePicker(); });
+window.addEventListener("resize", () => {
+  if (pickerOpen) placePicker();
+  closeFlyout();
+  closeLayerMenu();
+  applyTextStyle();
+});
 document.addEventListener("pointerdown", (e) => {
   if (pickerOpen && !picker.contains(e.target) && !$("custom").contains(e.target)) closePicker();
+  if (flySlot && !flyout.contains(e.target)) closeFlyout();
+  if (menuLayer && !lmenu.contains(e.target)) closeLayerMenu();
 });
 
 function dragArea(el, fn) {
@@ -810,17 +1223,44 @@ thumb.addEventListener("keydown", (e) => {
   else if (e.key === "End") { e.preventDefault(); setSize(SIZE_MAX); }
 });
 
-/* ---------- Selection overlay ---------- */
 let antOffset = 0, antsRunning = false;
+function drawDraft() {
+  const d = polyDraft, ds = dispScale();
+  const pts = d.cursor ? d.points.concat([d.cursor]) : d.points;
+  octx.save();
+  octx.lineWidth = 2.5;
+  octx.setLineDash([8, 8]);
+  [["#000", 0], ["#fff", 8]].forEach(([col, off]) => {
+    octx.strokeStyle = col;
+    octx.lineDashOffset = off;
+    octx.beginPath();
+    pts.forEach((q, i) => (i ? octx.lineTo(q.x, q.y) : octx.moveTo(q.x, q.y)));
+    octx.stroke();
+  });
+  octx.setLineDash([]);
+  octx.fillStyle = "#fff";
+  octx.strokeStyle = "#000";
+  octx.lineWidth = 2 * ds;
+  d.points.forEach((q, i) => {
+    octx.beginPath();
+    octx.arc(q.x, q.y, (i === 0 ? 5 : 3) * ds, 0, Math.PI * 2);
+    octx.fill();
+    octx.stroke();
+  });
+  octx.restore();
+}
 function redrawOverlay() {
   octx.clearRect(0, 0, W, H);
-  const pts = stroke && stroke.kind === "lasso" ? stroke.points : selection && selection.points;
+  if (polyDraft) { drawDraft(); return; }
+  const lassoing = stroke && stroke.kind === "lasso";
+  const pts = lassoing ? stroke.points : selection && selection.points;
   if (!pts || pts.length < 2) return;
+  const open = lassoing && stroke.shape === "free";
   const tracePath = () => {
     octx.beginPath();
     octx.moveTo(pts[0].x, pts[0].y);
     for (let i = 1; i < pts.length; i++) octx.lineTo(pts[i].x, pts[i].y);
-    if (!(stroke && stroke.kind === "lasso")) octx.closePath();
+    if (!open) octx.closePath();
   };
   octx.lineWidth = 2.5;
   octx.setLineDash([8, 8]);
@@ -830,7 +1270,7 @@ function redrawOverlay() {
   octx.strokeStyle = "#fff";
   octx.lineDashOffset = -antOffset + 8;
   tracePath(); octx.stroke();
-  if (transform && !(stroke && stroke.kind === "lasso")) drawTfUI();
+  if (transform && !lassoing) drawTfUI();
 }
 function ants() {
   if (!selection) { antsRunning = false; return; }
@@ -859,18 +1299,18 @@ function updatePopup() {
     if (q.x < minx) minx = q.x; if (q.x > maxx) maxx = q.x;
     if (q.y < miny) miny = q.y; if (q.y > maxy) maxy = q.y;
   });
-  const frame = $("frame");
-  const rect = overlay.getBoundingClientRect(), fr = frame.getBoundingClientRect();
+  const frameEl = $("frame");
+  const rect = overlay.getBoundingClientRect(), fr = frameEl.getBoundingClientRect();
   const kx = rect.width / W, ky = rect.height / H;
-  const offX = rect.left - fr.left - frame.clientLeft;
-  const offY = rect.top - fr.top - frame.clientTop;
+  const offX = rect.left - fr.left - frameEl.clientLeft;
+  const offY = rect.top - fr.top - frameEl.clientTop;
   bar.hidden = false;
   const bw = bar.offsetWidth, bh = bar.offsetHeight;
   let left = offX + ((minx + maxx) / 2) * kx - bw / 2;
   let top = offY + miny * ky - bh - (transform ? 46 : 10);
   if (top < 4) top = offY + maxy * ky + (transform ? 24 : 10);
-  top = Math.max(4, Math.min(top, frame.clientHeight - bh - 4));
-  left = Math.max(4, Math.min(left, frame.clientWidth - bw - 4));
+  top = Math.max(4, Math.min(top, frameEl.clientHeight - bh - 4));
+  left = Math.max(4, Math.min(left, frameEl.clientWidth - bw - 4));
   bar.style.left = left + "px";
   bar.style.top = top + "px";
 }
@@ -889,7 +1329,7 @@ function enterTransform() {
   transform = {
     pts0, c0, C: { x: c0.x, y: c0.y },
     w0: Math.max(1, maxx - minx), h0: Math.max(1, maxy - miny),
-    sx: 1, sy: 1, th: 0, cut: false, float: null, base: null
+    sx: 1, sy: 1, th: 0, cut: false, items: null
   };
   redrawOverlay();
   updatePopup();
@@ -918,16 +1358,19 @@ function tfPoint(q) {
   return { x: t.C.x + lx * c - ly * s, y: t.C.y + lx * s + ly * c };
 }
 function applyTransform() {
-  const t = transform, L = layers[active];
-  L.ctx.clearRect(0, 0, W, H);
-  L.ctx.drawImage(t.base, 0, 0);
-  L.ctx.save();
-  L.ctx.translate(t.C.x, t.C.y);
-  L.ctx.rotate(t.th);
-  L.ctx.scale(t.sx, t.sy);
-  L.ctx.translate(-t.c0.x, -t.c0.y);
-  L.ctx.drawImage(t.float, 0, 0);
-  L.ctx.restore();
+  const t = transform;
+  t.items.forEach(({ L, base, float }) => {
+    const c = L.ctx;
+    c.clearRect(0, 0, W, H);
+    c.drawImage(base, 0, 0);
+    c.save();
+    c.translate(t.C.x, t.C.y);
+    c.rotate(t.th);
+    c.scale(t.sx, t.sy);
+    c.translate(-t.c0.x, -t.c0.y);
+    c.drawImage(float, 0, 0);
+    c.restore();
+  });
   selection.points = t.pts0.map(tfPoint);
   redrawOverlay();
 }
@@ -935,7 +1378,7 @@ function beginTf() {
   const t = transform;
   if (t.cut) return;
   reveal();
-  pushUndo([active]);
+  pushUndo(activeLayers);
   cutSelection(t);
   t.cut = true;
 }
@@ -1002,8 +1445,8 @@ function drawTfUI() {
   octx.restore();
 }
 
-function styleStroke(c) {
-  if (tool === "eraser" && active !== 0) {
+function styleStroke(c, L) {
+  if (tool === "eraser" && !L.bg) {
     c.globalCompositeOperation = "destination-out";
     c.strokeStyle = c.fillStyle = "#000";
   } else {
@@ -1016,44 +1459,53 @@ function styleStroke(c) {
 
 function startDraw(p) {
   reveal();
-  pushUndo([active]);
+  pushUndo(activeLayers);
   if (tool === "pencil") noteColor(color);
-  const c = layers[active].ctx;
-  c.save();
-  if (selection) c.clip(pathFrom(selection.points));
-  styleStroke(c);
-  c.beginPath();
-  c.arc(p.x, p.y, getSize() / 2, 0, Math.PI * 2);
-  c.fill();
-  stroke = { kind: "draw", ctx: c, last: p, mid: p };
+  const items = activeLayers.map((L) => ({ L, c: L.ctx }));
+  items.forEach(({ L, c }) => {
+    c.save();
+    if (selection) c.clip(pathFrom(selection.points));
+    styleStroke(c, L);
+    c.beginPath();
+    c.arc(p.x, p.y, getSize() / 2, 0, Math.PI * 2);
+    c.fill();
+  });
+  stroke = { kind: "draw", items, last: p, mid: p };
 }
 
 function continueDraw(e) {
-  const s = stroke, c = s.ctx;
+  const s = stroke;
   const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [];
   for (const ev of evs.length ? evs : [e]) {
     const p = pos(ev);
     const m = { x: (s.last.x + p.x) / 2, y: (s.last.y + p.y) / 2 };
-    c.beginPath();
-    c.moveTo(s.mid.x, s.mid.y);
-    c.quadraticCurveTo(s.last.x, s.last.y, m.x, m.y);
-    c.stroke();
+    s.items.forEach(({ c }) => {
+      c.beginPath();
+      c.moveTo(s.mid.x, s.mid.y);
+      c.quadraticCurveTo(s.last.x, s.last.y, m.x, m.y);
+      c.stroke();
+    });
     s.last = p; s.mid = m;
   }
 }
 
-function bucketFill(p) {
+function floodMask(p, ignore) {
   const x0 = Math.floor(p.x), y0 = Math.floor(p.y);
-  if (x0 < 0 || y0 < 0 || x0 >= W || y0 >= H) return;
+  if (x0 < 0 || y0 < 0 || x0 >= W || y0 >= H) return null;
   const selMask = selection ? getMask(selection.points) : null;
-  if (selMask && !selMask[y0 * W + x0]) return;
+  if (selMask && !selMask[y0 * W + x0]) return null;
 
-  drawMerged();
+  if (ignore) {
+    mctx.globalAlpha = 1;
+    mctx.globalCompositeOperation = "source-over";
+    mctx.clearRect(0, 0, W, H);
+    activeLayers.forEach((L) => mctx.drawImage(L.canvas, 0, 0));
+  } else {
+    drawMerged();
+  }
   const src = mctx.getImageData(0, 0, W, H).data;
-  const [fr, fg, fb] = hexToRgb(color);
   const i0 = (y0 * W + x0) * 4;
   const tr = src[i0], tg = src[i0 + 1], tb = src[i0 + 2], ta = src[i0 + 3];
-  if (Math.abs(tr - fr) < 6 && Math.abs(tg - fg) < 6 && Math.abs(tb - fb) < 6 && ta > 250) return;
 
   const diff = (i) => Math.max(
     Math.abs(src[i] - tr), Math.abs(src[i + 1] - tg), Math.abs(src[i + 2] - tb), Math.abs(src[i + 3] - ta)
@@ -1096,18 +1548,27 @@ function bucketFill(p) {
       if (near && diff(k * 4) <= 150) grown[k] = 1;
     }
   }
+  return { grown, tr, tg, tb, ta };
+}
+
+function bucketFill(p, ignore) {
+  const r = floodMask(p, ignore);
+  if (!r) return;
+  const [fr, fg, fb] = hexToRgb(color);
+  if (Math.abs(r.tr - fr) < 6 && Math.abs(r.tg - fg) < 6 && Math.abs(r.tb - fb) < 6 && r.ta > 250) return;
 
   reveal();
-  pushUndo([active]);
-  const L = layers[active];
-  const img = L.ctx.getImageData(0, 0, W, H);
-  const d = img.data;
-  for (let k = 0; k < grown.length; k++) {
-    if (!grown[k]) continue;
-    const i = k * 4;
-    d[i] = fr; d[i + 1] = fg; d[i + 2] = fb; d[i + 3] = 255;
-  }
-  L.ctx.putImageData(img, 0, 0);
+  pushUndo(activeLayers);
+  activeLayers.forEach((L) => {
+    const img = L.ctx.getImageData(0, 0, W, H);
+    const d = img.data;
+    for (let k = 0; k < r.grown.length; k++) {
+      if (!r.grown[k]) continue;
+      const j = k * 4;
+      d[j] = fr; d[j + 1] = fg; d[j + 2] = fb; d[j + 3] = 255;
+    }
+    L.ctx.putImageData(img, 0, 0);
+  });
   hasInk = true;
   noteColor(color);
 }
@@ -1116,47 +1577,52 @@ function fillSelection() {
   if (!selection || stroke) return;
   exitTransform();
   reveal();
-  pushUndo([active]);
-  const c = layers[active].ctx;
-  c.save();
-  c.clip(pathFrom(selection.points));
-  c.globalCompositeOperation = "source-over";
-  c.fillStyle = color;
-  c.fillRect(0, 0, W, H);
-  c.restore();
+  pushUndo(activeLayers);
+  activeLayers.forEach((L) => {
+    const c = L.ctx;
+    c.save();
+    c.clip(pathFrom(selection.points));
+    c.globalCompositeOperation = "source-over";
+    c.fillStyle = color;
+    c.fillRect(0, 0, W, H);
+    c.restore();
+  });
   hasInk = true;
   noteColor(color);
 }
 function clearSelection() {
   if (!selection || stroke) return;
   exitTransform();
-  pushUndo([active]);
-  const c = layers[active].ctx;
-  c.save();
-  c.clip(pathFrom(selection.points));
-  if (active === 0) { c.fillStyle = "#fff"; c.fillRect(0, 0, W, H); }
-  else c.clearRect(0, 0, W, H);
-  c.restore();
+  pushUndo(activeLayers);
+  activeLayers.forEach((L) => {
+    const c = L.ctx;
+    c.save();
+    c.clip(pathFrom(selection.points));
+    if (L.bg) { c.fillStyle = "#fff"; c.fillRect(0, 0, W, H); }
+    else c.clearRect(0, 0, W, H);
+    c.restore();
+  });
 }
 
 function cutSelection(s) {
-  const L = layers[active];
   const path = pathFrom(s.pts0);
+  s.items = activeLayers.map((L) => {
+    const float = document.createElement("canvas");
+    float.width = W; float.height = H;
+    const f = float.getContext("2d");
+    f.save(); f.clip(path); f.drawImage(L.canvas, 0, 0); f.restore();
 
-  s.float = document.createElement("canvas");
-  s.float.width = W; s.float.height = H;
-  const f = s.float.getContext("2d");
-  f.save(); f.clip(path); f.drawImage(L.canvas, 0, 0); f.restore();
+    L.ctx.save();
+    L.ctx.clip(path);
+    if (L.bg) { L.ctx.fillStyle = "#fff"; L.ctx.fillRect(0, 0, W, H); }
+    else L.ctx.clearRect(0, 0, W, H);
+    L.ctx.restore();
 
-  L.ctx.save();
-  L.ctx.clip(path);
-  if (active === 0) { L.ctx.fillStyle = "#fff"; L.ctx.fillRect(0, 0, W, H); }
-  else L.ctx.clearRect(0, 0, W, H);
-  L.ctx.restore();
-
-  s.base = document.createElement("canvas");
-  s.base.width = W; s.base.height = H;
-  s.base.getContext("2d").drawImage(L.canvas, 0, 0);
+    const base = document.createElement("canvas");
+    base.width = W; base.height = H;
+    base.getContext("2d").drawImage(L.canvas, 0, 0);
+    return { L, float, base };
+  });
 }
 
 function continueMove(p) {
@@ -1166,24 +1632,156 @@ function continueMove(p) {
     if (Math.hypot(dx, dy) < 3) return;
     s.moved = true;
     reveal();
-    pushUndo([active]);
+    pushUndo(activeLayers);
     cutSelection(s);
   }
-  const L = layers[active];
-  L.ctx.clearRect(0, 0, W, H);
-  L.ctx.drawImage(s.base, 0, 0);
-  L.ctx.drawImage(s.float, dx, dy);
+  s.items.forEach(({ L, base, float }) => {
+    const c = L.ctx;
+    c.clearRect(0, 0, W, H);
+    c.drawImage(base, 0, 0);
+    c.drawImage(float, dx, dy);
+  });
   selection.points = s.pts0.map((q) => ({ x: q.x + dx, y: q.y + dy }));
   redrawOverlay();
 }
 
-function finishLasso() {
-  const pts = stroke.points;
-  stroke = null;
-  if (pts.length < 4 || polyArea(pts) < 40) { setSelection(null); return; }
-  if (!maskHasContent(getMask(pts))) { setSelection(null); return; }
+function commitSelection(pts) {
+  if (pts.length < 3 || polyArea(pts) < 40) {
+    setSelection(null);
+    return;
+  }
   setSelection({ points: pts });
 }
+function finishLasso() {
+  const s = stroke;
+  stroke = null;
+  if (s.shape === "free" && s.points.length < 4) { setSelection(null); return; }
+  commitSelection(s.points);
+}
+function rectPts(a, b) {
+  return [{ x: a.x, y: a.y }, { x: b.x, y: a.y }, { x: b.x, y: b.y }, { x: a.x, y: b.y }];
+}
+
+function finishPoly() {
+  const pts = polyDraft.points;
+  polyDraft = null;
+  redrawOverlay();
+  commitSelection(pts);
+  updatePopup();
+}
+function cancelPoly() {
+  polyDraft = null;
+  redrawOverlay();
+  updatePopup();
+}
+function polyClick(p) {
+  if (!polyDraft) {
+    setSelection(null);
+    polyDraft = { points: [p], cursor: p, t: performance.now() };
+    redrawOverlay();
+    return;
+  }
+  const d = polyDraft, ds = dispScale();
+  const first = d.points[0], last = d.points[d.points.length - 1];
+  const now = performance.now();
+  if (d.points.length >= 3 && Math.hypot(p.x - first.x, p.y - first.y) <= 10 * ds) { finishPoly(); return; }
+  if (now - d.t < 350 && Math.hypot(p.x - last.x, p.y - last.y) <= 6 * ds) {
+    if (d.points.length >= 3) finishPoly();
+    return;
+  }
+  d.points.push(p);
+  d.t = now;
+  d.cursor = p;
+  redrawOverlay();
+}
+function startSelection(p) {
+  if (tool === "poly") { polyClick(p); return; }
+  setSelection(null);
+  stroke = { kind: "lasso", shape: tool === "rect" ? "rect" : "free", start: p, points: tool === "rect" ? rectPts(p, p) : [p] };
+  redrawOverlay();
+}
+
+const FONTS = [
+  ["Nunito", "'Nunito', ui-rounded, sans-serif"],
+  ["Serif", "Georgia, 'Times New Roman', serif"],
+  ["Mono", "'Courier New', monospace"],
+  ["Marker", "'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', cursive"],
+  ["Impact", "Impact, 'Arial Black', sans-serif"]
+];
+const textState = { font: 0, size: 32, bold: false };
+const txEl = $("textedit");
+FONTS.forEach((f, i) => {
+  const o = document.createElement("option");
+  o.value = i; o.textContent = f[0];
+  $("tx-font").appendChild(o);
+});
+function applyTextStyle() {
+  if (!textEdit) return;
+  const r = overlay.getBoundingClientRect(), k = r.width / W;
+  txEl.style.left = textEdit.x * k + "px";
+  txEl.style.top = textEdit.y * k + "px";
+  txEl.style.font = (textState.bold ? 700 : 400) + " " + textState.size * k + "px/1.2 " + FONTS[textState.font][1];
+  txEl.style.color = color;
+}
+function startText(p) {
+  if (textEdit) commitText();
+  textEdit = { x: p.x, y: p.y, layer: topActive() };
+  txEl.textContent = "";
+  txEl.hidden = false;
+  $("textbar").hidden = false;
+  applyTextStyle();
+  setTimeout(() => txEl.focus(), 0);
+}
+function endTextUI() {
+  textEdit = null;
+  txEl.hidden = true;
+  txEl.textContent = "";
+  $("textbar").hidden = true;
+}
+function commitText() {
+  if (!textEdit) return;
+  const t = textEdit;
+  const txt = txEl.innerText.replace(/ /g, " ").replace(/\n+$/, "");
+  endTextUI();
+  if (!txt.trim()) return;
+  const L = layers.includes(t.layer) ? t.layer : topActive();
+  if (!L.visible) setVisible(L, true);
+  pushUndo([L]);
+  const c = L.ctx, size = textState.size;
+  c.save();
+  if (selection) c.clip(pathFrom(selection.points));
+  c.globalCompositeOperation = "source-over";
+  c.globalAlpha = 1;
+  c.fillStyle = color;
+  c.font = (textState.bold ? 700 : 400) + " " + size + "px " + FONTS[textState.font][1];
+  c.textBaseline = "middle";
+  c.textAlign = "left";
+  txt.split("\n").forEach((ln, i) => c.fillText(ln, t.x, t.y + (i + 0.5) * size * 1.2));
+  c.restore();
+  hasInk = true;
+  noteColor(color);
+}
+$("tx-font").addEventListener("change", () => {
+  textState.font = +$("tx-font").value;
+  applyTextStyle();
+  txEl.focus();
+});
+$("tx-size").addEventListener("input", () => {
+  const v = Math.max(8, Math.min(200, +$("tx-size").value || 32));
+  textState.size = v;
+  applyTextStyle();
+});
+$("tx-bold").addEventListener("click", () => {
+  textState.bold = !textState.bold;
+  $("tx-bold").setAttribute("aria-pressed", textState.bold);
+  applyTextStyle();
+  txEl.focus();
+});
+$("tx-done").addEventListener("click", commitText);
+$("tx-cancel").addEventListener("click", endTextUI);
+txEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); commitText(); }
+});
 
 overlay.addEventListener("pointerdown", (e) => {
   if (!$("confirm").hidden) return;
@@ -1196,52 +1794,70 @@ overlay.addEventListener("pointerdown", (e) => {
   e.preventDefault();
   const ae = document.activeElement;
   if (ae && ae !== document.body && ae.blur) ae.blur();
+  if (textEdit) { commitText(); return; }
   overlay.setPointerCapture(e.pointerId);
   const p = pos(e);
 
   if (tool === "pencil" || tool === "eraser") {
     startDraw(p);
   } else if (tool === "bucket") {
-    bucketFill(p);
+    bucketFill(p, false);
+  } else if (tool === "bucketIgnore") {
+    bucketFill(p, true);
+  } else if (tool === "text") {
+    startText(p);
   } else if (tool === "picker") {
-    if (pickColor(p)) setTool(prevTool === "eraser" ? "pencil" : prevTool);
-  } else if (tool === "lasso") {
-    const inside = selection && sctx.isPointInPath(pathFrom(selection.points), p.x, p.y);
-    if (transform) {
-      const h = hitHandle(p);
-      if (h || inside) {
-        beginTf();
-        stroke = {
-          kind: "tf", mode: h ? h.mode : "move", hx: h ? h.hx : 0, hy: h ? h.hy : 0,
-          start: p, C: { x: transform.C.x, y: transform.C.y }, sx: transform.sx, sy: transform.sy
-        };
-      } else {
-        exitTransform();
-        setSelection(null);
-        stroke = { kind: "lasso", points: [p] };
-        redrawOverlay();
-      }
-    } else if (inside) {
-      stroke = { kind: "move", start: p, moved: false, pts0: selection.points.map((q) => ({ x: q.x, y: q.y })) };
+    if (pickColor(p)) setTool(prevTool === "eraser" ? variant.pencil : prevTool);
+  } else if (isSel(tool)) {
+    if (tool === "poly" && polyDraft) {
+      polyClick(p);
     } else {
-      setSelection(null);
-      stroke = { kind: "lasso", points: [p] };
-      redrawOverlay();
+      const inside = selection && sctx.isPointInPath(pathFrom(selection.points), p.x, p.y);
+      if (transform) {
+        const h = hitHandle(p);
+        if (h || inside) {
+          beginTf();
+          stroke = {
+            kind: "tf", mode: h ? h.mode : "move", hx: h ? h.hx : 0, hy: h ? h.hy : 0,
+            start: p, C: { x: transform.C.x, y: transform.C.y }, sx: transform.sx, sy: transform.sy
+          };
+        } else {
+          exitTransform();
+          setSelection(null);
+          startSelection(p);
+        }
+      } else if (inside) {
+        stroke = { kind: "move", start: p, moved: false, pts0: selection.points.map((q) => ({ x: q.x, y: q.y })), items: null };
+      } else {
+        startSelection(p);
+      }
     }
   }
   updatePopup();
 });
 
 overlay.addEventListener("pointermove", (e) => {
-  if (!stroke) return;
+  if (!stroke) {
+    if (polyDraft && tool === "poly") {
+      polyDraft.cursor = pos(e);
+      redrawOverlay();
+    }
+    return;
+  }
   if (stroke.kind === "draw") continueDraw(e);
   else if (stroke.kind === "move") continueMove(pos(e));
   else if (stroke.kind === "tf") continueTf(e);
   else if (stroke.kind === "lasso") {
-    const p = pos(e), last = stroke.points[stroke.points.length - 1];
-    if (Math.hypot(p.x - last.x, p.y - last.y) > 1.5) {
-      stroke.points.push(p);
+    const p = pos(e);
+    if (stroke.shape === "rect") {
+      stroke.points = rectPts(stroke.start, p);
       redrawOverlay();
+    } else {
+      const last = stroke.points[stroke.points.length - 1];
+      if (Math.hypot(p.x - last.x, p.y - last.y) > 1.5) {
+        stroke.points.push(p);
+        redrawOverlay();
+      }
     }
   }
 });
@@ -1250,11 +1866,13 @@ function endGesture() {
   if (!stroke) return;
   if (stroke.kind === "draw") {
     const s = stroke;
-    s.ctx.beginPath();
-    s.ctx.moveTo(s.mid.x, s.mid.y);
-    s.ctx.lineTo(s.last.x, s.last.y);
-    s.ctx.stroke();
-    s.ctx.restore();
+    s.items.forEach(({ c }) => {
+      c.beginPath();
+      c.moveTo(s.mid.x, s.mid.y);
+      c.lineTo(s.last.x, s.last.y);
+      c.stroke();
+      c.restore();
+    });
     if (tool === "pencil") hasInk = true;
     stroke = null;
   } else if (stroke.kind === "move") {
@@ -1276,10 +1894,10 @@ function closeConfirm(refocus) {
   $("confirm").hidden = true;
   if (refocus) $("clear").focus();
 }
-$("clear").addEventListener("click", openConfirm);
+$("clear").addEventListener("click", () => { if (textEdit) commitText(); openConfirm(); });
 $("confirm-no").addEventListener("click", (e) => closeConfirm(e.detail === 0));
 $("confirm-yes").addEventListener("click", (e) => {
-  pushUndo([0, 1, 2]);
+  pushUndo(layers.slice());
   wipeAll();
   hasInk = false;
   setSelection(null);
@@ -1288,7 +1906,7 @@ $("confirm-yes").addEventListener("click", (e) => {
 
 document.addEventListener("click", (e) => {
   if (e.detail > 0) {
-    const b = e.target.closest && e.target.closest("button");
+    const b = e.target.closest && e.target.closest("button, input[type=range], input[type=checkbox]");
     if (b) b.blur();
   }
 });
@@ -1296,13 +1914,17 @@ document.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     if (!$("confirm").hidden) closeConfirm(true);
+    else if (textEdit) commitText();
+    else if (flySlot) closeFlyout();
+    else if (menuLayer) closeLayerMenu();
     else if (pickerOpen) closePicker();
+    else if (polyDraft) cancelPoly();
     else if (transform) exitTransform();
     else if (selection) setSelection(null);
     return;
   }
   const t = e.target;
-  if (t && (t.tagName === "TEXTAREA" || (t.tagName === "INPUT" && t.type === "text"))) return;
+  if (t && (t.isContentEditable || ["TEXTAREA", "INPUT", "SELECT"].includes(t.tagName))) return;
   if (!$("confirm").hidden) return;
 
   const k = e.key.toLowerCase();
@@ -1315,39 +1937,165 @@ document.addEventListener("keydown", (e) => {
 
   if (k === "tab") {
     const ae = document.activeElement;
-    if ((tool === "pencil" || tool === "eraser") && (!ae || ae === document.body)) {
+    if (SIZED.includes(tool) && (!ae || ae === document.body)) {
       e.preventDefault();
-      setTool(tool === "pencil" ? "eraser" : "pencil");
+      setTool(tool === "eraser" ? variant.pencil : "eraser");
     }
     return;
   }
   if (e.repeat) return;
 
   switch (k) {
-    case "p": setTool("pencil"); break;
+    case "p": setTool(variant.pencil); break;
     case "e": setTool("eraser"); break;
-    case "b": setTool("bucket"); break;
-    case "l": setTool("lasso"); break;
+    case "b": setTool(variant.bucket); break;
+    case "l": setTool(variant.lasso); break;
     case "i": setTool("picker"); break;
-    case "enter": if (transform) { e.preventDefault(); exitTransform(); } break;
+    case "enter":
+      if (polyDraft) {
+        e.preventDefault();
+        if (polyDraft.points.length >= 3) finishPoly(); else cancelPoly();
+      } else if (transform) { e.preventDefault(); exitTransform(); }
+      break;
     case "f": if (selection) { e.preventDefault(); fillSelection(); } break;
     case "backspace":
-    case "delete": if (selection) { e.preventDefault(); clearSelection(); } break;
+    case "delete":
+      if (polyDraft) {
+        e.preventDefault();
+        polyDraft.points.pop();
+        if (!polyDraft.points.length) cancelPoly(); else redrawOverlay();
+      } else if (selection) { e.preventDefault(); clearSelection(); }
+      break;
   }
 });
 
+const SND = CONFIG.SOUNDS;
+let actx = null;
+const bufs = {};
+let lastTypeAt = 0, lastSprite = -1;
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+function getAudio() {
+  if (!actx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    actx = new AC();
+  }
+  if (actx.state === "suspended") actx.resume();
+  return actx;
+}
+function getBuf(url) {
+  if (!url) return null;
+  const b = bufs[url];
+  if (b === undefined) {
+    bufs[url] = null;
+    const ctx = getAudio();
+    if (!ctx) return null;
+    fetch(url)
+      .then((r) => { if (!r.ok) throw new Error("missing"); return r.arrayBuffer(); })
+      .then((a) => ctx.decodeAudioData(a))
+      .then((buf) => { bufs[url] = buf; })
+      .catch(() => { bufs[url] = false; });
+    return null;
+  }
+  return b || null;
+}
+function warmSounds() {
+  getAudio();
+  getBuf(SND.FILES.success);
+  getBuf(SND.FILES.error);
+  SND.FILES.typing.forEach(getBuf);
+}
+["pointerdown", "keydown"].forEach((ev) => document.addEventListener(ev, warmSounds, { once: true }));
+
+function synthTone(freq, start, dur, type, vol) {
+  const t = actx.currentTime + start;
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002, vol), t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(actx.destination);
+  o.start(t);
+  o.stop(t + dur + 0.02);
+}
+function synthSound(kind, vol) {
+  if (kind === "success") {
+    synthTone(660, 0, 0.18, "sine", vol * 0.5);
+    synthTone(880, 0.12, 0.28, "sine", vol * 0.5);
+    synthTone(1320, 0.24, 0.35, "sine", vol * 0.35);
+  } else if (kind === "error") {
+    synthTone(220, 0, 0.18, "sawtooth", vol * 0.3);
+    synthTone(165, 0.16, 0.32, "sawtooth", vol * 0.3);
+  } else {
+    const len = Math.floor(actx.sampleRate * 0.03);
+    const nb = actx.createBuffer(1, len, actx.sampleRate);
+    const d = nb.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    const src = actx.createBufferSource();
+    src.buffer = nb;
+    const bp = actx.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = 1500 + Math.random() * 3000;
+    bp.Q.value = 1.2;
+    const g = actx.createGain();
+    g.gain.value = vol * (1.2 + Math.random() * 0.8) * 2;
+    src.connect(bp).connect(g).connect(actx.destination);
+    src.start();
+  }
+}
+function playSound(kind, volMul) {
+  const ctx = getAudio();
+  if (!ctx) return;
+  let vol = (SND.VOLUME[kind] || 0) * (volMul || 1);
+  if (vol <= 0) return;
+  const url = kind === "typing" ? pick(SND.FILES.typing) : SND.FILES[kind];
+  const buf = getBuf(url);
+  if (!buf) { synthSound(kind, vol); return; }
+  let offset = 0, dur, rate = 1;
+  if (kind === "typing") {
+    rate = 0.92 + Math.random() * 0.16;
+    vol *= 0.7 + Math.random() * 0.5;
+    if (SND.TYPING_SPRITES.length) {
+      let i;
+      do { i = Math.floor(Math.random() * SND.TYPING_SPRITES.length); }
+      while (SND.TYPING_SPRITES.length > 1 && i === lastSprite);
+      lastSprite = i;
+      offset = SND.TYPING_SPRITES[i][0];
+      dur = SND.TYPING_SPRITES[i][1];
+    }
+  }
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.playbackRate.value = rate;
+  const g = ctx.createGain();
+  g.gain.value = vol;
+  src.connect(g).connect(ctx.destination);
+  if (dur) src.start(0, offset, dur); else src.start(0);
+}
+
 const msg = $("message"), msgbox = $("msgbox");
 let bounce = null;
-msg.addEventListener("input", () => {
+let lastInputAt = 0;
+msg.addEventListener("input", (e) => {
   $("count").textContent = msg.value.length;
+  const it = e.inputType || "";
+  const now = performance.now();
+  if ((it.startsWith("insert") || it.startsWith("delete")) && now - lastTypeAt > 28) {
+    lastTypeAt = now;
+    playSound("typing", it.startsWith("delete") ? 0.7 : 1);
+  }
+  const gap = now - lastInputAt;
+  lastInputAt = now;
   if (reduceMotion || !msgbox.animate) return;
-  const dx = (Math.random() * 2 - 1) * 2.5;
-  const dy = (Math.random() * 2 - 1) * 2;
-  const r = (Math.random() * 2 - 1) * 0.5;
+  const k = Math.min(1, Math.max(0.2, gap / 220));
+  const dx = (Math.random() * 2 - 1) * 2.5 * k;
+  const dy = (Math.random() * 2 - 1) * 2 * k;
+  const r = (Math.random() * 2 - 1) * 0.5 * k;
   if (bounce) bounce.cancel();
   bounce = msgbox.animate(
     [
-      { transform: `translate(${dx}px, ${dy}px) rotate(${r}deg) scale(1.006)` },
+      { transform: `translate(${dx}px, ${dy}px) rotate(${r}deg) scale(${1 + 0.006 * k})` },
       { transform: "translate(0, 0) rotate(0deg) scale(1)" }
     ],
     { duration: 260, easing: "cubic-bezier(.2, 1.8, .4, 1)" }
@@ -1376,6 +2124,10 @@ function setStatus(text, kind) {
   el.textContent = text;
   el.className = kind || "";
 }
+function fail(text) {
+  setStatus(text, "err");
+  playSound("error");
+}
 function cooldownLeft() {
   try {
     const t = +localStorage.getItem("anon-draw-last") || 0;
@@ -1387,13 +2139,14 @@ function markSent() {
 }
 
 $("send").addEventListener("click", async () => {
+  if (textEdit) commitText();
   const message = msg.value.trim();
   const ink = hasInk && mergedHasContent();
-  if (!ink && !message) { setStatus("Draw something or write a message first.", "err"); return; }
+  if (!ink && !message) { fail("Draw something or write a message first."); return; }
   const wait = cooldownLeft();
-  if (wait > 0) { setStatus("Please wait " + wait + "s before sending again.", "err"); return; }
-  if (CONFIG.TURNSTILE_SITEKEY && !turnstileToken) { setStatus("Finish the human check first.", "err"); return; }
-  if (CONFIG.ENDPOINT.includes("YOUR-WORKER")) { setStatus("Set your Worker URL in CONFIG.ENDPOINT first.", "err"); return; }
+  if (wait > 0) { fail("Please wait " + wait + "s before sending again."); return; }
+  if (CONFIG.TURNSTILE_SITEKEY && !turnstileToken) { fail("Finish the human check first."); return; }
+  if (CONFIG.ENDPOINT.includes("YOUR-WORKER")) { fail("Set your Worker URL in CONFIG.ENDPOINT first."); return; }
 
   const btn = $("send");
   btn.disabled = true;
@@ -1402,7 +2155,8 @@ $("send").addEventListener("click", async () => {
   try {
     const form = new FormData();
     form.append("message", message);
-    form.append("website", $("website").value);    if (turnstileToken) form.append("cf-turnstile-response", turnstileToken);
+    form.append("website", $("website").value);
+    if (turnstileToken) form.append("cf-turnstile-response", turnstileToken);
     if (ink) {
       drawMerged();
       mctx.globalCompositeOperation = "destination-over";
@@ -1420,6 +2174,7 @@ $("send").addEventListener("click", async () => {
 
     markSent();
     setStatus("Sent! Thank you.", "ok");
+    playSound("success");
     wipeAll();
     hasInk = false;
     undoStack.length = 0; redoStack.length = 0; refreshHistory();
@@ -1427,7 +2182,7 @@ $("send").addEventListener("click", async () => {
     msg.value = "";
     $("count").textContent = "0";
   } catch (err) {
-    setStatus(err.message || "Could not send. Try again.", "err");
+    fail(err.message || "Could not send. Try again.");
   } finally {
     btn.disabled = false;
     if (window.turnstile && turnstileWidgetId !== null) {
@@ -1439,7 +2194,9 @@ $("send").addEventListener("click", async () => {
 
 setColor(color);
 setTool("pencil");
+renderLayerList();
 refreshHistory();
+frame();
 window.addEventListener("resize", () => { renderSlider(); updatePopup(); });
 
 overlay.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -1449,9 +2206,10 @@ $("s-del").addEventListener("click", clearSelection);
 $("s-tf").addEventListener("click", () => {
   if (!selection) return;
   if (transform) exitTransform();
-  else { if (tool !== "lasso") setTool("lasso"); enterTransform(); }
+  else { if (!isSel(tool)) setTool(selTool()); enterTransform(); }
 });
 $("s-x").addEventListener("click", () => setSelection(null));
 </script>
 </body>
+</html>
 </html>
