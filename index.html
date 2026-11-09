@@ -100,7 +100,6 @@
   #status.ok { color: var(--ok); }
   #status.err { color: var(--err); }
 
-  /* Honeypot: hidden from people, visible to bots */
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   #turnstile-slot { min-height: 0; }
 </style>
@@ -156,17 +155,12 @@
 </div>
 
 <script>
-/* ============ SETTINGS: edit these ============ */
 const CONFIG = {
-  // Your Cloudflare Worker URL (see README)
-  ENDPOINT: "https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev",
-  // Cloudflare Turnstile site key (public). Leave "" to turn the captcha off.
-  TURNSTILE_SITEKEY: "",
-  // Seconds a visitor must wait between sends (browser-side politeness; the Worker enforces the real limit)
+  ENDPOINT: "https://anonsystem.dustycat2006.workers.dev",
+  TURNSTILE_SITEKEY: "0x4AAAAAAF5TO2XC6Tkzn2_m",
   COOLDOWN_SECONDS: 30,
   PALETTE: ["#22223b", "#e0457b", "#f59e0b", "#2fb67c", "#3a56d4", "#8b5cf6", "#8a5a44", "#ffffff"]
 };
-/* ============================================== */
 
 const W = 800, H = 500;
 const canvas = document.getElementById("board");
@@ -189,7 +183,6 @@ paintBackground();
 ctx.lineCap = "round";
 ctx.lineJoin = "round";
 
-/* ---------- Tools UI ---------- */
 function updateSizeDot() {
   const d = Math.max(2, Math.min(size, 32));
   const dot = $("size-dot");
@@ -230,7 +223,6 @@ $("color").addEventListener("input", (e) => setColor(e.target.value));
 $("size").addEventListener("input", (e) => { size = +e.target.value; updateSizeDot(); });
 updateSizeDot();
 
-/* ---------- Undo / clear ---------- */
 function snapshot() {
   undoStack.push({ data: ctx.getImageData(0, 0, W, H), hasInk });
   if (undoStack.length > 25) undoStack.shift();
@@ -247,7 +239,6 @@ $("clear").addEventListener("click", () => {
   hasInk = false;
 });
 
-/* ---------- Drawing ---------- */
 function pos(e) {
   const r = canvas.getBoundingClientRect();
   return { x: ((e.clientX - r.left) * W) / r.width, y: ((e.clientY - r.top) * H) / r.height };
@@ -293,10 +284,8 @@ canvas.addEventListener("pointerup", endStroke);
 canvas.addEventListener("pointercancel", endStroke);
 canvas.addEventListener("pointerleave", endStroke);
 
-/* ---------- Message counter ---------- */
 $("message").addEventListener("input", (e) => { $("count").textContent = e.target.value.length; });
 
-/* ---------- Turnstile (optional) ---------- */
 let turnstileToken = "";
 let turnstileWidgetId = null;
 if (CONFIG.TURNSTILE_SITEKEY) {
@@ -314,7 +303,6 @@ if (CONFIG.TURNSTILE_SITEKEY) {
   document.head.appendChild(s);
 }
 
-/* ---------- Sending ---------- */
 function setStatus(text, kind) {
   const el = $("status");
   el.textContent = text;
@@ -363,7 +351,7 @@ $("send").addEventListener("click", async () => {
   try {
     const form = new FormData();
     form.append("message", message);
-    form.append("website", $("website").value); // honeypot
+    form.append("website", $("website").value);
     if (turnstileToken) form.append("cf-turnstile-response", turnstileToken);
     if (hasInk) {
       const blob = await canvasToBlob();
