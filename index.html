@@ -21,14 +21,14 @@
     font-family: "Nunito", ui-rounded, "Varela Round", system-ui, sans-serif;
     font-weight: 800;
     color: #000;
-    padding: 34px 18px 16px;
+    padding: 18px 18px 16px;
   }
   button { font: inherit; color: inherit; cursor: pointer; }
-  button:focus-visible, .custom:focus-within, .thumb:focus-visible, textarea:focus-visible {
+  button:focus-visible, .thumb:focus-visible, textarea:focus-visible, .sv:focus-visible, .hue:focus-visible, .picker input:focus-visible {
     outline: 3px solid #ff4fa0; outline-offset: 2px;
   }
 
-  .app { max-width: 780px; margin: 0 auto; display: grid; gap: 16px; }
+  .app { position: relative; max-width: 780px; margin: 0 auto; display: grid; gap: 16px; }
 
   .stage {
     display: grid;
@@ -52,11 +52,22 @@
   svg .s { fill: none; stroke: #000; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
   .layers { display: flex; flex-direction: column; width: calc(var(--btn) * 2 + 6px); }
+  .lrow { display: flex; }
+  .lrow + .lrow { margin-top: calc(var(--bw) * -1); }
+  .eye {
+    width: 38px; height: 34px; padding: 0; flex: none;
+    border: var(--bw) solid #000; background: #fff;
+    display: grid; place-items: center;
+  }
+  .eye svg { width: 20px; height: 20px; }
+  .eye .slash { display: none; }
+  .eye[aria-pressed="false"] { background: #e2e0e0; }
+  .eye[aria-pressed="false"] .slash { display: block; }
   .lbtn {
-    height: 34px; background: #fff; border: var(--bw) solid #000; padding: 0;
+    flex: 1; min-width: 0; height: 34px; background: #fff; border: var(--bw) solid #000; padding: 0;
+    margin-left: calc(var(--bw) * -1);
     font-size: 18px; line-height: 1;
   }
-  .lbtn + .lbtn { margin-top: calc(var(--bw) * -1); }
   .lbtn[aria-pressed="true"] { background: var(--blue); position: relative; }
 
   .colors { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: calc(var(--btn) * 2 + 6px); }
@@ -66,33 +77,45 @@
   }
   .swatch[aria-pressed="true"] { box-shadow: inset 0 0 0 3px var(--ring, #fff); }
   .custom {
-    grid-column: 1 / -1; position: relative; height: 38px; margin-top: 4px;
+    width: 100%; position: relative; height: 38px; margin-top: 4px; padding: 0;
     border: var(--bw) solid #000;
     background: linear-gradient(135deg, #ff2a2a, #ffa500 20%, #ffee00 32%, #31e84a 44%, #00f0ff 58%, #1f3bff 72%, #ff00e6 88%);
   }
   .custom[data-active="true"] { box-shadow: inset 0 0 0 3px var(--ring, #fff); }
-  .custom input {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    opacity: 0; cursor: pointer; border: 0; padding: 0;
-  }
+  .colors .tbtn { width: 100%; height: 38px; margin-top: 4px; }
 
-  .frame { position: relative; margin-top: 4px; border: var(--bw) solid #000; background: #fff; }
+  .center { display: grid; gap: 10px; min-width: 0; }
+  .actions { display: flex; align-items: center; justify-content: space-between; }
+  .hist { display: flex; gap: 8px; }
+  .abtn {
+    width: var(--btn); height: var(--btn); padding: 0;
+    border: var(--bw) solid #000; background: #fff;
+    display: grid; place-items: center;
+  }
+  .abtn svg { width: 24px; height: 24px; }
+  .abtn:disabled { opacity: 0.35; cursor: default; }
+  #redo svg { transform: scaleX(-1); }
+  #clear .s { stroke: var(--red); stroke-width: 3.4; }
+
+  .frame { position: relative; border: var(--bw) solid #000; background: #fff; }
   .paper { position: relative; aspect-ratio: 8 / 5; overflow: hidden; }
   .paper canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .paper canvas#overlay { pointer-events: auto; touch-action: none; cursor: crosshair; }
 
-  .corner {
-    position: absolute; top: -30px; width: var(--btn); height: var(--btn);
-    border: var(--bw) solid #000; background: #fff; padding: 0;
-    display: grid; place-items: center;
-  }
-  .corner svg { width: 24px; height: 24px; }
-  .corner:disabled { opacity: 0.35; cursor: default; }
-  #undo { left: -14px; }
-  #redo { left: calc(var(--btn) + 2px); }
-  #redo svg { transform: scaleX(-1); }
-  #clear { right: -14px; }
-  #clear .s { stroke: var(--red); stroke-width: 3.4; }
+  .selbar { position: absolute; z-index: 6; display: flex; background: #fff; border: var(--bw) solid #000; }
+  .selbar[hidden] { display: none; }
+  .sbtn { width: 38px; height: 38px; padding: 0; border: 0; background: #fff; display: grid; place-items: center; }
+  .sbtn + .sbtn { border-left: 3px solid #000; }
+  .sbtn[aria-pressed="true"] { background: var(--blue); }
+  .sbtn svg { width: 22px; height: 22px; }
+
+  .recent { display: flex; align-items: center; justify-content: space-between; gap: 10px 14px; min-height: 34px; flex-wrap: wrap; }
+  .recent-main { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+  .recent .label { font-size: 0.85rem; color: #555; }
+  .recent-list { display: flex; gap: 8px; flex-wrap: wrap; }
+  .recent .swatch { width: 28px; height: 28px; aspect-ratio: auto; flex: none; border-width: 3px; }
+  .recent .hint { font-size: 0.85rem; color: #aaa; }
+  .recent .hint[hidden] { display: none; }
 
   .confirm {
     position: absolute; inset: 0; z-index: 5;
@@ -112,9 +135,39 @@
   #confirm-yes { background: var(--red); color: #fff; }
   #confirm-no { background: var(--blue); }
 
+  .picker {
+    position: absolute; z-index: 20; width: 224px;
+    background: #fff; border: var(--bw) solid #000; padding: 12px;
+    display: grid; gap: 12px;
+  }
+  .picker[hidden] { display: none; }
+  .sv, .hue {
+    position: relative; border: 3px solid #000; touch-action: none; cursor: crosshair; user-select: none;
+  }
+  .sv {
+    height: 150px;
+    background-color: #f00;
+    background-image: linear-gradient(to top, #000, rgba(0,0,0,0)), linear-gradient(to right, #fff, rgba(255,255,255,0));
+  }
+  .hue {
+    height: 22px;
+    background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+  }
+  .knob {
+    position: absolute; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%;
+    border: 3px solid #fff; box-shadow: 0 0 0 2px #000, inset 0 0 0 1px #000; pointer-events: none;
+  }
+  .hue .knob { top: 50%; }
+  .prow { display: flex; gap: 8px; align-items: center; }
+  .prev { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #000; flex: none; }
+  .picker input {
+    width: 100%; min-width: 0; border: 3px solid #000; padding: 6px 8px; font: inherit; font-size: 0.95rem; background: #fff;
+  }
+  .pdone { border: 3px solid #000; background: var(--blue); padding: 6px 12px; flex: none; }
+
   .sizebar { align-self: stretch; display: flex; justify-content: center; }
   .track {
-    position: relative; width: 6px; background: #000; margin: 44px 0 30px; touch-action: none; cursor: pointer;
+    position: relative; width: 6px; background: #000; margin: 52px 0 46px; touch-action: none; cursor: pointer;
   }
   .sizebar.dim .track { opacity: 0.45; }
   .thumb {
@@ -149,19 +202,18 @@
   #status.err { background: #ffb8b8; }
 
   @media (max-width: 540px) {
-    body { padding: 30px 10px 12px; }
+    body { padding: 12px 10px 12px; }
     .stage { grid-template-columns: minmax(0, 1fr) 40px; gap: 10px; }
     .panel { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px; }
     .tools { grid-template-columns: repeat(4, var(--btn)); }
     .layers { flex-direction: row; width: auto; }
-    .lbtn { width: 46px; }
-    .lbtn + .lbtn { margin-top: 0; margin-left: calc(var(--bw) * -1); }
-    .colors { grid-template-columns: repeat(6, 34px); width: auto; }
-    .custom { grid-column: auto; width: 46px; height: 34px; margin-top: 0; }
+    .lrow + .lrow { margin-top: 0; margin-left: calc(var(--bw) * -1); }
+    .lbtn { flex: none; width: 46px; }
+    .colors { display: flex; flex-wrap: wrap; justify-content: center; width: auto; max-width: 320px; }
+    .custom, .colors .tbtn { width: 46px; height: 34px; margin-top: 0; }
     .swatch { width: 34px; }
+    .recent .swatch { width: 28px; }
     .thumb { width: 38px; height: 38px; }
-    .frame { margin-top: 34px; }
-    .track { margin-top: 74px; }
   }
   @media (prefers-reduced-motion: reduce) {
     #send:hover:not(:disabled) { transform: none; }
@@ -169,67 +221,111 @@
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
 
   <div class="stage">
 
     <div class="panel" role="toolbar" aria-label="Drawing tools">
       <div class="tools">
-        <button class="tbtn" id="t-pencil" aria-pressed="true" aria-label="Pencil" title="Pencil">
+        <button class="tbtn" id="t-pencil" aria-pressed="true" aria-label="Pencil" title="Pencil (P)">
           <svg viewBox="0 0 24 24"><path class="s" d="M4 20l1.2-4.8L16.5 3.9a1.6 1.6 0 0 1 2.3 0l1.3 1.3a1.6 1.6 0 0 1 0 2.3L8.8 18.8z"/><path class="s" d="M14.5 6l3.5 3.5"/></svg>
         </button>
-        <button class="tbtn" id="t-eraser" aria-pressed="false" aria-label="Eraser" title="Eraser">
+        <button class="tbtn" id="t-eraser" aria-pressed="false" aria-label="Eraser" title="Eraser (E)">
           <svg viewBox="0 0 24 24"><path class="s" d="M4.5 14.5l8-8a2 2 0 0 1 2.8 0l3.2 3.2a2 2 0 0 1 0 2.8L12 18.9H8.2z"/><path class="s" d="M9.5 9.5l5 5M13 20h7"/></svg>
         </button>
-        <button class="tbtn" id="t-bucket" aria-pressed="false" aria-label="Paint bucket" title="Paint bucket">
+        <button class="tbtn" id="t-bucket" aria-pressed="false" aria-label="Paint bucket" title="Paint bucket (B)">
           <svg viewBox="0 0 24 24"><path class="s" d="M5 11l7-7 7 7-6.5 6.5a2 2 0 0 1-2.8 0z"/><path class="s" d="M5 11h14"/><path d="M20 14.5c1 1.6 1.6 2.5 1.6 3.3a1.6 1.6 0 0 1-3.2 0c0-.8.6-1.7 1.6-3.3z" fill="#000"/></svg>
         </button>
-        <button class="tbtn" id="t-lasso" aria-pressed="false" aria-label="Lasso" title="Lasso">
+        <button class="tbtn" id="t-lasso" aria-pressed="false" aria-label="Lasso" title="Lasso (L)">
           <svg viewBox="0 0 24 24"><path class="s" stroke-dasharray="3 2.5" d="M12 4c-4.5 0-8 2-8 5s3.5 5 8 5 8-2 8-5-3.5-5-8-5z"/><path class="s" d="M9.5 14c-.6 2 .1 3.8 2.1 4.6 1.2.5 2.3.2 2.8-.8"/></svg>
         </button>
       </div>
 
       <div class="layers" role="group" aria-label="Layers">
-        <button class="lbtn" data-layer="2" aria-pressed="false" aria-label="Layer 2">2</button>
-        <button class="lbtn" data-layer="1" aria-pressed="true" aria-label="Layer 1">1</button>
-        <button class="lbtn" data-layer="0" aria-pressed="false" aria-label="Background layer">BG</button>
+        <div class="lrow">
+          <button class="eye" data-layer="2" aria-pressed="true" aria-label="Hide layer 2" title="Show / hide layer 2">
+            <svg viewBox="0 0 24 24"><path class="s" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle class="s" cx="12" cy="12" r="3"/><path class="s slash" d="M4 20L20 4"/></svg>
+          </button>
+          <button class="lbtn" data-layer="2" aria-pressed="false" aria-label="Layer 2">2</button>
+        </div>
+        <div class="lrow">
+          <button class="eye" data-layer="1" aria-pressed="true" aria-label="Hide layer 1" title="Show / hide layer 1">
+            <svg viewBox="0 0 24 24"><path class="s" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle class="s" cx="12" cy="12" r="3"/><path class="s slash" d="M4 20L20 4"/></svg>
+          </button>
+          <button class="lbtn" data-layer="1" aria-pressed="true" aria-label="Layer 1">1</button>
+        </div>
+        <div class="lrow">
+          <button class="eye" data-layer="0" aria-pressed="true" aria-label="Hide background layer" title="Show / hide background">
+            <svg viewBox="0 0 24 24"><path class="s" d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle class="s" cx="12" cy="12" r="3"/><path class="s slash" d="M4 20L20 4"/></svg>
+          </button>
+          <button class="lbtn" data-layer="0" aria-pressed="false" aria-label="Background layer">BG</button>
+        </div>
       </div>
 
       <div class="colors" id="colors" role="group" aria-label="Colors">
-        <label class="custom" id="custom" title="Pick any color">
-          <input type="color" id="custom-input" value="#7a5cff" aria-label="Pick any color">
-        </label>
+        <button class="custom" id="custom" aria-label="Pick any color" aria-haspopup="dialog" title="Pick any color"></button>
+        <button class="tbtn" id="t-picker" aria-pressed="false" aria-label="Eyedropper" title="Eyedropper (I)">
+          <svg viewBox="0 0 24 24"><path class="s" d="M4 20l1-4 9-9 3 3-9 9z"/><path class="s" d="M13.5 6.5l2.3-2.3a1.8 1.8 0 0 1 2.5 0l1.5 1.5a1.8 1.8 0 0 1 0 2.5l-2.3 2.3"/></svg>
+        </button>
       </div>
     </div>
 
-    <div class="frame">
-      <button class="corner" id="undo" aria-label="Undo" title="Undo" disabled>
-        <svg viewBox="0 0 24 24"><path class="s" d="M9 6L4 11l5 5"/><path class="s" d="M4 11h9.5a6 6 0 0 1 0 12H9"/></svg>
-      </button>
-      <button class="corner" id="redo" aria-label="Redo" title="Redo" disabled>
-        <svg viewBox="0 0 24 24"><path class="s" d="M9 6L4 11l5 5"/><path class="s" d="M4 11h9.5a6 6 0 0 1 0 12H9"/></svg>
-      </button>
-      <button class="corner" id="clear" aria-label="Clear drawing" title="Clear drawing">
-        <svg viewBox="0 0 24 24"><path class="s" d="M5 5l14 14M19 5L5 19"/></svg>
-      </button>
+    <div class="center">
+      <div class="actions">
+        <div class="hist">
+          <button class="abtn" id="undo" aria-label="Undo" title="Undo (Ctrl+Z)" disabled>
+            <svg viewBox="0 0 24 24"><path class="s" d="M9 6L4 11l5 5"/><path class="s" d="M4 11h9.5a6 6 0 0 1 0 12H9"/></svg>
+          </button>
+          <button class="abtn" id="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)" disabled>
+            <svg viewBox="0 0 24 24"><path class="s" d="M9 6L4 11l5 5"/><path class="s" d="M4 11h9.5a6 6 0 0 1 0 12H9"/></svg>
+          </button>
+        </div>
+        <button class="abtn" id="clear" aria-label="Clear drawing" title="Clear drawing">
+          <svg viewBox="0 0 24 24"><path class="s" d="M5 5l14 14M19 5L5 19"/></svg>
+        </button>
+      </div>
 
-      <div class="paper">
-        <canvas id="layer0" width="800" height="500"></canvas>
-        <canvas id="layer1" width="800" height="500"></canvas>
-        <canvas id="layer2" width="800" height="500"></canvas>
-        <canvas id="overlay" width="800" height="500" aria-label="Drawing canvas"></canvas>
+      <div class="frame" id="frame">
+        <div class="paper">
+          <canvas id="layer0" width="800" height="500"></canvas>
+          <canvas id="layer1" width="800" height="500"></canvas>
+          <canvas id="layer2" width="800" height="500"></canvas>
+          <canvas id="overlay" width="800" height="500" aria-label="Drawing canvas"></canvas>
 
-        <div class="confirm" id="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
-          <div class="confirm-card">
-            <p class="big" id="confirm-title">Clear the whole drawing?</p>
-            <p class="small">All three layers will be wiped.</p>
-            <div class="confirm-row">
-              <button id="confirm-yes">Clear it</button>
-              <button id="confirm-no">Keep drawing</button>
+          <div class="confirm" id="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+            <div class="confirm-card">
+              <p class="big" id="confirm-title">Clear the whole drawing?</p>
+              <p class="small">All three layers will be wiped.</p>
+              <div class="confirm-row">
+                <button id="confirm-yes">Clear it</button>
+                <button id="confirm-no">Keep drawing</button>
+              </div>
             </div>
           </div>
         </div>
+
+        <div class="selbar" id="selbar" role="toolbar" aria-label="Selection actions" hidden>
+          <button class="sbtn" id="s-fill" aria-label="Fill selection" title="Fill (F)">
+            <svg viewBox="0 0 24 24"><path class="s" d="M5 11l7-7 7 7-6.5 6.5a2 2 0 0 1-2.8 0z"/><path class="s" d="M5 11h14"/><path d="M20 14.5c1 1.6 1.6 2.5 1.6 3.3a1.6 1.6 0 0 1-3.2 0c0-.8.6-1.7 1.6-3.3z" fill="#000"/></svg>
+          </button>
+          <button class="sbtn" id="s-del" aria-label="Delete inside selection" title="Delete (Del / Backspace)">
+            <svg viewBox="0 0 24 24"><path class="s" d="M4.5 7h15M9.5 7V4.8h5V7M6.5 7l1 12.2h9L17.5 7M10 11v5.5M14 11v5.5"/></svg>
+          </button>
+          <button class="sbtn" id="s-tf" aria-pressed="false" aria-label="Transform" title="Transform (scale / rotate, Enter to finish)">
+            <svg viewBox="0 0 24 24"><rect class="s" x="5" y="5" width="14" height="14" stroke-dasharray="3 2.5"/></svg>
+          </button>
+          <button class="sbtn" id="s-x" aria-label="Deselect" title="Deselect (Esc)">
+            <svg viewBox="0 0 24 24"><path class="s" d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
       </div>
+
+      <div class="recent" id="recent">
+        <div class="recent-main">
+          <span class="label">Recent:</span>
+          <div class="recent-list" id="recent-list"></div>
+          <span class="hint" id="recent-hint">none yet</span>
+        </div>      </div>
     </div>
 
     <div class="sizebar" id="sizebar">
@@ -258,6 +354,20 @@
     <button id="send">Send anonymously</button>
     <span id="status" role="status" aria-live="polite"></span>
   </div>
+
+  <div class="picker" id="picker" role="dialog" aria-label="Color picker" hidden>
+    <div class="sv" id="p-sv" tabindex="0" aria-label="Saturation and brightness">
+      <div class="knob" id="p-sv-knob"></div>
+    </div>
+    <div class="hue" id="p-hue" tabindex="0" aria-label="Hue">
+      <div class="knob" id="p-hue-knob"></div>
+    </div>
+    <div class="prow">
+      <div class="prev" id="p-prev"></div>
+      <input type="text" id="p-hex" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Hex color">
+    </div>
+    <button class="pdone" id="p-done">Done</button>
+  </div>
 </div>
 
 <script>
@@ -270,14 +380,16 @@ const CONFIG = {
 };
 
 const W = 800, H = 500;
-const SIZE_MIN = 1, SIZE_MAX = 60, MAX_HISTORY = 12;
+const SIZE_MIN = 1, SIZE_MAX = 60, MAX_HISTORY = 12, MAX_RECENT = 10;
 const $ = (id) => document.getElementById(id);
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const layers = [0, 1, 2].map((i) => {
   const canvas = $("layer" + i);
   return { canvas, ctx: canvas.getContext("2d", { willReadFrequently: true }) };
 });
+const visible = [true, true, true];
 const overlay = $("overlay");
 const octx = overlay.getContext("2d");
 
@@ -302,19 +414,32 @@ function wipeAll() {
 }
 wipeAll();
 
+
 function drawMerged() {
   mctx.clearRect(0, 0, W, H);
-  layers.forEach((l) => mctx.drawImage(l.canvas, 0, 0));
+  layers.forEach((l, i) => { if (visible[i]) mctx.drawImage(l.canvas, 0, 0); });
+}
+function mergedHasContent() {
+  drawMerged();
+  const d = mctx.getImageData(0, 0, W, H).data;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] > 10 && (d[i] < 245 || d[i + 1] < 245 || d[i + 2] < 245)) return true;
+  }
+  return false;
 }
 
 let tool = "pencil";
 let color = CONFIG.DEFAULT_COLOR.toLowerCase();
-let size = 6;
+const sizes = { pencil: 6, eraser: 20 };
+let sizeTool = "pencil";
+const getSize = () => sizes[sizeTool];
 let active = 1;
 let hasInk = false;
 let selection = null;
 let stroke = null;
 let customColor = null;
+let prevTool = "pencil";
+let transform = null;
 
 function hexToRgb(h) {
   const n = parseInt(h.slice(1), 16);
@@ -368,6 +493,22 @@ function maskHasContent(mask) {
   return false;
 }
 
+const layerNames = ["background", "layer 1", "layer 2"];
+function setVisible(i, v) {
+  visible[i] = v;
+  layers[i].canvas.style.visibility = v ? "visible" : "hidden";
+  const b = document.querySelector('.eye[data-layer="' + i + '"]');
+  b.setAttribute("aria-pressed", v);
+  b.setAttribute("aria-label", (v ? "Hide " : "Show ") + layerNames[i]);
+}
+function reveal() { if (!visible[active]) setVisible(active, true); }
+document.querySelectorAll(".eye").forEach((b) =>
+  b.addEventListener("click", () => {
+    const i = +b.dataset.layer;
+    setVisible(i, !visible[i]);
+  })
+);
+
 const undoStack = [], redoStack = [];
 function grab(indices) {
   return indices.map((i) => ({ i, data: layers[i].ctx.getImageData(0, 0, W, H) }));
@@ -405,17 +546,39 @@ function redo() {
 $("undo").addEventListener("click", undo);
 $("redo").addEventListener("click", redo);
 
+const TOOLS = ["pencil", "eraser", "bucket", "lasso", "picker"];
+const DROPPER_CURSOR = (() => {
+  const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><g fill='white' stroke='black' stroke-width='1.6' stroke-linejoin='round'><path d='M3 21l1-4 9.5-9.5 3 3L7 20z'/><path d='M13.5 7.5l2.2-2.2a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8l-2.2 2.2'/></g></svg>";
+  return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") 3 21, crosshair';
+})();
 function setTool(t) {
+  if (stroke) return;
+  if (t === "picker" && tool === "picker") t = prevTool; 
+  if (t === "picker") prevTool = tool;
+  if (transform && t !== "lasso") exitTransform();
   tool = t;
-  ["pencil", "eraser", "bucket", "lasso"].forEach((n) =>
-    $("t-" + n).setAttribute("aria-pressed", n === t)
-  );
-  $("sizebar").classList.toggle("dim", t === "bucket" || t === "lasso");
+  if (t === "pencil" || t === "eraser") sizeTool = t;
+  TOOLS.forEach((n) => $("t-" + n).setAttribute("aria-pressed", n === t));
+  $("sizebar").classList.toggle("dim", t === "bucket" || t === "lasso" || t === "picker");
+  overlay.style.cursor = t === "picker" ? DROPPER_CURSOR : "";
   renderSlider();
 }
-["pencil", "eraser", "bucket", "lasso"].forEach((n) =>
+TOOLS.forEach((n) =>
   $("t-" + n).addEventListener("click", () => setTool(n))
 );
+
+function pickColor(p) {
+  const x = Math.floor(p.x), y = Math.floor(p.y);
+  if (x < 0 || y < 0 || x >= W || y >= H) return false;
+  drawMerged();
+  const d = mctx.getImageData(x, y, 1, 1).data;
+  const a = d[3] / 255;
+  const ch = (v) => Math.round(v * a + 255 * (1 - a)).toString(16).padStart(2, "0");
+  const hex = "#" + ch(d[0]) + ch(d[1]) + ch(d[2]);
+  setColor(hex);
+  noteColor(hex);
+  return true;
+}
 
 document.querySelectorAll(".lbtn").forEach((b) =>
   b.addEventListener("click", () => {
@@ -426,10 +589,34 @@ document.querySelectorAll(".lbtn").forEach((b) =>
   })
 );
 
+let recent = [];
+const recentBox = $("recent-list"), recentHint = $("recent-hint");
+function renderRecent() {
+  recentBox.textContent = "";
+  recent.forEach((c) => {
+    const b = document.createElement("button");
+    b.className = "swatch";
+    b.style.background = c;
+    b.style.setProperty("--ring", ringFor(c));
+    b.title = c;
+    b.setAttribute("aria-label", "Recent color " + c);
+    b.setAttribute("aria-pressed", c === color);
+    b.addEventListener("click", () => setColor(c));
+    recentBox.appendChild(b);
+  });
+  recentHint.hidden = recent.length > 0;
+}
+function noteColor(c) {
+  c = c.toLowerCase();
+  if (recent[0] === c) return;
+  recent = [c].concat(recent.filter((x) => x !== c)).slice(0, MAX_RECENT);
+  renderRecent();
+}
+
 function setColor(c) {
   color = c.toLowerCase();
   if (tool === "eraser") setTool("pencil");
-  document.querySelectorAll(".swatch").forEach((s) => {
+  document.querySelectorAll("#colors .swatch").forEach((s) => {
     const on = s.dataset.color === color;
     s.setAttribute("aria-pressed", on);
     s.style.setProperty("--ring", ringFor(s.dataset.color));
@@ -438,6 +625,7 @@ function setColor(c) {
   const customOn = customColor !== null && customColor === color;
   custom.dataset.active = customOn;
   if (customColor) custom.style.setProperty("--ring", ringFor(customColor));
+  renderRecent();
   renderSlider();
 }
 
@@ -453,34 +641,152 @@ CONFIG.PALETTE.forEach((c) => {
   colorsBox.insertBefore(b, $("custom"));
 });
 
-const customInput = $("custom-input");
+const picker = $("picker"), pSV = $("p-sv"), pSVKnob = $("p-sv-knob");
+const pHue = $("p-hue"), pHueKnob = $("p-hue-knob"), pHex = $("p-hex"), pPrev = $("p-prev");
+let hsv = { h: 250, s: 0.64, v: 1 };
+let pickerOpen = false;
+
+function hsvToHex({ h, s, v }) {
+  const c = v * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = v - c;
+  let r = 0, g = 0, b = 0;
+  if (h < 60) { r = c; g = x; }
+  else if (h < 120) { r = x; g = c; }
+  else if (h < 180) { g = c; b = x; }
+  else if (h < 240) { g = x; b = c; }
+  else if (h < 300) { r = x; b = c; }
+  else { r = c; b = x; }
+  const to = (n) => Math.round((n + m) * 255).toString(16).padStart(2, "0");
+  return "#" + to(r) + to(g) + to(b);
+}
+function hexToHsv(hex) {
+  const [r, g, b] = hexToRgb(hex).map((n) => n / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  let h = 0;
+  if (d) {
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+  return { h, s: max ? d / max : 0, v: max };
+}
+function syncPicker(updateHex = true) {
+  pSV.style.backgroundColor = "hsl(" + hsv.h + " 100% 50%)";
+  pSVKnob.style.left = hsv.s * 100 + "%";
+  pSVKnob.style.top = (1 - hsv.v) * 100 + "%";
+  pHueKnob.style.left = (hsv.h / 360) * 100 + "%";
+  const hex = hsvToHex(hsv);
+  pPrev.style.background = hex;
+  if (updateHex) pHex.value = hex;
+}
 function applyCustom(v) {
   customColor = v.toLowerCase();
   $("custom").style.background = customColor;
   setColor(customColor);
 }
-customInput.addEventListener("input", (e) => applyCustom(e.target.value));
-customInput.addEventListener("change", (e) => applyCustom(e.target.value));
-customInput.addEventListener("click", (e) => {
-  if (customColor && color !== customColor) {
+function commitPicker() {
+  syncPicker();
+  applyCustom(hsvToHex(hsv));
+}
+function placePicker() {
+  const a = $("app").getBoundingClientRect(), c = $("custom").getBoundingClientRect();
+  const pw = picker.offsetWidth, ph = picker.offsetHeight;
+  let left, top;
+  if (window.matchMedia("(max-width: 540px)").matches) {
+    left = c.left - a.left; top = c.bottom - a.top + 8;
+  } else {
+    left = c.right - a.left + 10; top = c.top - a.top;
+  }
+  left = Math.max(0, Math.min(left, a.width - pw));
+  top = Math.max(0, Math.min(top, a.height - ph));
+  picker.style.left = left + "px";
+  picker.style.top = top + "px";
+}
+function openPicker() {
+  hsv = hexToHsv(customColor || "#7a5cff");
+  picker.hidden = false;
+  pickerOpen = true;
+  commitPicker();
+  placePicker();
+}
+function closePicker() {
+  picker.hidden = true;
+  pickerOpen = false;
+}
+$("custom").addEventListener("click", () => (pickerOpen ? closePicker() : openPicker()));
+$("p-done").addEventListener("click", closePicker);
+window.addEventListener("resize", () => { if (pickerOpen) placePicker(); });
+document.addEventListener("pointerdown", (e) => {
+  if (pickerOpen && !picker.contains(e.target) && !$("custom").contains(e.target)) closePicker();
+});
+
+function dragArea(el, fn) {
+  let dragging = false;
+  el.addEventListener("pointerdown", (e) => {
+    if (e.button !== undefined && e.button > 0) return;
     e.preventDefault();
-    setColor(customColor);
+    dragging = true;
+    el.setPointerCapture(e.pointerId);
+    el.focus({ preventScroll: true });
+    fn(e);
+  });
+  el.addEventListener("pointermove", (e) => { if (dragging) fn(e); });
+  const end = () => { dragging = false; };
+  el.addEventListener("pointerup", end);
+  el.addEventListener("pointercancel", end);
+}
+dragArea(pSV, (e) => {
+  const r = pSV.getBoundingClientRect();
+  hsv.s = clamp01((e.clientX - r.left) / r.width);
+  hsv.v = 1 - clamp01((e.clientY - r.top) / r.height);
+  commitPicker();
+});
+dragArea(pHue, (e) => {
+  const r = pHue.getBoundingClientRect();
+  hsv.h = clamp01((e.clientX - r.left) / r.width) * 359.99;
+  commitPicker();
+});
+pSV.addEventListener("keydown", (e) => {
+  const st = e.shiftKey ? 0.1 : 0.02;
+  const d = { ArrowLeft: [-st, 0], ArrowRight: [st, 0], ArrowUp: [0, st], ArrowDown: [0, -st] }[e.key];
+  if (!d) return;
+  e.preventDefault();
+  hsv.s = clamp01(hsv.s + d[0]); hsv.v = clamp01(hsv.v + d[1]);
+  commitPicker();
+});
+pHue.addEventListener("keydown", (e) => {
+  const st = e.shiftKey ? 15 : 3;
+  const d = { ArrowLeft: -st, ArrowDown: -st, ArrowRight: st, ArrowUp: st }[e.key];
+  if (!d) return;
+  e.preventDefault();
+  hsv.h = Math.min(359.99, Math.max(0, hsv.h + d));
+  commitPicker();
+});
+pHex.addEventListener("input", () => {
+  let v = pHex.value.trim();
+  if (!v.startsWith("#")) v = "#" + v;
+  if (/^#[0-9a-f]{6}$/i.test(v)) {
+    hsv = hexToHsv(v);
+    syncPicker(false);
+    applyCustom(v);
   }
 });
 
 const track = $("track"), thumb = $("thumb"), ball = $("ball");
 function setSize(v) {
-  size = Math.max(SIZE_MIN, Math.min(SIZE_MAX, Math.round(v)));
+  sizes[sizeTool] = Math.max(SIZE_MIN, Math.min(SIZE_MAX, Math.round(v)));
   renderSlider();
 }
 function renderSlider() {
+  const size = getSize();
   const f = (size - SIZE_MIN) / (SIZE_MAX - SIZE_MIN);
   thumb.style.top = (1 - f) * 100 + "%";
   const inner = thumb.offsetWidth > 40 ? 30 : 24;
   const d = 3 + f * (inner - 3);
   ball.style.width = ball.style.height = d + "px";
   ball.style.background = color;
-  ball.classList.toggle("eraser", tool === "eraser");
+  ball.classList.toggle("eraser", sizeTool === "eraser");
   thumb.setAttribute("aria-valuenow", size);
 }
 function sizeFromPointer(e) {
@@ -495,15 +801,16 @@ track.addEventListener("pointerdown", (e) => {
   sizeFromPointer(e);
 });
 track.addEventListener("pointermove", (e) => { if (sliding) sizeFromPointer(e); });
-track.addEventListener("pointerup", () => { sliding = false; });
+track.addEventListener("pointerup", () => { sliding = false; thumb.blur(); });
 track.addEventListener("pointercancel", () => { sliding = false; });
 thumb.addEventListener("keydown", (e) => {
   const step = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1, PageUp: 10, PageDown: -10 }[e.key];
-  if (step) { e.preventDefault(); setSize(size + step); }
+  if (step) { e.preventDefault(); setSize(getSize() + step); }
   else if (e.key === "Home") { e.preventDefault(); setSize(SIZE_MIN); }
   else if (e.key === "End") { e.preventDefault(); setSize(SIZE_MAX); }
 });
 
+/* ---------- Selection overlay ---------- */
 let antOffset = 0, antsRunning = false;
 function redrawOverlay() {
   octx.clearRect(0, 0, W, H);
@@ -523,6 +830,7 @@ function redrawOverlay() {
   octx.strokeStyle = "#fff";
   octx.lineDashOffset = -antOffset + 8;
   tracePath(); octx.stroke();
+  if (transform && !(stroke && stroke.kind === "lasso")) drawTfUI();
 }
 function ants() {
   if (!selection) { antsRunning = false; return; }
@@ -532,11 +840,166 @@ function ants() {
 }
 function setSelection(s) {
   selection = s;
+  if (!s) transform = null;
   redrawOverlay();
+  updatePopup();
   if (s && !antsRunning && !reduceMotion) {
     antsRunning = true;
     requestAnimationFrame(ants);
   }
+}
+
+function updatePopup() {
+  const bar = $("selbar");
+  $("s-tf").setAttribute("aria-pressed", !!transform);
+  if (!selection || stroke) { bar.hidden = true; return; }
+  const pts = selection.points;
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+  pts.forEach((q) => {
+    if (q.x < minx) minx = q.x; if (q.x > maxx) maxx = q.x;
+    if (q.y < miny) miny = q.y; if (q.y > maxy) maxy = q.y;
+  });
+  const frame = $("frame");
+  const rect = overlay.getBoundingClientRect(), fr = frame.getBoundingClientRect();
+  const kx = rect.width / W, ky = rect.height / H;
+  const offX = rect.left - fr.left - frame.clientLeft;
+  const offY = rect.top - fr.top - frame.clientTop;
+  bar.hidden = false;
+  const bw = bar.offsetWidth, bh = bar.offsetHeight;
+  let left = offX + ((minx + maxx) / 2) * kx - bw / 2;
+  let top = offY + miny * ky - bh - (transform ? 46 : 10);
+  if (top < 4) top = offY + maxy * ky + (transform ? 24 : 10);
+  top = Math.max(4, Math.min(top, frame.clientHeight - bh - 4));
+  left = Math.max(4, Math.min(left, frame.clientWidth - bw - 4));
+  bar.style.left = left + "px";
+  bar.style.top = top + "px";
+}
+
+const dispScale = () => W / overlay.getBoundingClientRect().width;
+
+function enterTransform() {
+  if (!selection || stroke || transform) return;
+  const pts0 = selection.points.map((q) => ({ x: q.x, y: q.y }));
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+  pts0.forEach((q) => {
+    if (q.x < minx) minx = q.x; if (q.x > maxx) maxx = q.x;
+    if (q.y < miny) miny = q.y; if (q.y > maxy) maxy = q.y;
+  });
+  const c0 = { x: (minx + maxx) / 2, y: (miny + maxy) / 2 };
+  transform = {
+    pts0, c0, C: { x: c0.x, y: c0.y },
+    w0: Math.max(1, maxx - minx), h0: Math.max(1, maxy - miny),
+    sx: 1, sy: 1, th: 0, cut: false, float: null, base: null
+  };
+  redrawOverlay();
+  updatePopup();
+}
+function exitTransform() {
+  if (!transform) return;
+  transform = null;
+  redrawOverlay();
+  updatePopup();
+}
+function tfGeom() {
+  const t = transform;
+  const hw = (t.w0 * t.sx) / 2, hh = (t.h0 * t.sy) / 2;
+  const c = Math.cos(t.th), s = Math.sin(t.th);
+  const at = (lx, ly) => ({ x: t.C.x + lx * c - ly * s, y: t.C.y + lx * s + ly * c });
+  const handles = [];
+  for (const hy of [-1, 0, 1]) for (const hx of [-1, 0, 1]) {
+    if (hx || hy) handles.push({ hx, hy, ...at(hx * hw, hy * hh) });
+  }
+  return { hw, hh, at, handles, rot: (ds) => at(0, -hh - 26 * ds) };
+}
+function tfPoint(q) {
+  const t = transform;
+  const lx = (q.x - t.c0.x) * t.sx, ly = (q.y - t.c0.y) * t.sy;
+  const c = Math.cos(t.th), s = Math.sin(t.th);
+  return { x: t.C.x + lx * c - ly * s, y: t.C.y + lx * s + ly * c };
+}
+function applyTransform() {
+  const t = transform, L = layers[active];
+  L.ctx.clearRect(0, 0, W, H);
+  L.ctx.drawImage(t.base, 0, 0);
+  L.ctx.save();
+  L.ctx.translate(t.C.x, t.C.y);
+  L.ctx.rotate(t.th);
+  L.ctx.scale(t.sx, t.sy);
+  L.ctx.translate(-t.c0.x, -t.c0.y);
+  L.ctx.drawImage(t.float, 0, 0);
+  L.ctx.restore();
+  selection.points = t.pts0.map(tfPoint);
+  redrawOverlay();
+}
+function beginTf() {
+  const t = transform;
+  if (t.cut) return;
+  reveal();
+  pushUndo([active]);
+  cutSelection(t);
+  t.cut = true;
+}
+function hitHandle(p) {
+  const g = tfGeom(), ds = dispScale(), r = 10 * ds;
+  const near = (q) => Math.hypot(p.x - q.x, p.y - q.y) <= r;
+  if (near(g.rot(ds))) return { mode: "rotate", hx: 0, hy: 0 };
+  for (const h of g.handles) if (near(h)) return { mode: "scale", hx: h.hx, hy: h.hy };
+  return null;
+}
+function continueTf(e) {
+  const s = stroke, t = transform, p = pos(e);
+  if (s.mode === "move") {
+    t.C = { x: s.C.x + p.x - s.start.x, y: s.C.y + p.y - s.start.y };
+  } else if (s.mode === "rotate") {
+    let th = Math.atan2(p.y - t.C.y, p.x - t.C.x) + Math.PI / 2;
+    if (e.shiftKey) { const st = Math.PI / 12; th = Math.round(th / st) * st; }
+    t.th = th;
+  } else {
+    const c = Math.cos(t.th), sn = Math.sin(t.th);
+    const dx = p.x - s.C.x, dy = p.y - s.C.y;
+    const qx = dx * c + dy * sn, qy = -dx * sn + dy * c;
+    const hw0 = (t.w0 * s.sx) / 2, hh0 = (t.h0 * s.sy) / 2;
+    let nhw = hw0, nhh = hh0;
+    if (s.hx) nhw = Math.max(s.hx * (qx + s.hx * hw0), 6) / 2;
+    if (s.hy) nhh = Math.max(s.hy * (qy + s.hy * hh0), 6) / 2;
+    if (e.shiftKey && s.hx && s.hy) {
+      const r = Math.max(nhw / hw0, nhh / hh0);
+      nhw = hw0 * r; nhh = hh0 * r;
+    }
+    const ncx = s.hx ? -s.hx * hw0 + s.hx * nhw : 0;
+    const ncy = s.hy ? -s.hy * hh0 + s.hy * nhh : 0;
+    t.sx = (nhw * 2) / t.w0;
+    t.sy = (nhh * 2) / t.h0;
+    t.C = { x: s.C.x + ncx * c - ncy * sn, y: s.C.y + ncx * sn + ncy * c };
+  }
+  applyTransform();
+}
+function drawTfUI() {
+  const g = tfGeom(), ds = dispScale();
+  const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => g.at(a * g.hw, b * g.hh));
+  const top = g.at(0, -g.hh), rot = g.rot(ds);
+  octx.save();
+  octx.setLineDash([]);
+  octx.lineWidth = 2 * ds;
+  octx.strokeStyle = "#3a56d4";
+  octx.beginPath();
+  corners.forEach((c, i) => (i ? octx.lineTo(c.x, c.y) : octx.moveTo(c.x, c.y)));
+  octx.closePath();
+  octx.moveTo(top.x, top.y);
+  octx.lineTo(rot.x, rot.y);
+  octx.stroke();
+  octx.fillStyle = "#fff";
+  octx.strokeStyle = "#000";
+  const hs = 5 * ds;
+  g.handles.forEach((h) => {
+    octx.fillRect(h.x - hs, h.y - hs, hs * 2, hs * 2);
+    octx.strokeRect(h.x - hs, h.y - hs, hs * 2, hs * 2);
+  });
+  octx.beginPath();
+  octx.arc(rot.x, rot.y, hs, 0, Math.PI * 2);
+  octx.fill();
+  octx.stroke();
+  octx.restore();
 }
 
 function styleStroke(c) {
@@ -547,18 +1010,20 @@ function styleStroke(c) {
     c.globalCompositeOperation = "source-over";
     c.strokeStyle = c.fillStyle = tool === "eraser" ? "#ffffff" : color;
   }
-  c.lineWidth = size;
+  c.lineWidth = getSize();
   c.lineCap = c.lineJoin = "round";
 }
 
 function startDraw(p) {
+  reveal();
   pushUndo([active]);
+  if (tool === "pencil") noteColor(color);
   const c = layers[active].ctx;
   c.save();
   if (selection) c.clip(pathFrom(selection.points));
   styleStroke(c);
   c.beginPath();
-  c.arc(p.x, p.y, size / 2, 0, Math.PI * 2);
+  c.arc(p.x, p.y, getSize() / 2, 0, Math.PI * 2);
   c.fill();
   stroke = { kind: "draw", ctx: c, last: p, mid: p };
 }
@@ -632,6 +1097,7 @@ function bucketFill(p) {
     }
   }
 
+  reveal();
   pushUndo([active]);
   const L = layers[active];
   const img = L.ctx.getImageData(0, 0, W, H);
@@ -643,6 +1109,34 @@ function bucketFill(p) {
   }
   L.ctx.putImageData(img, 0, 0);
   hasInk = true;
+  noteColor(color);
+}
+
+function fillSelection() {
+  if (!selection || stroke) return;
+  exitTransform();
+  reveal();
+  pushUndo([active]);
+  const c = layers[active].ctx;
+  c.save();
+  c.clip(pathFrom(selection.points));
+  c.globalCompositeOperation = "source-over";
+  c.fillStyle = color;
+  c.fillRect(0, 0, W, H);
+  c.restore();
+  hasInk = true;
+  noteColor(color);
+}
+function clearSelection() {
+  if (!selection || stroke) return;
+  exitTransform();
+  pushUndo([active]);
+  const c = layers[active].ctx;
+  c.save();
+  c.clip(pathFrom(selection.points));
+  if (active === 0) { c.fillStyle = "#fff"; c.fillRect(0, 0, W, H); }
+  else c.clearRect(0, 0, W, H);
+  c.restore();
 }
 
 function cutSelection(s) {
@@ -671,6 +1165,7 @@ function continueMove(p) {
   if (!s.moved) {
     if (Math.hypot(dx, dy) < 3) return;
     s.moved = true;
+    reveal();
     pushUndo([active]);
     cutSelection(s);
   }
@@ -691,8 +1186,16 @@ function finishLasso() {
 }
 
 overlay.addEventListener("pointerdown", (e) => {
-  if (!$("confirm").hidden || (e.button !== undefined && e.button > 0)) return;
+  if (!$("confirm").hidden) return;
+  if (e.button === 2) {
+    e.preventDefault();
+    if (!stroke) pickColor(pos(e));
+    return;
+  }
+  if (e.button !== undefined && e.button > 0) return;
   e.preventDefault();
+  const ae = document.activeElement;
+  if (ae && ae !== document.body && ae.blur) ae.blur();
   overlay.setPointerCapture(e.pointerId);
   const p = pos(e);
 
@@ -700,8 +1203,25 @@ overlay.addEventListener("pointerdown", (e) => {
     startDraw(p);
   } else if (tool === "bucket") {
     bucketFill(p);
+  } else if (tool === "picker") {
+    if (pickColor(p)) setTool(prevTool === "eraser" ? "pencil" : prevTool);
   } else if (tool === "lasso") {
-    if (selection && sctx.isPointInPath(pathFrom(selection.points), p.x, p.y)) {
+    const inside = selection && sctx.isPointInPath(pathFrom(selection.points), p.x, p.y);
+    if (transform) {
+      const h = hitHandle(p);
+      if (h || inside) {
+        beginTf();
+        stroke = {
+          kind: "tf", mode: h ? h.mode : "move", hx: h ? h.hx : 0, hy: h ? h.hy : 0,
+          start: p, C: { x: transform.C.x, y: transform.C.y }, sx: transform.sx, sy: transform.sy
+        };
+      } else {
+        exitTransform();
+        setSelection(null);
+        stroke = { kind: "lasso", points: [p] };
+        redrawOverlay();
+      }
+    } else if (inside) {
       stroke = { kind: "move", start: p, moved: false, pts0: selection.points.map((q) => ({ x: q.x, y: q.y })) };
     } else {
       setSelection(null);
@@ -709,12 +1229,14 @@ overlay.addEventListener("pointerdown", (e) => {
       redrawOverlay();
     }
   }
+  updatePopup();
 });
 
 overlay.addEventListener("pointermove", (e) => {
   if (!stroke) return;
   if (stroke.kind === "draw") continueDraw(e);
   else if (stroke.kind === "move") continueMove(pos(e));
+  else if (stroke.kind === "tf") continueTf(e);
   else if (stroke.kind === "lasso") {
     const p = pos(e), last = stroke.points[stroke.points.length - 1];
     if (Math.hypot(p.x - last.x, p.y - last.y) > 1.5) {
@@ -738,36 +1260,79 @@ function endGesture() {
   } else if (stroke.kind === "move") {
     if (stroke.moved) hasInk = true;
     stroke = null;
+  } else if (stroke.kind === "tf") {
+    hasInk = true;
+    stroke = null;
   } else if (stroke.kind === "lasso") {
     finishLasso();
   }
+  updatePopup();
 }
 overlay.addEventListener("pointerup", endGesture);
 overlay.addEventListener("pointercancel", endGesture);
 
 function openConfirm() { $("confirm").hidden = false; $("confirm-no").focus(); }
-function closeConfirm() { $("confirm").hidden = true; $("clear").focus(); }
+function closeConfirm(refocus) {
+  $("confirm").hidden = true;
+  if (refocus) $("clear").focus();
+}
 $("clear").addEventListener("click", openConfirm);
-$("confirm-no").addEventListener("click", closeConfirm);
-$("confirm-yes").addEventListener("click", () => {
+$("confirm-no").addEventListener("click", (e) => closeConfirm(e.detail === 0));
+$("confirm-yes").addEventListener("click", (e) => {
   pushUndo([0, 1, 2]);
   wipeAll();
   hasInk = false;
   setSelection(null);
-  closeConfirm();
+  closeConfirm(e.detail === 0);
+});
+
+document.addEventListener("click", (e) => {
+  if (e.detail > 0) {
+    const b = e.target.closest && e.target.closest("button");
+    if (b) b.blur();
+  }
 });
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    if (!$("confirm").hidden) closeConfirm();
+    if (!$("confirm").hidden) closeConfirm(true);
+    else if (pickerOpen) closePicker();
+    else if (transform) exitTransform();
     else if (selection) setSelection(null);
     return;
   }
-  if (e.target && e.target.tagName === "TEXTAREA") return;
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
-    e.preventDefault(); e.shiftKey ? redo() : undo();
-  } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
-    e.preventDefault(); redo();
+  const t = e.target;
+  if (t && (t.tagName === "TEXTAREA" || (t.tagName === "INPUT" && t.type === "text"))) return;
+  if (!$("confirm").hidden) return;
+
+  const k = e.key.toLowerCase();
+  if (e.ctrlKey || e.metaKey) {
+    if (k === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); }
+    else if (k === "y") { e.preventDefault(); redo(); }
+    return;
+  }
+  if (e.altKey) return;
+
+  if (k === "tab") {
+    const ae = document.activeElement;
+    if ((tool === "pencil" || tool === "eraser") && (!ae || ae === document.body)) {
+      e.preventDefault();
+      setTool(tool === "pencil" ? "eraser" : "pencil");
+    }
+    return;
+  }
+  if (e.repeat) return;
+
+  switch (k) {
+    case "p": setTool("pencil"); break;
+    case "e": setTool("eraser"); break;
+    case "b": setTool("bucket"); break;
+    case "l": setTool("lasso"); break;
+    case "i": setTool("picker"); break;
+    case "enter": if (transform) { e.preventDefault(); exitTransform(); } break;
+    case "f": if (selection) { e.preventDefault(); fillSelection(); } break;
+    case "backspace":
+    case "delete": if (selection) { e.preventDefault(); clearSelection(); } break;
   }
 });
 
@@ -806,7 +1371,6 @@ if (CONFIG.TURNSTILE_SITEKEY) {
   document.head.appendChild(s);
 }
 
-/* ---------- Sending ---------- */
 function setStatus(text, kind) {
   const el = $("status");
   el.textContent = text;
@@ -824,7 +1388,8 @@ function markSent() {
 
 $("send").addEventListener("click", async () => {
   const message = msg.value.trim();
-  if (!hasInk && !message) { setStatus("Draw something or write a message first.", "err"); return; }
+  const ink = hasInk && mergedHasContent();
+  if (!ink && !message) { setStatus("Draw something or write a message first.", "err"); return; }
   const wait = cooldownLeft();
   if (wait > 0) { setStatus("Please wait " + wait + "s before sending again.", "err"); return; }
   if (CONFIG.TURNSTILE_SITEKEY && !turnstileToken) { setStatus("Finish the human check first.", "err"); return; }
@@ -837,10 +1402,13 @@ $("send").addEventListener("click", async () => {
   try {
     const form = new FormData();
     form.append("message", message);
-    form.append("website", $("website").value);
-    if (turnstileToken) form.append("cf-turnstile-response", turnstileToken);
-    if (hasInk) {
+    form.append("website", $("website").value);    if (turnstileToken) form.append("cf-turnstile-response", turnstileToken);
+    if (ink) {
       drawMerged();
+      mctx.globalCompositeOperation = "destination-over";
+      mctx.fillStyle = "#fff";
+      mctx.fillRect(0, 0, W, H);
+      mctx.globalCompositeOperation = "source-over";
       const blob = await new Promise((res) => merged.toBlob(res, "image/png"));
       form.append("image", blob, "drawing.png");
     }
@@ -869,11 +1437,21 @@ $("send").addEventListener("click", async () => {
   }
 });
 
-/* ---------- Init ---------- */
 setColor(color);
 setTool("pencil");
 refreshHistory();
-window.addEventListener("resize", renderSlider);
+window.addEventListener("resize", () => { renderSlider(); updatePopup(); });
+
+overlay.addEventListener("contextmenu", (e) => e.preventDefault());
+
+$("s-fill").addEventListener("click", fillSelection);
+$("s-del").addEventListener("click", clearSelection);
+$("s-tf").addEventListener("click", () => {
+  if (!selection) return;
+  if (transform) exitTransform();
+  else { if (tool !== "lasso") setTool("lasso"); enterTransform(); }
+});
+$("s-x").addEventListener("click", () => setSelection(null));
 </script>
 </body>
 </html>
